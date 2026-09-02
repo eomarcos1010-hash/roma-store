@@ -7,7 +7,18 @@
 
 
 /* ============================================================
-   CONFIGURAÇÃO
+   CONFIGURAÇÃO SUPABASE
+   ============================================================ */
+
+const SUPABASE_URL =
+    "https://qgztuzjqxnwdqdsasche.supabase.co";
+
+const SUPABASE_KEY =
+    "COLE_AQUI_SUA_PUBLISHABLE_KEY";
+
+
+/* ============================================================
+   CONFIGURAÇÃO LOCAL
    ============================================================ */
 
 const STORAGE_KEY =
@@ -125,7 +136,7 @@ let heroClicksCount;
    INICIALIZAÇÃO
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     productsGrid =
         document.getElementById("products-grid");
@@ -139,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
     heroClicksCount =
         document.getElementById("hero-clicks-count");
 
-    initializeStore();
+    await initializeStore();
 });
 
 
@@ -147,9 +158,9 @@ document.addEventListener("DOMContentLoaded", function () {
    INICIALIZAR LOJA
    ============================================================ */
 
-function initializeStore() {
+async function initializeStore() {
 
-    loadProducts();
+    await loadProducts();
 
     setupFilters();
 
@@ -158,6 +169,92 @@ function initializeStore() {
     updateHeroStats();
 
     setupStorageListener();
+
+    /*
+     * Atualiza os produtos periodicamente.
+     * Isso permite que alterações feitas no
+     * dashboard apareçam na loja.
+     */
+
+    setInterval(async function () {
+
+        await loadProducts();
+
+        renderProducts();
+
+        updateHeroStats();
+
+    }, 30000);
+}
+
+
+/* ============================================================
+   SUPABASE REQUEST
+   ============================================================ */
+
+async function supabaseRequest(
+    endpoint,
+    options = {}
+) {
+
+    const response =
+        await fetch(
+            SUPABASE_URL +
+            "/rest/v1/" +
+            endpoint,
+            {
+                ...options,
+
+                headers: {
+                    "apikey":
+                        SUPABASE_KEY,
+
+                    "Authorization":
+                        "Bearer " +
+                        SUPABASE_KEY,
+
+                    "Content-Type":
+                        "application/json",
+
+                    "Prefer":
+                        options.method === "POST"
+                            ? "return=representation"
+                            : "return=minimal",
+
+                    ...(options.headers || {})
+                }
+            }
+        );
+
+
+    if (!response.ok) {
+
+        const errorText =
+            await response.text();
+
+        throw new Error(
+            `Supabase ${response.status}: ${errorText}`
+        );
+    }
+
+
+    const text =
+        await response.text();
+
+
+    if (!text) {
+        return null;
+    }
+
+
+    try {
+
+        return JSON.parse(text);
+
+    } catch {
+
+        return null;
+    }
 }
 
 
@@ -165,14 +262,59 @@ function initializeStore() {
    CARREGAR PRODUTOS
    ============================================================ */
 
-function loadProducts() {
+async function loadProducts() {
 
-    let savedProducts = null;
+    /*
+     * Primeiro tenta Supabase.
+     */
 
     try {
 
         const data =
-            localStorage.getItem(STORAGE_KEY);
+            await supabaseRequest(
+                "products?select=*"
+            );
+
+
+        if (Array.isArray(data)) {
+
+            allProducts =
+                normalizeProducts(data);
+
+
+            /*
+             * Guarda uma cópia local apenas como
+             * fallback/offline.
+             */
+
+            saveLocalCache();
+
+            return;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar produtos do Supabase:",
+            error
+        );
+    }
+
+
+    /*
+     * Se Supabase falhar, usa cache local.
+     */
+
+    let savedProducts = null;
+
+
+    try {
+
+        const data =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
 
         if (data) {
 
@@ -183,7 +325,7 @@ function loadProducts() {
     } catch (error) {
 
         console.error(
-            "Erro ao carregar produtos:",
+            "Erro ao carregar cache:",
             error
         );
     }
@@ -224,23 +366,49 @@ function loadProducts() {
     }
 
 
-    if (!Array.isArray(savedProducts)) {
+    if (Array.isArray(savedProducts)) {
 
         allProducts =
             normalizeProducts(
-                DEFAULT_PRODUCTS
+                savedProducts
             );
-
-        saveProducts();
 
         return;
     }
 
 
+    /*
+     * Último fallback:
+     * produtos padrão.
+     */
+
     allProducts =
         normalizeProducts(
-            savedProducts
+            DEFAULT_PRODUCTS
         );
+}
+
+
+/* ============================================================
+   CACHE LOCAL
+   ============================================================ */
+
+function saveLocalCache() {
+
+    try {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(allProducts)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao salvar cache local:",
+            error
+        );
+    }
 }
 
 
@@ -384,29 +552,16 @@ function cleanProductLink(link) {
         String(link).trim();
 
 
-    /*
-     * Se alguém colocou Markdown:
-     *
-     * [https://site.com](https://site.com)
-     *
-     * transforma automaticamente em:
-     *
-     * https://site.com
-     */
-
     const markdownMatch =
         value.match(
             /^\[.*?\]\((https?:\/\/.*?)\)$/
         );
 
+
     if (markdownMatch) {
         value = markdownMatch[1];
     }
 
-
-    /*
-     * Remove espaços.
-     */
 
     value =
         value.replace(/\s+/g, "");
@@ -420,22 +575,29 @@ function cleanProductLink(link) {
    SALVAR PRODUTOS
    ============================================================ */
 
-function saveProducts() {
+async function saveProducts() {
 
-    try {
+    /*
+     * Mantém cache local.
+     */
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(allProducts)
-        );
+    saveLocalCache();
 
-    } catch (error) {
 
-        console.error(
-            "Erro ao salvar produtos:",
-            error
-        );
-    }
+    /*
+     * O dashboard será responsável pelas
+     * alterações principais no Supabase.
+     *
+     * A loja não faz um PUT de todos os produtos,
+     * evitando sobrescrever alterações feitas
+     * no dashboard.
+     */
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "axeusProductsUpdated"
+        )
+    );
 }
 
 
@@ -578,11 +740,6 @@ function createProductCard(product) {
         "click",
         function (event) {
 
-            /*
-             * Se clicou no botão Comprar,
-             * o próprio botão já registra o clique.
-             */
-
             if (
                 event.target.closest(
                     ".product-buy-button"
@@ -592,11 +749,6 @@ function createProductCard(product) {
             }
 
 
-            /*
-             * Se clicou em algum link,
-             * não registra novamente.
-             */
-
             if (
                 event.target.closest("a")
             ) {
@@ -604,19 +756,10 @@ function createProductCard(product) {
             }
 
 
-            /*
-             * Clique normal no produto.
-             */
-
             registerClick(
                 product.id
             );
 
-
-            /*
-             * Se tiver link,
-             * também abre o produto.
-             */
 
             const productLink =
                 getProductLink(product);
@@ -906,39 +1049,15 @@ function createProductCard(product) {
                 "Comprar";
 
 
-            /*
-             * IMPORTANTE:
-             *
-             * O botão agora registra o clique
-             * antes de abrir o link.
-             */
-
             button.addEventListener(
                 "click",
                 function (event) {
 
-                    /*
-                     * Impede o evento de subir
-                     * para o card.
-                     *
-                     * Assim não conta duas vezes.
-                     */
-
                     event.stopPropagation();
-
-
-                    /*
-                     * REGISTRA O CLIQUE.
-                     */
 
                     registerClick(
                         product.id
                     );
-
-                    /*
-                     * O navegador continua
-                     * normalmente para o href.
-                     */
                 }
             );
 
@@ -1007,10 +1126,6 @@ function createProductCard(product) {
         content
     );
 
-
-    /* ========================================================
-       CLASSE COMING SOON
-       ======================================================== */
 
     if (
         normalizeStatus(
@@ -1084,7 +1199,7 @@ function createProductPlaceholder(name) {
    REGISTRAR CLIQUE
    ============================================================ */
 
-function registerClick(productId) {
+async function registerClick(productId) {
 
     const product =
         allProducts.find(
@@ -1100,7 +1215,7 @@ function registerClick(productId) {
 
 
     /*
-     * Incrementa cliques.
+     * Incrementa localmente imediatamente.
      */
 
     product.clicks =
@@ -1110,8 +1225,8 @@ function registerClick(productId) {
 
 
     /*
-     * Mantém o comportamento antigo
-     * do contador de vendidos.
+     * Mantém exatamente o comportamento
+     * antigo do seu site.
      */
 
     product.sold =
@@ -1121,14 +1236,7 @@ function registerClick(productId) {
 
 
     /*
-     * Salvar.
-     */
-
-    saveProducts();
-
-
-    /*
-     * Atualizar card.
+     * Atualiza visual.
      */
 
     updateProductCounter(
@@ -1136,11 +1244,51 @@ function registerClick(productId) {
     );
 
 
+    updateHeroStats();
+
+
     /*
-     * Atualizar estatísticas.
+     * Salva cache local.
      */
 
-    updateHeroStats();
+    saveLocalCache();
+
+
+    /*
+     * Atualiza diretamente o Supabase.
+     */
+
+    try {
+
+        await supabaseRequest(
+            `products?id=eq.${encodeURIComponent(
+                product.id
+            )}`,
+            {
+                method: "PATCH",
+
+                headers: {
+                    "Prefer":
+                        "return=minimal"
+                },
+
+                body: JSON.stringify({
+                    clicks:
+                        product.clicks,
+
+                    sold:
+                        product.sold
+                })
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao registrar clique no Supabase:",
+            error
+        );
+    }
 
 
     /*
@@ -1293,9 +1441,9 @@ function setupStorageListener() {
    ============================================================ */
 
 window.refreshAxeusStore =
-    function () {
+    async function () {
 
-        loadProducts();
+        await loadProducts();
 
         renderProducts();
 
@@ -1599,9 +1747,9 @@ window.AxeusStore = {
     },
 
 
-    refresh: function () {
+    refresh: async function () {
 
-        loadProducts();
+        await loadProducts();
 
         renderProducts();
 
@@ -1620,5 +1768,11 @@ window.AxeusStore = {
     getStorageKey: function () {
 
         return STORAGE_KEY;
+    },
+
+
+    getSupabaseUrl: function () {
+
+        return SUPABASE_URL;
     }
 };
