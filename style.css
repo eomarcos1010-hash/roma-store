@@ -125,6 +125,58 @@ button {
     color: #fff;
 }
 
+/* AÇÕES DO HEADER */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* BOTÃO CASINHA */
+
+.admin-home-button {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(22, 131, 255, 0.08);
+    border: 1px solid rgba(22, 131, 255, 0.25);
+
+    color: #ffffff;
+
+    font-size: 18px;
+    text-decoration: none;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.admin-home-button:hover {
+    background: rgba(22, 131, 255, 0.18);
+
+    border-color: rgba(22, 131, 255, 0.5);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(22, 131, 255, 0.18);
+}
+
+.admin-home-button:active {
+    transform: translateY(0);
+}
+
+/* BOTÃO VER PRODUTOS */
+
 .header-button {
     padding: 11px 18px;
     border-radius: 10px;
@@ -1220,6 +1272,16 @@ button {
         min-height: 68px;
     }
 
+    .header-actions {
+        gap: 7px;
+    }
+
+    .admin-home-button {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+
     .header-button {
         padding: 9px 12px;
         font-size: 11px;
@@ -1318,6 +1380,12 @@ button {
     .logo-icon {
         width: 34px;
         height: 34px;
+    }
+
+    .admin-home-button {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
     }
 
     .header-button {
