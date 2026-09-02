@@ -1,523 +1,1236 @@
 "use strict";
 
-const ADMIN_USER = "romazx";
-const ADMIN_PASSWORD = "anna0601";
+/* ============================================================
+   CONFIGURAÇÃO SUPABASE
+   ============================================================ */
 
-const loginForm = document.getElementById("loginForm");
-const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
-const loginError = document.getElementById("loginError");
+const SUPABASE_URL =
+    "https://qgztuzjqxnwdqdsasche.supabase.co";
+
+const SUPABASE_KEY =
+    "https://qgztuzjqxnwdqdsasche.supabase.co/rest/v1/";
+
+const PRODUCTS_KEY = "axeus_products";
+const OLD_PRODUCTS_KEY = "axeus_store_products";
+
+
+/* ============================================================
+   LOGIN ADMINISTRATIVO
+   ============================================================ */
+
+const ADMIN_USER = "SEU_USUARIO";
+const ADMIN_PASSWORD = "SUA_SENHA";
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const usernameInput =
+    document.getElementById("username");
+
+const passwordInput =
+    document.getElementById("password");
+
+const loginError =
+    document.getElementById("loginError");
 
 if (loginForm) {
-    loginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
 
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
+    loginForm.addEventListener(
+        "submit",
+        function (event) {
 
-        loginError.textContent = "";
+            event.preventDefault();
 
-        if (username === ADMIN_USER && password === ADMIN_PASSWORD) {
-            sessionStorage.setItem("axeus_admin_logged", "true");
-            window.location.href = "dashboard.html";
-        } else {
-            loginError.textContent = "Usuário ou senha incorretos.";
-            passwordInput.value = "";
-            passwordInput.focus();
+            const username =
+                usernameInput.value.trim();
+
+            const password =
+                passwordInput.value;
+
+            loginError.textContent = "";
+
+            if (
+                username === ADMIN_USER &&
+                password === ADMIN_PASSWORD
+            ) {
+
+                sessionStorage.setItem(
+                    "axeus_admin_logged",
+                    "true"
+                );
+
+                window.location.href =
+                    "dashboard.html";
+
+            } else {
+
+                loginError.textContent =
+                    "Usuário ou senha incorretos.";
+
+                passwordInput.value = "";
+
+                passwordInput.focus();
+            }
         }
-    });
+    );
 }
 
-const showPassword = document.getElementById("showPassword");
 
-if (showPassword && passwordInput) {
-    showPassword.addEventListener("click", function () {
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            showPassword.textContent = "○";
-        } else {
-            passwordInput.type = "password";
-            showPassword.textContent = "◉";
+/* ============================================================
+   MOSTRAR SENHA
+   ============================================================ */
+
+const showPassword =
+    document.getElementById("showPassword");
+
+if (
+    showPassword &&
+    passwordInput
+) {
+
+    showPassword.addEventListener(
+        "click",
+        function () {
+
+            if (
+                passwordInput.type ===
+                "password"
+            ) {
+
+                passwordInput.type =
+                    "text";
+
+                showPassword.textContent =
+                    "○";
+
+            } else {
+
+                passwordInput.type =
+                    "password";
+
+                showPassword.textContent =
+                    "◉";
+            }
         }
-    });
+    );
 }
+
+
+/* ============================================================
+   VERIFICAR LOGIN
+   ============================================================ */
 
 function verificarLoginAdmin() {
-    const logged = sessionStorage.getItem("axeus_admin_logged");
+
+    const logged =
+        sessionStorage.getItem(
+            "axeus_admin_logged"
+        );
 
     if (logged !== "true") {
-        window.location.href = "index.html";
+
+        window.location.href =
+            "adm.html";
+
         return false;
     }
 
     return true;
 }
 
-const isDashboard = document.querySelector(".admin-layout");
+const isDashboard =
+    document.querySelector(
+        ".admin-layout"
+    );
 
-if (isDashboard && !verificarLoginAdmin()) {
-    throw new Error("Administrador não autenticado.");
+if (
+    isDashboard &&
+    !verificarLoginAdmin()
+) {
+
+    throw new Error(
+        "Administrador não autenticado."
+    );
 }
 
-const PRODUCTS_KEY = "axeus_products";
-const OLD_PRODUCTS_KEY = "axeus_store_products";
+
+/* ============================================================
+   PRODUTOS PADRÃO
+   ============================================================ */
 
 const defaultProducts = [
+
     {
         id: "tiktok",
         name: "Ganchos para TikTok Shop",
         category: "TikTok Shop",
         price: "R$ 19,90",
-        description: "Ganchos e estratégias para criar vídeos mais atrativos para TikTok Shop.",
+        description:
+            "Ganchos e estratégias para criar vídeos mais atrativos para TikTok Shop.",
         image: "",
-        link: "https://pay.cakto.com.br/3erj75x_1080094",
+        link:
+            "https://pay.cakto.com.br/3erj75x_1080094",
         sold: 1207,
         clicks: 0,
         status: "active"
     },
+
     {
         id: "spotify",
         name: "Método Spotify PC",
         category: "PC",
         price: "R$ 19,90",
-        description: "Método para melhorar sua experiência com Spotify no PC.",
+        description:
+            "Método para melhorar sua experiência com Spotify no PC.",
         image: "",
-        link: "https://pay.cakto.com.br/szk82cw_1007831",
+        link:
+            "https://pay.cakto.com.br/szk82cw_1007831",
         sold: 842,
         clicks: 0,
         status: "active"
     },
+
     {
         id: "streaming",
         name: "Aplicativo de Streaming",
         category: "Entretenimento",
         price: "R$ 19,90",
-        description: "Aplicativo de entretenimento com filmes e séries.",
+        description:
+            "Aplicativo de entretenimento com filmes e séries.",
         image: "",
-        link: "https://pay.cakto.com.br/po9btzm_997956",
+        link:
+            "https://pay.cakto.com.br/po9btzm_997956",
         sold: 913,
         clicks: 0,
         status: "active"
     },
+
     {
         id: "otimizacao",
         name: "Painel de Otimização",
         category: "PC",
         price: "R$ 19,90",
-        description: "Ferramenta para otimização e gerenciamento do Windows.",
+        description:
+            "Ferramenta para otimização e gerenciamento do Windows.",
         image: "",
-        link: "https://pay.cakto.com.br/r9phmxw_864564",
+        link:
+            "https://pay.cakto.com.br/r9phmxw_864564",
         sold: 536,
         clicks: 0,
         status: "active"
     },
+
     {
         id: "axeus",
         name: "AXEUS",
         category: "Aplicativos",
         price: "",
-        description: "O novo aplicativo AXEUS está chegando.",
+        description:
+            "O novo aplicativo AXEUS está chegando.",
         image: "",
         link: "",
         sold: 0,
         clicks: 0,
         status: "coming"
     }
+
 ];
 
+
+/* ============================================================
+   NORMALIZAÇÃO
+   ============================================================ */
+
 function normalizeProduct(product) {
+
     return {
-        id: String(product.id || ("product_" + Date.now())),
-        name: String(product.name || ""),
-        description: String(product.description || ""),
-        category: String(product.category || ""),
-        image: String(product.image || ""),
-        checkout: String(product.checkout || product.link || ""),
-        link: String(product.link || product.checkout || ""),
-        clicks: Number(product.clicks || 0),
-        sold: Number(product.sold || 0),
-        status: String(product.status || "active"),
-        price: String(product.price || "")
+
+        id: String(
+            product.id ||
+            ("product_" + Date.now())
+        ),
+
+        name: String(
+            product.name || ""
+        ),
+
+        description: String(
+            product.description || ""
+        ),
+
+        category: String(
+            product.category || ""
+        ),
+
+        image: String(
+            product.image || ""
+        ),
+
+        checkout: String(
+            product.checkout ||
+            product.link ||
+            ""
+        ),
+
+        link: String(
+            product.link ||
+            product.checkout ||
+            ""
+        ),
+
+        clicks: Number(
+            product.clicks || 0
+        ),
+
+        sold: Number(
+            product.sold || 0
+        ),
+
+        status: String(
+            product.status ||
+            "active"
+        ),
+
+        price: String(
+            product.price || ""
+        )
     };
 }
 
-function readStorage(key) {
-    const saved = localStorage.getItem(key);
 
-    if (!saved) {
-        return null;
-    }
+/* ============================================================
+   SUPABASE REQUEST
+   ============================================================ */
 
-    try {
-        const products = JSON.parse(saved);
+async function supabaseRequest(
+    endpoint,
+    options = {}
+) {
 
-        if (!Array.isArray(products)) {
-            return null;
-        }
+    const response =
+        await fetch(
+            SUPABASE_URL +
+            "/rest/v1/" +
+            endpoint,
+            {
 
-        return products.map(normalizeProduct);
-    } catch {
-        return null;
-    }
-}
+                ...options,
 
-function getProducts() {
-    let products = readStorage(PRODUCTS_KEY);
+                headers: {
 
-    if (products) {
-        return products;
-    }
+                    "apikey":
+                        SUPABASE_KEY,
 
-    products = readStorage(OLD_PRODUCTS_KEY);
+                    "Authorization":
+                        "Bearer " +
+                        SUPABASE_KEY,
 
-    if (products) {
-        localStorage.setItem(
-            PRODUCTS_KEY,
-            JSON.stringify(products)
+                    "Content-Type":
+                        "application/json",
+
+                    "Prefer":
+                        "return=representation",
+
+                    ...(options.headers || {})
+                }
+            }
         );
 
-        return products;
+    if (!response.ok) {
+
+        const errorText =
+            await response.text();
+
+        throw new Error(
+            errorText ||
+            "Erro ao acessar o Supabase."
+        );
     }
 
-    products = defaultProducts.map(normalizeProduct);
+    const text =
+        await response.text();
 
-    localStorage.setItem(
-        PRODUCTS_KEY,
-        JSON.stringify(products)
-    );
+    if (!text) {
+        return [];
+    }
 
-    return products;
+    return JSON.parse(text);
 }
 
-function saveProducts(products) {
-    const normalized = products.map(normalizeProduct);
+
+/* ============================================================
+   CARREGAR PRODUTOS DO SUPABASE
+   ============================================================ */
+
+async function loadProductsFromSupabase() {
+
+    const products =
+        await supabaseRequest(
+            "products?select=*&order=created_at.asc"
+        );
+
+    return Array.isArray(products)
+        ? products.map(normalizeProduct)
+        : [];
+}
+
+
+/* ============================================================
+   SALVAR PRODUTOS NO SUPABASE
+   ============================================================ */
+
+async function saveProductsToSupabase(
+    products
+) {
+
+    const normalized =
+        products.map(
+            normalizeProduct
+        );
+
+    /*
+       Primeiro buscamos os IDs atuais
+       para saber quais registros existem.
+    */
+
+    const current =
+        await loadProductsFromSupabase();
+
+    const currentIds =
+        new Set(
+            current.map(
+                product => product.id
+            )
+        );
+
+    const newIds =
+        new Set(
+            normalized.map(
+                product => product.id
+            )
+        );
+
+
+    /* ========================================================
+       INSERIR / ATUALIZAR
+       ======================================================== */
+
+    for (
+        const product of normalized
+    ) {
+
+        await supabaseRequest(
+            "products?on_conflict=id",
+            {
+
+                method: "POST",
+
+                body: JSON.stringify(
+                    product
+                )
+            }
+        );
+    }
+
+
+    /* ========================================================
+       EXCLUIR PRODUTOS REMOVIDOS
+       ======================================================== */
+
+    for (
+        const oldProduct of current
+    ) {
+
+        if (
+            !newIds.has(
+                oldProduct.id
+            )
+        ) {
+
+            await supabaseRequest(
+                "products?id=eq." +
+                encodeURIComponent(
+                    oldProduct.id
+                ),
+                {
+                    method: "DELETE"
+                }
+            );
+        }
+    }
+
+
+    /* ========================================================
+       CACHE LOCAL
+       ======================================================== */
 
     localStorage.setItem(
         PRODUCTS_KEY,
-        JSON.stringify(normalized)
+        JSON.stringify(
+            normalized
+        )
     );
 
     window.dispatchEvent(
-        new CustomEvent("axeusProductsUpdated", {
-            detail: normalized
-        })
+        new CustomEvent(
+            "axeusProductsUpdated",
+            {
+                detail: normalized
+            }
+        )
+    );
+
+    return normalized;
+}
+
+
+/* ============================================================
+   OBTER PRODUTOS
+   ============================================================ */
+
+async function getProductsAsync() {
+
+    try {
+
+        const products =
+            await loadProductsFromSupabase();
+
+        /*
+           Se o banco estiver vazio,
+           usamos os produtos padrão
+           apenas na primeira configuração.
+        */
+
+        if (
+            products.length === 0
+        ) {
+
+            await saveProductsToSupabase(
+                defaultProducts
+            );
+
+            return defaultProducts.map(
+                normalizeProduct
+            );
+        }
+
+        localStorage.setItem(
+            PRODUCTS_KEY,
+            JSON.stringify(
+                products
+            )
+        );
+
+        return products;
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar Supabase:",
+            error
+        );
+
+        const saved =
+            localStorage.getItem(
+                PRODUCTS_KEY
+            );
+
+        if (saved) {
+
+            try {
+
+                const products =
+                    JSON.parse(saved);
+
+                if (
+                    Array.isArray(
+                        products
+                    )
+                ) {
+
+                    return products.map(
+                        normalizeProduct
+                    );
+                }
+
+            } catch {}
+        }
+
+        return defaultProducts.map(
+            normalizeProduct
+        );
+    }
+}
+
+
+/* ============================================================
+   CACHE / COMPATIBILIDADE
+   ============================================================ */
+
+function getProducts() {
+
+    const saved =
+        localStorage.getItem(
+            PRODUCTS_KEY
+        );
+
+    if (saved) {
+
+        try {
+
+            const products =
+                JSON.parse(saved);
+
+            if (
+                Array.isArray(
+                    products
+                )
+            ) {
+
+                return products.map(
+                    normalizeProduct
+                );
+            }
+
+        } catch {}
+    }
+
+    return defaultProducts.map(
+        normalizeProduct
     );
 }
+
+
+/* ============================================================
+   SALVAR
+   ============================================================ */
+
+async function saveProducts(
+    products
+) {
+
+    try {
+
+        await saveProductsToSupabase(
+            products
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao salvar produtos:",
+            error
+        );
+
+        showToast(
+            "Erro ao salvar no banco."
+        );
+
+        return false;
+    }
+}
+
+
+/* ============================================================
+   FORMATAÇÃO
+   ============================================================ */
 
 function formatNumber(number) {
-    return Number(number || 0).toLocaleString("pt-BR");
+
+    return Number(
+        number || 0
+    ).toLocaleString(
+        "pt-BR"
+    );
 }
 
-const navItems = document.querySelectorAll(".nav-item[data-section]");
-const sectionButtons = document.querySelectorAll("[data-section]");
-const sections = document.querySelectorAll(".admin-section");
 
-function openSection(sectionName) {
-    sections.forEach(section => {
-        section.classList.remove("active");
-    });
+/* ============================================================
+   NAVEGAÇÃO
+   ============================================================ */
 
-    const selected = document.getElementById(
-        `section-${sectionName}`
+const navItems =
+    document.querySelectorAll(
+        ".nav-item[data-section]"
     );
 
+const sectionButtons =
+    document.querySelectorAll(
+        "[data-section]"
+    );
+
+const sections =
+    document.querySelectorAll(
+        ".admin-section"
+    );
+
+
+async function openSection(
+    sectionName
+) {
+
+    sections.forEach(
+        section => {
+            section.classList.remove(
+                "active"
+            );
+        }
+    );
+
+    const selected =
+        document.getElementById(
+            `section-${sectionName}`
+        );
+
     if (selected) {
-        selected.classList.add("active");
+
+        selected.classList.add(
+            "active"
+        );
     }
 
-    navItems.forEach(item => {
-        item.classList.toggle(
-            "active",
-            item.dataset.section === sectionName
-        );
-    });
+    navItems.forEach(
+        item => {
+
+            item.classList.toggle(
+                "active",
+                item.dataset.section ===
+                sectionName
+            );
+
+        }
+    );
 
     const titles = {
-        dashboard: "Dashboard",
-        produtos: "Produtos",
-        cliques: "Cliques",
-        adicionar: "Novo produto"
+
+        dashboard:
+            "Dashboard",
+
+        produtos:
+            "Produtos",
+
+        cliques:
+            "Cliques",
+
+        adicionar:
+            "Novo produto"
     };
 
-    const pageTitle = document.getElementById("pageTitle");
+    const pageTitle =
+        document.getElementById(
+            "pageTitle"
+        );
 
     if (pageTitle) {
+
         pageTitle.textContent =
-            titles[sectionName] || "Dashboard";
+            titles[sectionName] ||
+            "Dashboard";
     }
 
-    if (sectionName === "dashboard") {
-        renderDashboard();
+    if (
+        sectionName ===
+        "dashboard"
+    ) {
+
+        await renderDashboard();
     }
 
-    if (sectionName === "produtos") {
-        renderProductsTable();
+    if (
+        sectionName ===
+        "produtos"
+    ) {
+
+        await renderProductsTable();
     }
 
-    if (sectionName === "cliques") {
-        renderClicks();
+    if (
+        sectionName ===
+        "cliques"
+    ) {
+
+        await renderClicks();
     }
 
-    if (sectionName === "adicionar") {
+    if (
+        sectionName ===
+        "adicionar"
+    ) {
+
         prepareNewProduct();
     }
 
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
     });
 }
 
-sectionButtons.forEach(button => {
-    button.addEventListener("click", function () {
-        const section = button.dataset.section;
 
-        if (section) {
-            openSection(section);
-        }
-    });
-});
+sectionButtons.forEach(
+    button => {
 
-const logoutButton = document.getElementById("logoutButton");
+        button.addEventListener(
+            "click",
+            function () {
+
+                const section =
+                    button.dataset.section;
+
+                if (section) {
+
+                    openSection(
+                        section
+                    );
+                }
+            }
+        );
+    }
+);
+
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+
+const logoutButton =
+    document.getElementById(
+        "logoutButton"
+    );
 
 if (logoutButton) {
-    logoutButton.addEventListener("click", function () {
-        sessionStorage.removeItem("axeus_admin_logged");
-        window.location.href = "index.html";
-    });
+
+    logoutButton.addEventListener(
+        "click",
+        function () {
+
+            sessionStorage.removeItem(
+                "axeus_admin_logged"
+            );
+
+            window.location.href =
+                "adm.html";
+        }
+    );
 }
 
-function renderDashboard() {
-    const products = getProducts();
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+
+async function renderDashboard() {
+
+    const products =
+        await getProductsAsync();
 
     const totalProducts =
-        document.getElementById("totalProducts");
+        document.getElementById(
+            "totalProducts"
+        );
 
     const totalClicks =
-        document.getElementById("totalClicks");
+        document.getElementById(
+            "totalClicks"
+        );
 
     const activeProducts =
-        document.getElementById("activeProducts");
+        document.getElementById(
+            "activeProducts"
+        );
 
     const topProduct =
-        document.getElementById("topProduct");
+        document.getElementById(
+            "topProduct"
+        );
 
-    const clicksTotal = products.reduce(
-        (total, product) =>
-            total + Number(product.clicks || 0),
-        0
-    );
+    const clicksTotal =
+        products.reduce(
+            (total, product) =>
+                total +
+                Number(
+                    product.clicks || 0
+                ),
+            0
+        );
 
-    const active = products.filter(
-        product => product.status === "active"
-    ).length;
+    const active =
+        products.filter(
+            product =>
+                product.status ===
+                "active"
+        ).length;
 
-    const sorted = [...products].sort(
-        (a, b) =>
-            Number(b.clicks || 0) -
-            Number(a.clicks || 0)
-    );
+    const sorted =
+        [...products].sort(
+            (a, b) =>
+                Number(
+                    b.clicks || 0
+                ) -
+                Number(
+                    a.clicks || 0
+                )
+        );
 
     if (totalProducts) {
+
         totalProducts.textContent =
-            formatNumber(products.length);
+            formatNumber(
+                products.length
+            );
     }
 
     if (totalClicks) {
+
         totalClicks.textContent =
-            formatNumber(clicksTotal);
+            formatNumber(
+                clicksTotal
+            );
     }
 
     if (activeProducts) {
+
         activeProducts.textContent =
-            formatNumber(active);
+            formatNumber(
+                active
+            );
     }
 
     if (topProduct) {
+
         topProduct.textContent =
             sorted.length &&
-            Number(sorted[0].clicks || 0) > 0
+            Number(
+                sorted[0].clicks || 0
+            ) > 0
                 ? sorted[0].name
                 : "—";
     }
 
     renderChart(products);
     renderRanking(products);
-    renderDashboardProducts(products);
+    renderDashboardProducts(
+        products
+    );
 }
 
-function renderChart(products) {
-    const chart = document.getElementById("clickChart");
+
+/* ============================================================
+   GRÁFICO
+   ============================================================ */
+
+function renderChart(
+    products
+) {
+
+    const chart =
+        document.getElementById(
+            "clickChart"
+        );
 
     if (!chart) return;
 
     chart.innerHTML = "";
 
-    const sorted = [...products]
-        .sort(
-            (a, b) =>
-                Number(b.clicks || 0) -
-                Number(a.clicks || 0)
-        )
-        .slice(0, 6);
+    const sorted =
+        [...products]
+            .sort(
+                (a, b) =>
+                    Number(
+                        b.clicks || 0
+                    ) -
+                    Number(
+                        a.clicks || 0
+                    )
+            )
+            .slice(0, 6);
 
     if (!sorted.length) {
+
         chart.innerHTML =
-            `<div class="empty-state">Nenhum produto cadastrado.</div>`;
+            `<div class="empty-state">
+                Nenhum produto cadastrado.
+            </div>`;
+
         return;
     }
 
-    const maxClicks = Math.max(
-        ...sorted.map(
-            product => Number(product.clicks || 0)
-        ),
-        1
+    const maxClicks =
+        Math.max(
+            ...sorted.map(
+                product =>
+                    Number(
+                        product.clicks ||
+                        0
+                    )
+            ),
+            1
+        );
+
+    sorted.forEach(
+        product => {
+
+            const clicks =
+                Number(
+                    product.clicks ||
+                    0
+                );
+
+            const percentage =
+                (clicks /
+                    maxClicks) *
+                100;
+
+            const column =
+                document.createElement(
+                    "div"
+                );
+
+            column.className =
+                "chart-column";
+
+            column.innerHTML = `
+
+                <span class="chart-value">
+                    ${formatNumber(clicks)}
+                </span>
+
+                <div class="chart-bar-area">
+
+                    <div
+                        class="chart-bar"
+                        style="height:${Math.max(
+                            percentage,
+                            3
+                        )}%"
+                    ></div>
+
+                </div>
+
+                <span class="chart-label">
+                    ${escapeHtml(
+                        product.name
+                    )}
+                </span>
+            `;
+
+            chart.appendChild(
+                column
+            );
+        }
     );
-
-    sorted.forEach(product => {
-        const clicks = Number(product.clicks || 0);
-        const percentage = (clicks / maxClicks) * 100;
-
-        const column = document.createElement("div");
-        column.className = "chart-column";
-
-        column.innerHTML = `
-            <span class="chart-value">
-                ${formatNumber(clicks)}
-            </span>
-
-            <div class="chart-bar-area">
-                <div
-                    class="chart-bar"
-                    style="height:${Math.max(percentage, 3)}%"
-                ></div>
-            </div>
-
-            <span class="chart-label">
-                ${escapeHtml(product.name)}
-            </span>
-        `;
-
-        chart.appendChild(column);
-    });
 }
 
-function renderRanking(products) {
+
+/* ============================================================
+   RANKING
+   ============================================================ */
+
+function renderRanking(
+    products
+) {
+
     const container =
-        document.getElementById("topProductsList");
+        document.getElementById(
+            "topProductsList"
+        );
 
     if (!container) return;
 
-    const sorted = [...products]
-        .sort(
-            (a, b) =>
-                Number(b.clicks || 0) -
-                Number(a.clicks || 0)
-        )
-        .slice(0, 5);
+    const sorted =
+        [...products]
+            .sort(
+                (a, b) =>
+                    Number(
+                        b.clicks || 0
+                    ) -
+                    Number(
+                        a.clicks || 0
+                    )
+            )
+            .slice(0, 5);
 
     if (!sorted.length) {
+
         container.innerHTML =
-            `<div class="empty-state">Nenhum produto cadastrado.</div>`;
+            `<div class="empty-state">
+                Nenhum produto cadastrado.
+            </div>`;
+
         return;
     }
 
-    container.innerHTML = sorted.map(
-        (product, index) => `
-            <div class="ranking-item">
-                <div class="ranking-number">
-                    ${index + 1}
-                </div>
+    container.innerHTML =
+        sorted
+            .map(
+                (
+                    product,
+                    index
+                ) => `
 
-                <div class="ranking-info">
-                    <strong>
-                        ${escapeHtml(product.name)}
-                    </strong>
+                    <div class="ranking-item">
 
-                    <span>
-                        ${escapeHtml(product.category)}
-                    </span>
-                </div>
+                        <div class="ranking-number">
+                            ${index + 1}
+                        </div>
 
-                <div class="ranking-clicks">
-                    ${formatNumber(product.clicks)}
-                </div>
-            </div>
-        `
-    ).join("");
+                        <div class="ranking-info">
+
+                            <strong>
+                                ${escapeHtml(
+                                    product.name
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    product.category
+                                )}
+                            </span>
+
+                        </div>
+
+                        <div class="ranking-clicks">
+                            ${formatNumber(
+                                product.clicks
+                            )}
+                        </div>
+
+                    </div>
+                `
+            )
+            .join("");
 }
 
-function renderDashboardProducts(products) {
+
+/* ============================================================
+   PRODUTOS DO DASHBOARD
+   ============================================================ */
+
+function renderDashboardProducts(
+    products
+) {
+
     const container =
-        document.getElementById("dashboardProducts");
+        document.getElementById(
+            "dashboardProducts"
+        );
 
     if (!container) return;
 
-    const items = products.slice(0, 6);
+    const items =
+        products.slice(0, 6);
 
     if (!items.length) {
+
         container.innerHTML =
-            `<div class="empty-state">Nenhum produto cadastrado.</div>`;
+            `<div class="empty-state">
+                Nenhum produto cadastrado.
+            </div>`;
+
         return;
     }
 
-    container.innerHTML = items.map(
-        product => `
-            <div class="dashboard-product">
+    container.innerHTML =
+        items
+            .map(
+                product => `
 
-                <div class="product-mini-image">
-                    ${
-                        product.image
-                            ? `<img src="${escapeAttribute(product.image)}" alt="">`
-                            : "AX"
-                    }
-                </div>
+                    <div class="dashboard-product">
 
-                <div class="dashboard-product-info">
+                        <div class="product-mini-image">
 
-                    <strong>
-                        ${escapeHtml(product.name)}
-                    </strong>
+                            ${
+                                product.image
+                                    ? `
+                                        <img
+                                            src="${escapeAttribute(
+                                                product.image
+                                            )}"
+                                            alt=""
+                                        >
+                                      `
+                                    : "AX"
+                            }
 
-                    <span>
-                        ${formatNumber(product.clicks)}
-                        cliques
-                    </span>
+                        </div>
 
-                </div>
+                        <div class="dashboard-product-info">
 
-            </div>
-        `
-    ).join("");
+                            <strong>
+                                ${escapeHtml(
+                                    product.name
+                                )}
+                            </strong>
+
+                            <span>
+                                ${formatNumber(
+                                    product.clicks
+                                )}
+                                cliques
+                            </span>
+
+                        </div>
+
+                    </div>
+                `
+            )
+            .join("");
 }
 
-function renderProductsTable(search = "") {
+
+/* ============================================================
+   TABELA DE PRODUTOS
+   ============================================================ */
+
+async function renderProductsTable(
+    search = ""
+) {
+
     const tbody =
-        document.getElementById("productsTableBody");
+        document.getElementById(
+            "productsTableBody"
+        );
 
     if (!tbody) return;
 
-    let products = getProducts();
+    let products =
+        await getProductsAsync();
 
     const searchValue =
         search.trim().toLowerCase();
 
     if (searchValue) {
-        products = products.filter(
-            product =>
-                product.name
-                    .toLowerCase()
-                    .includes(searchValue) ||
-                product.category
-                    .toLowerCase()
-                    .includes(searchValue)
-        );
+
+        products =
+            products.filter(
+                product =>
+
+                    product.name
+                        .toLowerCase()
+                        .includes(
+                            searchValue
+                        ) ||
+
+                    product.category
+                        .toLowerCase()
+                        .includes(
+                            searchValue
+                        )
+            );
     }
 
     const productCount =
-        document.getElementById("productCount");
+        document.getElementById(
+            "productCount"
+        );
 
     if (productCount) {
+
         productCount.textContent =
             `${products.length} ${
                 products.length === 1
@@ -527,96 +1240,153 @@ function renderProductsTable(search = "") {
     }
 
     if (!products.length) {
+
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="table-empty">
+
+                <td
+                    colspan="6"
+                    class="table-empty"
+                >
                     Nenhum produto encontrado.
                 </td>
+
             </tr>
         `;
+
         return;
     }
 
-    tbody.innerHTML = products.map(
-        product => `
-            <tr>
+    tbody.innerHTML =
+        products
+            .map(
+                product => `
 
-                <td>
-                    <div class="table-product">
+                    <tr>
 
-                        <div class="table-product-image">
-                            ${
-                                product.image
-                                    ? `<img src="${escapeAttribute(product.image)}" alt="">`
-                                    : "AX"
-                            }
-                        </div>
+                        <td>
 
-                        <div>
+                            <div class="table-product">
 
-                            <div class="table-product-name">
-                                ${escapeHtml(product.name)}
+                                <div class="table-product-image">
+
+                                    ${
+                                        product.image
+                                            ? `
+                                                <img
+                                                    src="${escapeAttribute(
+                                                        product.image
+                                                    )}"
+                                                    alt=""
+                                                >
+                                              `
+                                            : "AX"
+                                    }
+
+                                </div>
+
+                                <div>
+
+                                    <div class="table-product-name">
+                                        ${escapeHtml(
+                                            product.name
+                                        )}
+                                    </div>
+
+                                    <div class="table-product-category">
+                                        ${formatNumber(
+                                            product.sold
+                                        )}
+                                        vendidos
+                                    </div>
+
+                                </div>
+
                             </div>
 
-                            <div class="table-product-category">
-                                ${formatNumber(product.sold)}
-                                vendidos
+                        </td>
+
+                        <td>
+
+                            <span class="category-tag">
+                                ${escapeHtml(
+                                    product.category
+                                )}
+                            </span>
+
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                product.price ||
+                                "—"
+                            )}
+                        </td>
+
+                        <td>
+
+                            <strong>
+                                ${formatNumber(
+                                    product.clicks
+                                )}
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            ${getStatusHTML(
+                                product.status
+                            )}
+                        </td>
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <button
+                                    class="action-button"
+                                    title="Editar"
+                                    onclick="editProduct('${escapeAttribute(
+                                        product.id
+                                    )}')"
+                                >
+                                    ✎
+                                </button>
+
+                                <button
+                                    class="action-button delete"
+                                    title="Remover"
+                                    onclick="openDeleteModal('${escapeAttribute(
+                                        product.id
+                                    )}')"
+                                >
+                                    ×
+                                </button>
+
                             </div>
 
-                        </div>
+                        </td>
 
-                    </div>
-                </td>
-
-                <td>
-                    <span class="category-tag">
-                        ${escapeHtml(product.category)}
-                    </span>
-                </td>
-
-                <td>
-                    ${escapeHtml(product.price || "—")}
-                </td>
-
-                <td>
-                    <strong>
-                        ${formatNumber(product.clicks)}
-                    </strong>
-                </td>
-
-                <td>
-                    ${getStatusHTML(product.status)}
-                </td>
-
-                <td>
-                    <div class="action-buttons">
-
-                        <button
-                            class="action-button"
-                            title="Editar"
-                            onclick="editProduct('${escapeAttribute(product.id)}')"
-                        >
-                            ✎
-                        </button>
-
-                        <button
-                            class="action-button delete"
-                            title="Remover"
-                            onclick="openDeleteModal('${escapeAttribute(product.id)}')"
-                        >
-                            ×
-                        </button>
-
-                    </div>
-                </td>
-
-            </tr>
-        `
-    ).join("");
+                    </tr>
+                `
+            )
+            .join("");
 }
 
-function getStatusHTML(status) {
-    if (status === "coming") {
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+function getStatusHTML(
+    status
+) {
+
+    if (
+        status ===
+        "coming"
+    ) {
+
         return `
             <span class="status coming">
                 <i></i>
@@ -625,7 +1395,11 @@ function getStatusHTML(status) {
         `;
     }
 
-    if (status === "inactive") {
+    if (
+        status ===
+        "inactive"
+    ) {
+
         return `
             <span class="status inactive">
                 <i></i>
@@ -642,13 +1416,22 @@ function getStatusHTML(status) {
     `;
 }
 
+
+/* ============================================================
+   PESQUISA
+   ============================================================ */
+
 const productSearch =
-    document.getElementById("productSearch");
+    document.getElementById(
+        "productSearch"
+    );
 
 if (productSearch) {
+
     productSearch.addEventListener(
         "input",
         function () {
+
             renderProductsTable(
                 productSearch.value
             );
@@ -656,21 +1439,38 @@ if (productSearch) {
     );
 }
 
+
+/* ============================================================
+   FORMULÁRIO
+   ============================================================ */
+
 const productForm =
-    document.getElementById("productForm");
+    document.getElementById(
+        "productForm"
+    );
 
 if (productForm) {
+
     productForm.addEventListener(
         "submit",
         function (event) {
+
             event.preventDefault();
+
             saveProductFromForm();
         }
     );
 }
 
-function saveProductFromForm() {
-    const products = getProducts();
+
+/* ============================================================
+   SALVAR PRODUTO
+   ============================================================ */
+
+async function saveProductFromForm() {
+
+    const products =
+        await getProductsAsync();
 
     const editingId =
         document.getElementById(
@@ -719,23 +1519,45 @@ function saveProductFromForm() {
             "productStatus"
         ).value;
 
-    if (!name || !category) {
-        showToast("Preencha os campos obrigatórios.");
+    if (
+        !name ||
+        !category
+    ) {
+
+        showToast(
+            "Preencha os campos obrigatórios."
+        );
+
         return;
     }
 
+
+    /* ========================================================
+       EDITAR
+       ======================================================== */
+
     if (editingId) {
-        const index = products.findIndex(
-            item => item.id === editingId
-        );
+
+        const index =
+            products.findIndex(
+                item =>
+                    item.id ===
+                    editingId
+            );
 
         if (index === -1) {
-            showToast("Produto não encontrado.");
+
+            showToast(
+                "Produto não encontrado."
+            );
+
             return;
         }
 
         products[index] = {
+
             ...products[index],
+
             name,
             category,
             price,
@@ -745,19 +1567,38 @@ function saveProductFromForm() {
             checkout: link,
             sold,
             status,
-            clicks: Number(
-                products[index].clicks || 0
-            )
+
+            clicks:
+                Number(
+                    products[index]
+                        .clicks || 0
+                )
         };
 
-        saveProducts(products);
+        const saved =
+            await saveProducts(
+                products
+            );
+
+        if (!saved) return;
 
         showToast(
             "Produto atualizado com sucesso!"
         );
+
+
+    /* ========================================================
+       NOVO PRODUTO
+       ======================================================== */
+
     } else {
+
         products.push({
-            id: "product_" + Date.now(),
+
+            id:
+                "product_" +
+                Date.now(),
+
             name,
             category,
             price,
@@ -770,7 +1611,12 @@ function saveProductFromForm() {
             status
         });
 
-        saveProducts(products);
+        const saved =
+            await saveProducts(
+                products
+            );
+
+        if (!saved) return;
 
         showToast(
             "Produto adicionado com sucesso!"
@@ -779,40 +1625,60 @@ function saveProductFromForm() {
 
     resetProductForm();
 
-    renderDashboard();
-    renderProductsTable();
-    renderClicks();
+    await renderDashboard();
+
+    await renderProductsTable();
+
+    await renderClicks();
 
     setTimeout(
-        () => openSection("produtos"),
+        () =>
+            openSection(
+                "produtos"
+            ),
         500
     );
 }
 
-function editProduct(id) {
-    const products = getProducts();
 
-    const product = products.find(
-        item => item.id === id
-    );
+/* ============================================================
+   EDITAR PRODUTO
+   ============================================================ */
+
+async function editProduct(
+    id
+) {
+
+    const products =
+        await getProductsAsync();
+
+    const product =
+        products.find(
+            item =>
+                item.id === id
+        );
 
     if (!product) return;
 
     document.getElementById(
         "editingProductId"
-    ).value = product.id;
+    ).value =
+        product.id;
 
     document.getElementById(
         "productName"
-    ).value = product.name || "";
+    ).value =
+        product.name || "";
 
     document.getElementById(
         "productCategory"
-    ).value = product.category || "";
+    ).value =
+        product.category || "";
 
     document.getElementById(
         "productPrice"
-    ).value = product.price || "";
+    ).value =
+        product.price || "";
 
     document.getElementById(
         "productDescription"
@@ -827,7 +1693,9 @@ function editProduct(id) {
     document.getElementById(
         "productLink"
     ).value =
-        product.link || product.checkout || "";
+        product.link ||
+        product.checkout ||
+        "";
 
     document.getElementById(
         "productSold"
@@ -837,20 +1705,32 @@ function editProduct(id) {
     document.getElementById(
         "productStatus"
     ).value =
-        product.status || "active";
+        product.status ||
+        "active";
 
     const formTitle =
-        document.getElementById("formTitle");
+        document.getElementById(
+            "formTitle"
+        );
 
     if (formTitle) {
+
         formTitle.textContent =
             "Editar produto";
     }
 
-    openSection("adicionar");
+    openSection(
+        "adicionar"
+    );
 }
 
+
+/* ============================================================
+   NOVO PRODUTO
+   ============================================================ */
+
 function prepareNewProduct() {
+
     const editing =
         document.getElementById(
             "editingProductId"
@@ -859,19 +1739,27 @@ function prepareNewProduct() {
     if (!editing) return;
 
     if (!editing.value) {
+
         const formTitle =
             document.getElementById(
                 "formTitle"
             );
 
         if (formTitle) {
+
             formTitle.textContent =
                 "Novo produto";
         }
     }
 }
 
+
+/* ============================================================
+   RESET FORM
+   ============================================================ */
+
 function resetProductForm() {
+
     if (!productForm) return;
 
     productForm.reset();
@@ -886,7 +1774,8 @@ function resetProductForm() {
 
     document.getElementById(
         "productStatus"
-    ).value = "active";
+    ).value =
+        "active";
 
     const formTitle =
         document.getElementById(
@@ -894,10 +1783,16 @@ function resetProductForm() {
         );
 
     if (formTitle) {
+
         formTitle.textContent =
             "Novo produto";
     }
 }
+
+
+/* ============================================================
+   CANCELAR PRODUTO
+   ============================================================ */
 
 const cancelProductButton =
     document.getElementById(
@@ -905,27 +1800,47 @@ const cancelProductButton =
     );
 
 if (cancelProductButton) {
+
     cancelProductButton.addEventListener(
         "click",
         function () {
+
             resetProductForm();
-            openSection("produtos");
+
+            openSection(
+                "produtos"
+            );
         }
     );
 }
 
+
+/* ============================================================
+   EXCLUSÃO
+   ============================================================ */
+
 let productToDelete = null;
 
-function openDeleteModal(id) {
+
+function openDeleteModal(
+    id
+) {
+
     productToDelete = id;
 
     const modal =
-        document.getElementById("deleteModal");
+        document.getElementById(
+            "deleteModal"
+        );
 
     if (modal) {
-        modal.classList.add("show");
+
+        modal.classList.add(
+            "show"
+        );
     }
 }
+
 
 const cancelDeleteButton =
     document.getElementById(
@@ -933,22 +1848,32 @@ const cancelDeleteButton =
     );
 
 if (cancelDeleteButton) {
+
     cancelDeleteButton.addEventListener(
         "click",
         closeDeleteModal
     );
 }
 
+
 function closeDeleteModal() {
-    productToDelete = null;
+
+    productToDelete =
+        null;
 
     const modal =
-        document.getElementById("deleteModal");
+        document.getElementById(
+            "deleteModal"
+        );
 
     if (modal) {
-        modal.classList.remove("show");
+
+        modal.classList.remove(
+            "show"
+        );
     }
 }
+
 
 const confirmDeleteButton =
     document.getElementById(
@@ -956,19 +1881,33 @@ const confirmDeleteButton =
     );
 
 if (confirmDeleteButton) {
+
     confirmDeleteButton.addEventListener(
         "click",
-        function () {
-            if (!productToDelete) return;
+        async function () {
 
-            let products = getProducts();
+            if (
+                !productToDelete
+            ) {
+                return;
+            }
 
-            products = products.filter(
-                product =>
-                    product.id !== productToDelete
-            );
+            let products =
+                await getProductsAsync();
 
-            saveProducts(products);
+            products =
+                products.filter(
+                    product =>
+                        product.id !==
+                        productToDelete
+                );
+
+            const saved =
+                await saveProducts(
+                    products
+                );
+
+            if (!saved) return;
 
             closeDeleteModal();
 
@@ -976,25 +1915,43 @@ if (confirmDeleteButton) {
                 "Produto removido com sucesso!"
             );
 
-            renderProductsTable();
-            renderDashboard();
-            renderClicks();
+            await renderProductsTable();
+
+            await renderDashboard();
+
+            await renderClicks();
         }
     );
 }
 
-function renderClicks() {
-    const products = getProducts();
 
-    const total = products.reduce(
-        (sum, product) =>
-            sum + Number(product.clicks || 0),
-        0
-    );
+/* ============================================================
+   CLIQUES
+   ============================================================ */
 
-    const average = products.length
-        ? Math.round(total / products.length)
-        : 0;
+async function renderClicks() {
+
+    const products =
+        await getProductsAsync();
+
+    const total =
+        products.reduce(
+            (sum, product) =>
+                sum +
+                Number(
+                    product.clicks ||
+                    0
+                ),
+            0
+        );
+
+    const average =
+        products.length
+            ? Math.round(
+                total /
+                products.length
+            )
+            : 0;
 
     const totalElement =
         document.getElementById(
@@ -1007,84 +1964,134 @@ function renderClicks() {
         );
 
     if (totalElement) {
+
         totalElement.textContent =
-            formatNumber(total);
+            formatNumber(
+                total
+            );
     }
 
     if (averageElement) {
+
         averageElement.textContent =
-            formatNumber(average);
+            formatNumber(
+                average
+            );
     }
 
     const container =
-        document.getElementById("clicksList");
+        document.getElementById(
+            "clicksList"
+        );
 
     if (!container) return;
 
-    const sorted = [...products].sort(
-        (a, b) =>
-            Number(b.clicks || 0) -
-            Number(a.clicks || 0)
-    );
+    const sorted =
+        [...products].sort(
+            (a, b) =>
+                Number(
+                    b.clicks || 0
+                ) -
+                Number(
+                    a.clicks || 0
+                )
+        );
 
     if (!sorted.length) {
+
         container.innerHTML =
-            `<div class="empty-state">Nenhum produto cadastrado.</div>`;
+            `<div class="empty-state">
+                Nenhum produto cadastrado.
+            </div>`;
+
         return;
     }
 
-    const max = Math.max(
-        ...sorted.map(
-            product => Number(product.clicks || 0)
-        ),
-        1
-    );
+    const max =
+        Math.max(
+            ...sorted.map(
+                product =>
+                    Number(
+                        product.clicks ||
+                        0
+                    )
+            ),
+            1
+        );
 
-    container.innerHTML = sorted.map(
-        product => {
-            const clicks =
-                Number(product.clicks || 0);
+    container.innerHTML =
+        sorted
+            .map(
+                product => {
 
-            const percentage =
-                (clicks / max) * 100;
+                    const clicks =
+                        Number(
+                            product.clicks ||
+                            0
+                        );
 
-            return `
-                <div class="click-item">
+                    const percentage =
+                        (
+                            clicks /
+                            max
+                        ) * 100;
 
-                    <div class="click-item-info">
+                    return `
 
-                        <strong>
-                            ${escapeHtml(product.name)}
-                        </strong>
+                        <div class="click-item">
 
-                        <span>
-                            ${escapeHtml(product.category)}
-                        </span>
+                            <div class="click-item-info">
 
-                    </div>
+                                <strong>
+                                    ${escapeHtml(
+                                        product.name
+                                    )}
+                                </strong>
 
-                    <div class="click-progress">
-                        <span
-                            style="width:${Math.max(
-                                percentage,
-                                2
-                            )}%"
-                        ></span>
-                    </div>
+                                <span>
+                                    ${escapeHtml(
+                                        product.category
+                                    )}
+                                </span>
 
-                    <div class="click-value">
-                        ${formatNumber(clicks)}
-                    </div>
+                            </div>
 
-                </div>
-            `;
-        }
-    ).join("");
+                            <div class="click-progress">
+
+                                <span
+                                    style="width:${Math.max(
+                                        percentage,
+                                        2
+                                    )}%"
+                                ></span>
+
+                            </div>
+
+                            <div class="click-value">
+                                ${formatNumber(
+                                    clicks
+                                )}
+                            </div>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
 }
+
+
+/* ============================================================
+   TOAST
+   ============================================================ */
 
 let toastTimer;
 
-function showToast(message) {
+
+function showToast(
+    message
+) {
+
     const toast =
         document.getElementById(
             "adminToast"
@@ -1095,38 +2102,93 @@ function showToast(message) {
             "toastMessage"
         );
 
-    if (!toast || !messageElement) {
+    if (
+        !toast ||
+        !messageElement
+    ) {
         return;
     }
 
-    messageElement.textContent = message;
+    messageElement.textContent =
+        message;
 
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(
-        function () {
-            toast.classList.remove("show");
-        },
-        3000
+    toast.classList.add(
+        "show"
     );
+
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(
+            function () {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            3000
+        );
 }
 
-function escapeHtml(value) {
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+/* ============================================================
+   SEGURANÇA HTML
+   ============================================================ */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
-function escapeAttribute(value) {
-    return String(value ?? "")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+function escapeAttribute(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
+
+
+/* ============================================================
+   MENU MOBILE
+   ============================================================ */
 
 const mobileMenu =
     document.getElementById(
@@ -1134,12 +2196,19 @@ const mobileMenu =
     );
 
 const sidebar =
-    document.querySelector(".sidebar");
+    document.querySelector(
+        ".sidebar"
+    );
 
-if (mobileMenu && sidebar) {
+if (
+    mobileMenu &&
+    sidebar
+) {
+
     mobileMenu.addEventListener(
         "click",
         function () {
+
             sidebar.classList.toggle(
                 "mobile-open"
             );
@@ -1147,26 +2216,66 @@ if (mobileMenu && sidebar) {
     );
 }
 
-window.editProduct = editProduct;
-window.openDeleteModal = openDeleteModal;
-window.closeDeleteModal = closeDeleteModal;
-window.getProducts = getProducts;
-window.saveProducts = saveProducts;
 
-window.addEventListener("storage", function (event) {
-    if (event.key === PRODUCTS_KEY) {
-        renderDashboard();
-        renderProductsTable(
-            productSearch
-                ? productSearch.value
-                : ""
-        );
-        renderClicks();
+/* ============================================================
+   EXPORTAÇÕES
+   ============================================================ */
+
+window.editProduct =
+    editProduct;
+
+window.openDeleteModal =
+    openDeleteModal;
+
+window.closeDeleteModal =
+    closeDeleteModal;
+
+window.getProducts =
+    getProducts;
+
+window.getProductsAsync =
+    getProductsAsync;
+
+window.saveProducts =
+    saveProducts;
+
+
+/* ============================================================
+   ATUALIZAÇÃO ENTRE ABAS
+   ============================================================ */
+
+window.addEventListener(
+    "storage",
+    function (event) {
+
+        if (
+            event.key ===
+            PRODUCTS_KEY
+        ) {
+
+            renderDashboard();
+
+            renderProductsTable(
+                productSearch
+                    ? productSearch.value
+                    : ""
+            );
+
+            renderClicks();
+        }
     }
-});
+);
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
 
 if (isDashboard) {
+
     renderDashboard();
+
     renderProductsTable();
+
     renderClicks();
 }
