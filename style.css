@@ -1,1624 +1,1339 @@
-/* ============================================================
-   AXEUS STORE
-   SCRIPT PRINCIPAL
-   ============================================================ */
-
-"use strict";
-
-
-/* ============================================================
-   CONFIGURAÇÃO
-   ============================================================ */
-
-const STORAGE_KEY =
-    window.AXEUS_STORAGE_KEY || "axeus_products";
-
-const OLD_STORAGE_KEYS = [
-    "axeus_products",
-    "AXEUS_PRODUCTS",
-    "products",
-    "productsData"
-];
-
-
-/* ============================================================
-   PRODUTOS PADRÃO
-   ============================================================ */
-
-const DEFAULT_PRODUCTS = [
-    {
-        id: "tiktok-shop",
-        name: "Ganchos para TikTok Shop",
-        description:
-            "Estratégias, ganchos e ideias para criar conteúdos mais atrativos para TikTok Shop.",
-        category: "TIKTOK SHOP",
-        price: "29,90",
-        image: "",
-        checkout: "https://pay.cakto.com.br/3erj75x_1080094",
-        link: "https://pay.cakto.com.br/3erj75x_1080094",
-        sold: 1207,
-        clicks: 0,
-        status: "active"
-    },
-
-    {
-        id: "spotify-pc",
-        name: "Método Spotify PC",
-        description:
-            "Método para melhorar sua experiência utilizando Spotify no computador.",
-        category: "PC",
-        price: "19,90",
-        image: "",
-        checkout: "https://pay.cakto.com.br/szk82cw_1007831",
-        link: "https://pay.cakto.com.br/szk82cw_1007831",
-        sold: 842,
-        clicks: 0,
-        status: "active"
-    },
-
-    {
-        id: "streaming",
-        name: "Aplicativo de Streaming",
-        description:
-            "Aplicativo para assistir filmes e séries em uma experiência simples e prática.",
-        category: "ENTRETENIMENTO",
-        price: "24,90",
-        image: "",
-        checkout: "https://pay.cakto.com.br/po9btzm_997956",
-        link: "https://pay.cakto.com.br/po9btzm_997956",
-        sold: 913,
-        clicks: 0,
-        status: "active"
-    },
-
-    {
-        id: "otimizacao",
-        name: "Painel de Otimização",
-        description:
-            "Ferramenta para ajudar na otimização e configuração do Windows.",
-        category: "PC",
-        price: "29,90",
-        image: "",
-        checkout: "https://pay.cakto.com.br/r9phmxw_864564",
-        link: "https://pay.cakto.com.br/r9phmxw_864564",
-        sold: 536,
-        clicks: 0,
-        status: "active"
-    },
-
-    {
-        id: "axeus",
-        name: "AXEUS",
-        description:
-            "Uma nova experiência para personalizar, otimizar e transformar seu Windows.",
-        category: "APLICATIVOS",
-        price: "",
-        image: "",
-        checkout: "",
-        link: "",
-        sold: 0,
-        clicks: 0,
-        status: "coming-soon"
-    }
-];
-
-
-/* ============================================================
-   ESTADO
-   ============================================================ */
-
-let allProducts = [];
-let currentFilter = "TODOS";
-
-
-/* ============================================================
-   ELEMENTOS
-   ============================================================ */
-
-let productsGrid;
-let emptyProducts;
-let heroProductsCount;
-let heroClicksCount;
-
-
-/* ============================================================
-   INICIALIZAÇÃO
-   ============================================================ */
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    productsGrid =
-        document.getElementById("products-grid");
-
-    emptyProducts =
-        document.getElementById("empty-products");
-
-    heroProductsCount =
-        document.getElementById("hero-products-count");
-
-    heroClicksCount =
-        document.getElementById("hero-clicks-count");
-
-    initializeStore();
-});
-
-
-/* ============================================================
-   INICIALIZAR LOJA
-   ============================================================ */
-
-function initializeStore() {
-
-    loadProducts();
-
-    setupFilters();
-
-    renderProducts();
-
-    updateHeroStats();
-
-    setupStorageListener();
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-
-/* ============================================================
-   CARREGAR PRODUTOS
-   ============================================================ */
-
-function loadProducts() {
-
-    let savedProducts = null;
-
-    try {
-
-        const data =
-            localStorage.getItem(STORAGE_KEY);
-
-        if (data) {
-
-            savedProducts =
-                JSON.parse(data);
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao carregar produtos:",
-            error
-        );
-    }
-
-
-    if (!Array.isArray(savedProducts)) {
-
-        for (const key of OLD_STORAGE_KEYS) {
-
-            try {
-
-                const data =
-                    localStorage.getItem(key);
-
-                if (!data) {
-                    continue;
-                }
-
-                const parsed =
-                    JSON.parse(data);
-
-                if (Array.isArray(parsed)) {
-
-                    savedProducts =
-                        parsed;
-
-                    break;
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    "Não foi possível ler:",
-                    key
-                );
-            }
-        }
-    }
-
-
-    if (!Array.isArray(savedProducts)) {
-
-        allProducts =
-            normalizeProducts(
-                DEFAULT_PRODUCTS
-            );
-
-        saveProducts();
-
-        return;
-    }
-
-
-    allProducts =
-        normalizeProducts(
-            savedProducts
-        );
+:root {
+    --bg: #050b16;
+    --bg-secondary: #081222;
+    --card: rgba(12, 25, 45, 0.72);
+    --card-hover: rgba(17, 34, 60, 0.9);
+    --blue: #1683ff;
+    --blue-light: #42a5ff;
+    --blue-dark: #0757b8;
+    --text: #ffffff;
+    --text-secondary: #9aa9bd;
+    --border: rgba(255, 255, 255, 0.09);
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
-
-/* ============================================================
-   NORMALIZAR PRODUTOS
-   ============================================================ */
-
-function normalizeProducts(products) {
-
-    return products
-        .filter(product => product)
-        .map((product, index) => {
-
-            const normalized = {
-                ...product
-            };
-
-
-            /* ID */
-
-            if (
-                !normalized.id ||
-                String(normalized.id).trim() === ""
-            ) {
-
-                normalized.id =
-                    createProductId(
-                        normalized.name ||
-                        `produto-${index + 1}`
-                    );
-            }
-
-
-            /* NOME */
-
-            normalized.name =
-                String(
-                    normalized.name ||
-                    normalized.title ||
-                    `Produto ${index + 1}`
-                );
-
-
-            /* DESCRIÇÃO */
-
-            normalized.description =
-                String(
-                    normalized.description ||
-                    normalized.desc ||
-                    "Produto digital AXEUS."
-                );
-
-
-            /* CATEGORIA */
-
-            normalized.category =
-                normalizeCategory(
-                    normalized.category ||
-                    normalized.categoryName ||
-                    "OUTROS"
-                );
-
-
-            /* IMAGEM */
-
-            normalized.image =
-                normalized.image ||
-                normalized.imageUrl ||
-                normalized.photo ||
-                "";
-
-
-            /* LINK DE COMPRA */
-
-            normalized.checkout =
-                cleanProductLink(
-                    normalized.checkout ||
-                    normalized.buyLink ||
-                    normalized.paymentLink ||
-                    normalized.link ||
-                    ""
-                );
-
-
-            normalized.link =
-                cleanProductLink(
-                    normalized.link ||
-                    normalized.checkout ||
-                    ""
-                );
-
-
-            /* CLIQUES */
-
-            normalized.clicks =
-                toNumber(
-                    normalized.clicks
-                );
-
-
-            /* VENDIDOS */
-
-            normalized.sold =
-                toNumber(
-                    normalized.sold
-                );
-
-
-            /* STATUS */
-
-            normalized.status =
-                normalizeStatus(
-                    normalized.status
-                );
-
-
-            /* PREÇO */
-
-            normalized.price =
-                normalized.price == null
-                    ? ""
-                    : String(normalized.price);
-
-
-            return normalized;
-        });
+html {
+    scroll-behavior: smooth;
 }
 
-
-/* ============================================================
-   LIMPAR LINK
-   ============================================================ */
-
-function cleanProductLink(link) {
-
-    if (!link) {
-        return "";
-    }
-
-    let value =
-        String(link).trim();
-
-
-    /*
-     * Se alguém colocou Markdown:
-     *
-     * [https://site.com](https://site.com)
-     *
-     * transforma automaticamente em:
-     *
-     * https://site.com
-     */
-
-    const markdownMatch =
-        value.match(
-            /^\[.*?\]\((https?:\/\/.*?)\)$/
-        );
-
-    if (markdownMatch) {
-        value = markdownMatch[1];
-    }
-
-
-    /*
-     * Remove espaços.
-     */
-
-    value =
-        value.replace(/\s+/g, "");
-
-
-    return value;
+body {
+    min-height: 100vh;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(0, 119, 255, 0.13), transparent 35%),
+        radial-gradient(circle at 85% 20%, rgba(0, 119, 255, 0.08), transparent 30%),
+        var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
 }
 
-
-/* ============================================================
-   SALVAR PRODUTOS
-   ============================================================ */
-
-function saveProducts() {
-
-    try {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(allProducts)
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao salvar produtos:",
-            error
-        );
-    }
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: linear-gradient(to bottom, black, transparent 80%);
 }
 
-
-/* ============================================================
-   FILTROS
-   ============================================================ */
-
-function setupFilters() {
-
-    const filterButtons =
-        document.querySelectorAll(
-            ".filter-button"
-        );
-
-
-    filterButtons.forEach(button => {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                const filter =
-                    normalizeCategory(
-                        this.dataset.filter ||
-                        "TODOS"
-                    );
-
-
-                currentFilter =
-                    filter;
-
-
-                filterButtons.forEach(
-                    item => {
-
-                        item.classList.remove(
-                            "active"
-                        );
-                    }
-                );
-
-
-                this.classList.add(
-                    "active"
-                );
-
-
-                renderProducts();
-            }
-        );
-    });
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
-
-/* ============================================================
-   RENDERIZAR PRODUTOS
-   ============================================================ */
-
-function renderProducts() {
-
-    if (!productsGrid) {
-        return;
-    }
-
-
-    let products =
-        [...allProducts];
-
-
-    if (currentFilter !== "TODOS") {
-
-        products =
-            products.filter(product => {
-
-                return normalizeCategory(
-                    product.category
-                ) === currentFilter;
-            });
-    }
-
-
-    productsGrid.innerHTML = "";
-
-
-    if (products.length === 0) {
-
-        if (emptyProducts) {
-
-            emptyProducts.style.display =
-                "flex";
-        }
-
-        return;
-    }
-
-
-    if (emptyProducts) {
-
-        emptyProducts.style.display =
-            "none";
-    }
-
-
-    products.forEach(product => {
-
-        const card =
-            createProductCard(product);
-
-        productsGrid.appendChild(card);
-    });
-
-
-    updateHeroStats();
+button {
+    font-family: inherit;
 }
 
+.container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
 
-/* ============================================================
-   CRIAR CARD DO PRODUTO
-   ============================================================ */
+/* HEADER */
 
-function createProductCard(product) {
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(5, 11, 22, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+}
 
-    const card =
-        document.createElement("article");
+.header-content {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
 
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+}
 
-    card.className =
-        "product-card";
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--blue-light), var(--blue-dark));
+    box-shadow: 0 8px 25px rgba(22, 131, 255, 0.3);
+    font-size: 20px;
+    font-weight: 900;
+}
 
+.logo-store {
+    color: var(--blue-light);
+}
 
-    card.dataset.productId =
-        product.id;
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
 
+.nav-link {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
 
-    /* ========================================================
-       CLIQUE NO CARD
-       ======================================================== */
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+}
 
-    card.addEventListener(
-        "click",
-        function (event) {
+.header-button {
+    padding: 11px 18px;
+    border-radius: 10px;
+    background: rgba(22, 131, 255, 0.12);
+    border: 1px solid rgba(22, 131, 255, 0.3);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
 
-            /*
-             * Se clicou no botão Comprar,
-             * o próprio botão já registra o clique.
-             */
+.header-button:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    transform: translateY(-2px);
+}
 
-            if (
-                event.target.closest(
-                    ".product-buy-button"
-                )
-            ) {
-                return;
-            }
+/* HERO */
 
+.hero {
+    position: relative;
+    min-height: 760px;
+    display: flex;
+    align-items: center;
+    padding: 140px 0 100px;
+    overflow: hidden;
+}
 
-            /*
-             * Se clicou em algum link,
-             * não registra novamente.
-             */
-
-            if (
-                event.target.closest("a")
-            ) {
-                return;
-            }
-
-
-            /*
-             * Clique normal no produto.
-             */
-
-            registerClick(
-                product.id
-            );
-
-
-            /*
-             * Se tiver link,
-             * também abre o produto.
-             */
-
-            const productLink =
-                getProductLink(product);
-
-
-            if (productLink) {
-
-                window.open(
-                    productLink,
-                    "_blank",
-                    "noopener,noreferrer"
-                );
-            }
-        }
+.hero-background {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    right: -250px;
+    top: 50px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(0, 119, 255, 0.18),
+        rgba(0, 119, 255, 0.04) 45%,
+        transparent 70%
     );
+    filter: blur(10px);
+    pointer-events: none;
+}
 
+.hero-content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 70px;
+}
 
-    /* ========================================================
-       IMAGEM
-       ======================================================== */
+.hero-badge {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 13px;
+    margin-bottom: 22px;
+    border-radius: 50px;
+    border: 1px solid rgba(22, 131, 255, 0.25);
+    background: rgba(22, 131, 255, 0.08);
+    color: #69b5ff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
 
-    const imageWrapper =
-        document.createElement("div");
+.badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2c9aff;
+    box-shadow: 0 0 12px #2c9aff;
+}
 
+.hero h1 {
+    max-width: 720px;
+    font-size: clamp(45px, 6vw, 78px);
+    line-height: 0.98;
+    letter-spacing: -4px;
+    font-weight: 850;
+}
 
-    imageWrapper.className =
-        "product-image";
+.hero h1 span {
+    display: block;
+    background: linear-gradient(
+        90deg,
+        #fff,
+        #55adff,
+        #1683ff
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
 
+.hero-text > p {
+    max-width: 600px;
+    margin-top: 27px;
+    color: var(--text-secondary);
+    font-size: 17px;
+    line-height: 1.75;
+}
 
-    if (product.image) {
+.hero-buttons {
+    display: flex;
+    gap: 13px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+}
 
-        const image =
-            document.createElement("img");
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 21px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 750;
+    transition: 0.25s ease;
+}
 
+.btn-primary {
+    background: linear-gradient(135deg, #238fff, #0967ce);
+    box-shadow: 0 12px 30px rgba(22, 131, 255, 0.25);
+}
 
-        image.src =
-            product.image;
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 17px 38px rgba(22, 131, 255, 0.35);
+}
 
+.btn-secondary {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.035);
+}
 
-        image.alt =
-            product.name;
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-3px);
+}
 
+.hero-stats {
+    display: flex;
+    gap: 38px;
+    margin-top: 48px;
+}
 
-        image.loading =
-            "lazy";
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
+.stat strong {
+    font-size: 24px;
+    font-weight: 800;
+}
 
-        image.onerror =
-            function () {
+.stat span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
 
-                image.style.display =
-                    "none";
+/* HERO CARD */
 
+.hero-card-wrapper {
+    display: flex;
+    justify-content: center;
+}
 
-                imageWrapper.classList.add(
-                    "image-error"
-                );
-
-
-                imageWrapper.innerHTML +=
-                    createProductPlaceholder(
-                        product.name
-                    );
-            };
-
-
-        imageWrapper.appendChild(
-            image
+.hero-card {
+    position: relative;
+    width: min(390px, 100%);
+    min-height: 430px;
+    padding: 30px;
+    overflow: hidden;
+    border: 1px solid rgba(100, 170, 255, 0.16);
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(22, 131, 255, 0.14),
+            rgba(8, 18, 34, 0.9)
         );
+    box-shadow:
+        0 35px 100px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    transform: rotate(2deg);
+}
 
-    } else {
+.hero-card-glow {
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    top: -120px;
+    right: -100px;
+    border-radius: 50%;
+    background: rgba(22, 131, 255, 0.28);
+    filter: blur(60px);
+}
 
-        imageWrapper.innerHTML =
-            createProductPlaceholder(
-                product.name
-            );
-    }
+.hero-card-top {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    color: #8294ad;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
 
+.hero-card-status {
+    color: #54b0ff;
+}
 
-    /* ========================================================
-       BADGE
-       ======================================================== */
+.hero-card-logo {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 70px auto 35px;
+    display: grid;
+    place-items: center;
+    border-radius: 28px;
+    background: linear-gradient(145deg, #238fff, #064e9e);
+    font-size: 54px;
+    font-weight: 900;
+    box-shadow:
+        0 25px 60px rgba(0, 111, 255, 0.32),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+}
 
-    const categoryBadge =
-        document.createElement("span");
+.hero-card h3 {
+    position: relative;
+    text-align: center;
+    font-size: 26px;
+    letter-spacing: -1px;
+}
 
+.hero-card p {
+    position: relative;
+    margin-top: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
 
-    categoryBadge.className =
-        "product-category";
+.hero-card-line {
+    position: relative;
+    height: 1px;
+    margin: 35px 0 20px;
+    background: var(--border);
+}
 
+.hero-card-bottom {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    color: #7190b4;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
 
-    categoryBadge.textContent =
-        product.category;
+/* SECTIONS */
 
+.categories-section,
+.products-section,
+.apps-section,
+.benefits-section,
+.cta-section {
+    padding: 100px 0;
+}
 
-    imageWrapper.appendChild(
-        categoryBadge
+.section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 42px;
+}
+
+.section-header.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #4da8ff;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 2px;
+}
+
+.section-header h2 {
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.05;
+    letter-spacing: -2px;
+}
+
+.section-header p {
+    max-width: 390px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* CATEGORIES */
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.category-card {
+    position: relative;
+    min-height: 160px;
+    padding: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(10, 22, 40, 0.68);
+    color: #fff;
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.category-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top right,
+        rgba(22, 131, 255, 0.18),
+        transparent 55%
     );
+    opacity: 0;
+    transition: 0.3s ease;
+}
 
+.category-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(22, 131, 255, 0.38);
+    background: var(--card-hover);
+    box-shadow: var(--shadow);
+}
 
-    /* ========================================================
-       CONTEÚDO
-       ======================================================== */
+.category-card:hover::before {
+    opacity: 1;
+}
 
-    const content =
-        document.createElement("div");
+.category-icon {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(22, 131, 255, 0.13);
+    border: 1px solid rgba(22, 131, 255, 0.2);
+    color: #53adff;
+    font-size: 19px;
+}
 
+.category-info {
+    position: relative;
+    margin-top: 22px;
+}
 
-    content.className =
-        "product-content";
+.category-info h3 {
+    font-size: 16px;
+}
 
+.category-info span {
+    display: block;
+    margin-top: 5px;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
 
-    /* TÍTULO */
+.category-arrow {
+    position: absolute;
+    right: 20px;
+    bottom: 21px;
+    color: #4ca9ff;
+    transition: 0.25s ease;
+}
 
-    const title =
-        document.createElement("h3");
+.category-card:hover .category-arrow {
+    transform: translateX(5px);
+}
 
+/* FILTERS */
 
-    title.className =
-        "product-title";
+.products-filters {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
 
+.filter-button {
+    padding: 10px 16px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.025);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
 
-    title.textContent =
-        product.name;
+.filter-button:hover,
+.filter-button.active {
+    color: #fff;
+    border-color: rgba(22, 131, 255, 0.45);
+    background: rgba(22, 131, 255, 0.14);
+}
 
+/* PRODUCTS */
 
-    /* DESCRIÇÃO */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
 
-    const description =
-        document.createElement("p");
-
-
-    description.className =
-        "product-description";
-
-
-    description.textContent =
-        product.description;
-
-
-    /* ========================================================
-       RODAPÉ
-       ======================================================== */
-
-    const footer =
-        document.createElement("div");
-
-
-    footer.className =
-        "product-footer";
-
-
-    /* ========================================================
-       INFORMAÇÕES
-       ======================================================== */
-
-    const info =
-        document.createElement("div");
-
-
-    info.className =
-        "product-info";
-
-
-    /* PREÇO */
-
-    if (product.price) {
-
-        const price =
-            document.createElement("strong");
-
-
-        price.className =
-            "product-price";
-
-
-        price.textContent =
-            formatPrice(
-                product.price
-            );
-
-
-        info.appendChild(
-            price
+.product-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(14, 29, 51, 0.86),
+            rgba(8, 18, 33, 0.88)
         );
-    }
-
-
-    /* VENDIDOS */
-
-    const sold =
-        document.createElement("span");
-
-
-    sold.className =
-        "product-sold";
-
-
-    sold.dataset.soldFor =
-        product.id;
-
-
-    sold.textContent =
-        formatNumber(
-            getDisplayedCount(product)
-        ) +
-        " vendidos";
-
-
-    info.appendChild(
-        sold
-    );
-
-
-    /* ========================================================
-       BOTÃO COMPRAR
-       ======================================================== */
-
-    const button =
-        document.createElement("a");
-
-
-    button.className =
-        "product-buy-button";
-
-
-    /* ========================================================
-       PRODUTO EM BREVE
-       ======================================================== */
-
-    if (
-        normalizeStatus(
-            product.status
-        ) === "coming-soon"
-    ) {
-
-        button.href =
-            "#";
-
-
-        button.classList.add(
-            "coming-soon"
-        );
-
-
-        button.textContent =
-            "Em breve";
-
-
-        button.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-            }
-        );
-    }
-
-
-    /* ========================================================
-       PRODUTO DISPONÍVEL
-       ======================================================== */
-
-    else {
-
-        const productLink =
-            getProductLink(product);
-
-
-        if (productLink) {
-
-            button.href =
-                productLink;
-
-
-            button.target =
-                "_blank";
-
-
-            button.rel =
-                "noopener noreferrer";
-
-
-            button.textContent =
-                "Comprar";
-
-
-            /*
-             * IMPORTANTE:
-             *
-             * O botão agora registra o clique
-             * antes de abrir o link.
-             */
-
-            button.addEventListener(
-                "click",
-                function (event) {
-
-                    /*
-                     * Impede o evento de subir
-                     * para o card.
-                     *
-                     * Assim não conta duas vezes.
-                     */
-
-                    event.stopPropagation();
-
-
-                    /*
-                     * REGISTRA O CLIQUE.
-                     */
-
-                    registerClick(
-                        product.id
-                    );
-
-                    /*
-                     * O navegador continua
-                     * normalmente para o href.
-                     */
-                }
-            );
-
-        } else {
-
-            button.href =
-                "#";
-
-
-            button.textContent =
-                "Ver produto";
-
-
-            button.addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                    registerClick(
-                        product.id
-                    );
-                }
-            );
-        }
-    }
-
-
-    /* ========================================================
-       MONTAR CARD
-       ======================================================== */
-
-    footer.appendChild(
-        info
-    );
-
-
-    footer.appendChild(
-        button
-    );
-
-
-    content.appendChild(
-        title
-    );
-
-
-    content.appendChild(
-        description
-    );
-
-
-    content.appendChild(
-        footer
-    );
-
-
-    card.appendChild(
-        imageWrapper
-    );
-
-
-    card.appendChild(
-        content
-    );
-
-
-    /* ========================================================
-       CLASSE COMING SOON
-       ======================================================== */
-
-    if (
-        normalizeStatus(
-            product.status
-        ) === "coming-soon"
-    ) {
-
-        card.classList.add(
-            "product-coming-soon"
-        );
-    }
-
-
-    return card;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.16);
+    cursor: pointer;
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
-
-/* ============================================================
-   OBTER LINK DO PRODUTO
-   ============================================================ */
-
-function getProductLink(product) {
-
-    if (!product) {
-        return "";
-    }
-
-
-    const checkout =
-        cleanProductLink(
-            product.checkout
-        );
-
-
-    const link =
-        cleanProductLink(
-            product.link
-        );
-
-
-    return checkout || link || "";
+.product-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(55, 155, 255, 0.35);
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.3),
+        0 0 35px rgba(22,131,255,0.07);
 }
 
-
-/* ============================================================
-   PLACEHOLDER
-   ============================================================ */
-
-function createProductPlaceholder(name) {
-
-    const letter =
-        String(
-            name || "A"
-        )
-            .trim()
-            .charAt(0)
-            .toUpperCase();
-
-
-    return `
-        <div class="product-placeholder">
-            <div class="product-placeholder-logo">
-                ${escapeHTML(letter)}
-            </div>
-        </div>
-    `;
+.product-image {
+    position: relative;
+    height: 210px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(22, 131, 255, 0.2),
+            transparent 55%
+        ),
+        #09172a;
 }
 
-
-/* ============================================================
-   REGISTRAR CLIQUE
-   ============================================================ */
-
-function registerClick(productId) {
-
-    const product =
-        allProducts.find(
-            item =>
-                String(item.id) ===
-                String(productId)
-        );
-
-
-    if (!product) {
-        return;
-    }
-
-
-    /*
-     * Incrementa cliques.
-     */
-
-    product.clicks =
-        toNumber(
-            product.clicks
-        ) + 1;
-
-
-    /*
-     * Mantém o comportamento antigo
-     * do contador de vendidos.
-     */
-
-    product.sold =
-        toNumber(
-            product.sold
-        ) + 1;
-
-
-    /*
-     * Salvar.
-     */
-
-    saveProducts();
-
-
-    /*
-     * Atualizar card.
-     */
-
-    updateProductCounter(
-        product
-    );
-
-
-    /*
-     * Atualizar estatísticas.
-     */
-
-    updateHeroStats();
-
-
-    /*
-     * Evento personalizado.
-     */
-
-    window.dispatchEvent(
-        new CustomEvent(
-            "axeusProductClick",
-            {
-                detail: product
-            }
-        )
-    );
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
 }
 
-
-/* ============================================================
-   ATUALIZAR CONTADOR
-   ============================================================ */
-
-function updateProductCounter(product) {
-
-    const counter =
-        document.querySelector(
-            `[data-sold-for="${CSS.escape(
-                String(product.id)
-            )}"]`
-        );
-
-
-    if (!counter) {
-        return;
-    }
-
-
-    counter.textContent =
-        formatNumber(
-            getDisplayedCount(product)
-        ) +
-        " vendidos";
+.product-card:hover .product-image img {
+    transform: scale(1.06);
 }
 
-
-/* ============================================================
-   CONTADOR EXIBIDO
-   ============================================================ */
-
-function getDisplayedCount(product) {
-
-    if (
-        Number.isFinite(
-            Number(product.sold)
-        )
-    ) {
-
-        return Number(
-            product.sold
-        );
-    }
-
-
-    return Number(
-        product.clicks || 0
-    );
+.product-category {
+    position: absolute;
+    left: 13px;
+    top: 13px;
+    z-index: 2;
+    padding: 6px 9px;
+    border-radius: 7px;
+    background: rgba(3, 10, 20, 0.7);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    color: #80c4ff;
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 1px;
 }
 
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
 
-/* ============================================================
-   ESTATÍSTICAS DO HERO
-   ============================================================ */
+.product-placeholder-logo {
+    width: 75px;
+    height: 75px;
+    display: grid;
+    place-items: center;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #238fff, #0754a9);
+    box-shadow: 0 20px 50px rgba(22,131,255,0.25);
+    color: #fff;
+    font-size: 35px;
+    font-weight: 900;
+}
 
-function updateHeroStats() {
+.product-content {
+    padding: 20px;
+}
 
-    if (heroProductsCount) {
+.product-title {
+    min-height: 42px;
+    font-size: 17px;
+    line-height: 1.25;
+    letter-spacing: -0.4px;
+}
 
-        heroProductsCount.textContent =
-            formatNumber(
-                allProducts.length
-            );
-    }
+.product-description {
+    min-height: 60px;
+    margin-top: 9px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.6;
+}
 
+.product-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 18px;
+}
 
-    if (heroClicksCount) {
+.product-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
-        const total =
-            allProducts.reduce(
-                (sum, product) => {
+.product-price {
+    color: #fff;
+    font-size: 17px;
+}
 
-                    return sum +
-                        toNumber(
-                            product.clicks
-                        );
-                },
-                0
-            );
+.product-sold {
+    color: #6f829d;
+    font-size: 10px;
+}
 
+.product-buy-button {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 13px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #238fff, #0865c9);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    transition: 0.25s ease;
+}
 
-        heroClicksCount.textContent =
-            formatNumber(
-                total
-            );
+.product-buy-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 22px rgba(22,131,255,0.25);
+}
+
+.product-buy-button.coming-soon {
+    background: rgba(255,255,255,0.06);
+    color: #8193aa;
+    border: 1px solid var(--border);
+    cursor: default;
+}
+
+.product-coming-soon {
+    opacity: 0.88;
+}
+
+.products-loading {
+    grid-column: 1 / -1;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.loading-spinner {
+    width: 35px;
+    height: 35px;
+    border: 3px solid rgba(255,255,255,0.08);
+    border-top-color: #2d9aff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
     }
 }
 
-
-/* ============================================================
-   SINCRONIZAÇÃO ENTRE ABAS
-   ============================================================ */
-
-function setupStorageListener() {
-
-    window.addEventListener(
-        "storage",
-        function (event) {
-
-            if (
-                event.key !==
-                STORAGE_KEY
-            ) {
-                return;
-            }
-
-
-            loadProducts();
-
-            renderProducts();
-
-            updateHeroStats();
-        }
-    );
-
-
-    window.addEventListener(
-        "axeusProductsUpdated",
-        function () {
-
-            loadProducts();
-
-            renderProducts();
-
-            updateHeroStats();
-        }
-    );
+.empty-products {
+    min-height: 240px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
 }
 
-
-/* ============================================================
-   FORÇAR ATUALIZAÇÃO
-   ============================================================ */
-
-window.refreshAxeusStore =
-    function () {
-
-        loadProducts();
-
-        renderProducts();
-
-        updateHeroStats();
-    };
-
-
-/* ============================================================
-   CONVERTER PARA NÚMERO
-   ============================================================ */
-
-function toNumber(value) {
-
-    if (
-        typeof value === "number" &&
-        Number.isFinite(value)
-    ) {
-
-        return value;
-    }
-
-
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-
-        return 0;
-    }
-
-
-    const normalized =
-        String(value)
-            .replace(/\./g, "")
-            .replace(",", ".");
-
-
-    const number =
-        Number(normalized);
-
-
-    return Number.isFinite(number)
-        ? number
-        : 0;
+.empty-icon {
+    width: 55px;
+    height: 55px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    background: rgba(22,131,255,0.1);
+    color: #4baaff;
+    font-size: 25px;
 }
 
-
-/* ============================================================
-   FORMATAR NÚMEROS
-   ============================================================ */
-
-function formatNumber(value) {
-
-    return new Intl.NumberFormat(
-        "pt-BR"
-    ).format(
-        Math.max(
-            0,
-            Math.round(
-                toNumber(value)
-            )
-        )
-    );
+.empty-products h3 {
+    font-size: 18px;
 }
 
-
-/* ============================================================
-   FORMATAR PREÇO
-   ============================================================ */
-
-function formatPrice(value) {
-
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-
-        return "";
-    }
-
-
-    const stringValue =
-        String(value).trim();
-
-
-    if (
-        stringValue
-            .toUpperCase()
-            .includes("R$")
-    ) {
-
-        return stringValue;
-    }
-
-
-    const number =
-        Number(
-            stringValue
-                .replace(/[^\d,.-]/g, "")
-                .replace(/\./g, "")
-                .replace(",", ".")
-        );
-
-
-    if (
-        Number.isFinite(number)
-    ) {
-
-        return number.toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        );
-    }
-
-
-    return stringValue;
+.empty-products p {
+    margin-top: 7px;
+    color: var(--text-secondary);
+    font-size: 13px;
 }
 
+/* APP */
 
-/* ============================================================
-   NORMALIZAR CATEGORIA
-   ============================================================ */
-
-function normalizeCategory(category) {
-
-    if (!category) {
-        return "OUTROS";
-    }
-
-
-    const value =
-        String(category)
-            .trim()
-            .toUpperCase();
-
-
-    const aliases = {
-
-        "TIKTOK":
-            "TIKTOK SHOP",
-
-        "TIKTOK SHOP":
-            "TIKTOK SHOP",
-
-        "PC":
-            "PC",
-
-        "COMPUTADOR":
-            "PC",
-
-        "ENTRETENIMENTO":
-            "ENTRETENIMENTO",
-
-        "STREAMING":
-            "ENTRETENIMENTO",
-
-        "APLICATIVO":
-            "APLICATIVOS",
-
-        "APLICATIVOS":
-            "APLICATIVOS",
-
-        "APP":
-            "APLICATIVOS",
-
-        "APPS":
-            "APLICATIVOS",
-
-        "TODOS":
-            "TODOS"
-    };
-
-
-    return aliases[value] ||
-        value;
-}
-
-
-/* ============================================================
-   NORMALIZAR STATUS
-   ============================================================ */
-
-function normalizeStatus(status) {
-
-    if (!status) {
-        return "active";
-    }
-
-
-    const value =
-        String(status)
-            .trim()
-            .toLowerCase();
-
-
-    if (
-        value === "coming-soon" ||
-        value === "comingsoon" ||
-        value === "em breve" ||
-        value === "breve"
-    ) {
-
-        return "coming-soon";
-    }
-
-
-    return "active";
-}
-
-
-/* ============================================================
-   CRIAR ID
-   ============================================================ */
-
-function createProductId(name) {
-
-    return String(name)
-
-        .toLowerCase()
-
-        .normalize("NFD")
-
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
-        )
-
-        .replace(
-            /[^a-z0-9]+/g,
-            "-"
-        )
-
-        .replace(
-            /^-+|-+$/g,
-            ""
-        )
-
-        .substring(
-            0,
-            60
-        )
-
-        + "-" +
-        Date.now();
-}
-
-
-/* ============================================================
-   ESCAPAR HTML
-   ============================================================ */
-
-function escapeHTML(value) {
-
-    return String(
-        value || ""
-    )
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
+.apps-section {
+    background:
+        radial-gradient(
+            circle at 80% 50%,
+            rgba(22,131,255,0.08),
+            transparent 35%
         );
 }
 
-
-/* ============================================================
-   DISPONIBILIZAR FUNÇÕES GLOBALMENTE
-   ============================================================ */
-
-window.AxeusStore = {
-
-    getProducts: function () {
-
-        return [
-            ...allProducts
-        ];
-    },
-
-
-    refresh: function () {
-
-        loadProducts();
-
-        renderProducts();
-
-        updateHeroStats();
-    },
-
-
-    registerClick: function (productId) {
-
-        registerClick(
-            productId
+.app-highlight {
+    min-height: 480px;
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    align-items: center;
+    gap: 50px;
+    padding: 60px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14,31,55,0.9),
+            rgba(6,15,28,0.8)
         );
-    },
+}
 
+.app-highlight-content h2 {
+    font-size: clamp(40px, 5vw, 60px);
+    line-height: 1;
+    letter-spacing: -3px;
+}
 
-    getStorageKey: function () {
+.app-highlight-content h2 span {
+    color: #238fff;
+}
 
-        return STORAGE_KEY;
+.app-highlight-content p {
+    max-width: 440px;
+    margin-top: 20px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.app-status {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 25px;
+    padding: 9px 13px;
+    border-radius: 8px;
+    background: rgba(22,131,255,0.1);
+    color: #65b6ff;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.app-status span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3da6ff;
+    box-shadow: 0 0 10px #3da6ff;
+}
+
+.app-visual {
+    display: flex;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+.app-window {
+    width: min(570px, 100%);
+    min-height: 330px;
+    overflow: hidden;
+    border: 1px solid rgba(100,170,255,0.15);
+    border-radius: 17px;
+    background: #071322;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    transform: rotateY(-5deg) rotateX(3deg);
+}
+
+.app-window-header {
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    color: #8da1ba;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.window-dots {
+    position: absolute;
+    left: 15px;
+    display: flex;
+    gap: 5px;
+}
+
+.window-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #31435a;
+}
+
+.app-window-body {
+    min-height: 287px;
+    display: flex;
+}
+
+.app-sidebar {
+    width: 65px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border-right: 1px solid var(--border);
+}
+
+.app-sidebar-logo {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    background: #147cf0;
+    font-weight: 900;
+}
+
+.app-sidebar-item {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #51667f;
+    font-size: 13px;
+}
+
+.app-sidebar-item.active {
+    background: rgba(22,131,255,0.13);
+    color: #43a4ff;
+}
+
+.app-dashboard {
+    flex: 1;
+    padding: 25px;
+}
+
+.app-dashboard-title {
+    color: #d6e3f2;
+    font-size: 18px;
+    font-weight: 750;
+}
+
+.app-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.app-dashboard-cards div {
+    height: 65px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.025);
+}
+
+.app-dashboard-large {
+    height: 105px;
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(22,131,255,0.07),
+            rgba(255,255,255,0.015)
+        );
+}
+
+/* BENEFITS */
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.benefit-card {
+    padding: 27px;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    background: rgba(10,22,40,0.55);
+    transition: 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(22,131,255,0.3);
+}
+
+.benefit-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+    border-radius: 11px;
+    background: rgba(22,131,255,0.1);
+    color: #4baaff;
+}
+
+.benefit-card h3 {
+    font-size: 16px;
+}
+
+.benefit-card p {
+    margin-top: 9px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* CTA */
+
+.cta-card {
+    position: relative;
+    min-height: 330px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(35,143,255,0.18);
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(10,33,61,0.9),
+            rgba(6,16,30,0.95)
+        );
+    text-align: center;
+}
+
+.cta-glow {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: rgba(22,131,255,0.18);
+    filter: blur(60px);
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cta-content h2 {
+    font-size: clamp(35px, 5vw, 52px);
+    letter-spacing: -2px;
+}
+
+.cta-content p {
+    max-width: 500px;
+    margin: 14px auto 25px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* FOOTER */
+
+.footer {
+    border-top: 1px solid var(--border);
+    background: rgba(3,8,16,0.8);
+}
+
+.footer-content {
+    min-height: 260px;
+    display: flex;
+    justify-content: space-between;
+    gap: 60px;
+    padding: 65px 0;
+}
+
+.footer-brand {
+    max-width: 300px;
+}
+
+.footer-brand p {
+    margin-top: 15px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.footer-links {
+    display: flex;
+    gap: 80px;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.footer-column h4 {
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.footer-column a {
+    color: #74859b;
+    font-size: 11px;
+    transition: 0.2s ease;
+}
+
+.footer-column a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid var(--border);
+    color: #53657c;
+    font-size: 10px;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1050px) {
+
+    .categories-grid,
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
-};
+
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-content {
+        gap: 40px;
+    }
+
+    .hero h1 {
+        font-size: 58px;
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .nav {
+        display: none;
+    }
+
+    .header-button {
+        margin-left: auto;
+    }
+
+    .hero {
+        min-height: auto;
+        padding-top: 130px;
+    }
+
+    .hero-content {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-card-wrapper {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: clamp(43px, 12vw, 65px);
+    }
+
+    .app-highlight {
+        grid-template-columns: 1fr;
+        padding: 35px;
+    }
+
+    .app-visual {
+        display: none;
+    }
+
+    .footer-content {
+        flex-direction: column;
+    }
+
+    .footer-links {
+        gap: 45px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        width: min(100% - 28px, 1180px);
+    }
+
+    .header-content {
+        min-height: 68px;
+    }
+
+    .header-button {
+        padding: 9px 12px;
+        font-size: 11px;
+    }
+
+    .hero {
+        padding-top: 110px;
+        padding-bottom: 70px;
+    }
+
+    .hero h1 {
+        letter-spacing: -2.5px;
+    }
+
+    .hero-text > p {
+        font-size: 14px;
+    }
+
+    .hero-stats {
+        gap: 22px;
+    }
+
+    .categories-section,
+    .products-section,
+    .apps-section,
+    .benefits-section,
+    .cta-section {
+        padding: 70px 0;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 28px;
+    }
+
+    .section-header p {
+        max-width: 100%;
+    }
+
+    .categories-grid,
+    .products-grid,
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-card {
+        min-height: 135px;
+    }
+
+    .products-filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+
+    .filter-button {
+        white-space: nowrap;
+    }
+
+    .product-image {
+        height: 230px;
+    }
+
+    .app-highlight {
+        min-height: 380px;
+        padding: 30px 24px;
+    }
+
+    .footer-content {
+        padding: 50px 0;
+    }
+
+    .footer-links {
+        width: 100%;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .logo-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .header-button {
+        display: none;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+    }
+
+}
