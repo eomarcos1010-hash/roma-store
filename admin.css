@@ -1927,6 +1927,148 @@ a {
 }
 
 /* =========================================================
+   CATEGORIAS
+   ========================================================= */
+
+.category-form {
+    margin-bottom: 25px;
+}
+
+.category-form form {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.category-form .form-group {
+    flex: 1;
+}
+
+.category-form .form-actions {
+    padding-top: 0;
+
+    border-top: 0;
+}
+
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin-top: 20px;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding: 13px 15px;
+
+    background: rgba(255,255,255,.025);
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+    transition: .2s;
+}
+
+.category-item:hover {
+    background: rgba(255,255,255,.04);
+
+    border-color: rgba(22,119,255,.2);
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    min-width: 0;
+}
+
+.category-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    color: var(--blue-light);
+
+    background: rgba(22,119,255,.1);
+
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.category-name {
+    overflow: hidden;
+
+    color: var(--text);
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.category-actions {
+    display: flex;
+    gap: 6px;
+
+    flex-shrink: 0;
+}
+
+.category-action-button {
+    width: 30px;
+    height: 30px;
+
+    color: var(--text-2);
+
+    background: rgba(255,255,255,.04);
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.category-action-button:hover {
+    color: white;
+
+    border-color: rgba(22,119,255,.3);
+}
+
+.category-action-button.delete:hover {
+    color: var(--red);
+
+    border-color: rgba(255,85,112,.2);
+}
+
+.categories-empty {
+    padding: 40px 20px;
+
+    color: var(--text-3);
+
+    text-align: center;
+
+    font-size: 11px;
+}
+
+/* =========================================================
    MODAL
    ========================================================= */
 
@@ -2219,6 +2361,24 @@ a {
 
     .bar-chart {
         gap: 7px;
+    }
+
+    /* =====================================================
+       CATEGORIAS — MOBILE
+       ===================================================== */
+
+    .category-form form {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .category-form .form-actions {
+        justify-content: flex-end;
+    }
+
+    .category-item {
+        padding: 11px;
     }
 
 }
