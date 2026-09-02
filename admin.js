@@ -1,6 +1,11 @@
 "use strict";
 
 /* ============================================================
+   AXEUS STORE — ADMIN.JS
+   PAINEL ADMINISTRATIVO + SUPABASE
+   ============================================================ */
+
+/* ============================================================
    CONFIGURAÇÃO SUPABASE
    ============================================================ */
 
@@ -10,148 +15,16 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "https://qgztuzjqxnwdqdsasche.supabase.co/rest/v1/";
 
+
+/* ============================================================
+   CONFIGURAÇÃO LOCAL
+   ============================================================ */
+
 const PRODUCTS_KEY = "axeus_products";
 const OLD_PRODUCTS_KEY = "axeus_store_products";
 
-
-/* ============================================================
-   LOGIN ADMINISTRATIVO
-   ============================================================ */
-
 const ADMIN_USER = "SEU_USUARIO";
 const ADMIN_PASSWORD = "SUA_SENHA";
-
-const loginForm =
-    document.getElementById("loginForm");
-
-const usernameInput =
-    document.getElementById("username");
-
-const passwordInput =
-    document.getElementById("password");
-
-const loginError =
-    document.getElementById("loginError");
-
-if (loginForm) {
-
-    loginForm.addEventListener(
-        "submit",
-        function (event) {
-
-            event.preventDefault();
-
-            const username =
-                usernameInput.value.trim();
-
-            const password =
-                passwordInput.value;
-
-            loginError.textContent = "";
-
-            if (
-                username === ADMIN_USER &&
-                password === ADMIN_PASSWORD
-            ) {
-
-                sessionStorage.setItem(
-                    "axeus_admin_logged",
-                    "true"
-                );
-
-                window.location.href =
-                    "dashboard.html";
-
-            } else {
-
-                loginError.textContent =
-                    "Usuário ou senha incorretos.";
-
-                passwordInput.value = "";
-
-                passwordInput.focus();
-            }
-        }
-    );
-}
-
-
-/* ============================================================
-   MOSTRAR SENHA
-   ============================================================ */
-
-const showPassword =
-    document.getElementById("showPassword");
-
-if (
-    showPassword &&
-    passwordInput
-) {
-
-    showPassword.addEventListener(
-        "click",
-        function () {
-
-            if (
-                passwordInput.type ===
-                "password"
-            ) {
-
-                passwordInput.type =
-                    "text";
-
-                showPassword.textContent =
-                    "○";
-
-            } else {
-
-                passwordInput.type =
-                    "password";
-
-                showPassword.textContent =
-                    "◉";
-            }
-        }
-    );
-}
-
-
-/* ============================================================
-   VERIFICAR LOGIN
-   ============================================================ */
-
-function verificarLoginAdmin() {
-
-    const logged =
-        sessionStorage.getItem(
-            "axeus_admin_logged"
-        );
-
-    if (logged !== "true") {
-
-        window.location.href =
-            "adm.html";
-
-        return false;
-    }
-
-    return true;
-}
-
-const isDashboard =
-    document.querySelector(
-        ".admin-layout"
-    );
-
-if (
-    isDashboard &&
-    !verificarLoginAdmin()
-) {
-
-    throw new Error(
-        "Administrador não autenticado."
-    );
-}
 
 
 /* ============================================================
@@ -159,142 +32,342 @@ if (
    ============================================================ */
 
 const defaultProducts = [
-
     {
-        id: "tiktok",
+        id: "1",
         name: "Ganchos para TikTok Shop",
-        category: "TikTok Shop",
-        price: "R$ 19,90",
         description:
-            "Ganchos e estratégias para criar vídeos mais atrativos para TikTok Shop.",
+            "Pacote completo de ganchos para aumentar a retenção e as vendas no TikTok Shop.",
+        category: "TikTok Shop",
         image: "",
-        link:
-            "https://pay.cakto.com.br/3erj75x_1080094",
+        price: 19.90,
+        link: "https://pay.cakto.com.br/3erj75x_1080094",
         sold: 1207,
         clicks: 0,
         status: "active"
     },
-
     {
-        id: "spotify",
+        id: "2",
         name: "Método Spotify PC",
-        category: "PC",
-        price: "R$ 19,90",
         description:
-            "Método para melhorar sua experiência com Spotify no PC.",
+            "Método completo para utilizar o Spotify no PC de forma prática.",
+        category: "PC",
         image: "",
-        link:
-            "https://pay.cakto.com.br/szk82cw_1007831",
+        price: 19.90,
+        link: "https://pay.cakto.com.br/szk82cw_1007831",
         sold: 842,
         clicks: 0,
         status: "active"
     },
-
     {
-        id: "streaming",
+        id: "3",
         name: "Aplicativo de Streaming",
-        category: "Entretenimento",
-        price: "R$ 19,90",
         description:
-            "Aplicativo de entretenimento com filmes e séries.",
+            "Aplicativo de streaming para entretenimento.",
+        category: "Entretenimento",
         image: "",
-        link:
-            "https://pay.cakto.com.br/po9btzm_997956",
+        price: 19.90,
+        link: "https://pay.cakto.com.br/po9btzm_997956",
         sold: 913,
         clicks: 0,
         status: "active"
     },
-
     {
-        id: "otimizacao",
+        id: "4",
         name: "Painel de Otimização",
-        category: "PC",
-        price: "R$ 19,90",
         description:
-            "Ferramenta para otimização e gerenciamento do Windows.",
+            "Painel com ferramentas para otimização do computador.",
+        category: "PC",
         image: "",
-        link:
-            "https://pay.cakto.com.br/r9phmxw_864564",
+        price: 19.90,
+        link: "https://pay.cakto.com.br/r9phmxw_864564",
         sold: 536,
         clicks: 0,
         status: "active"
     },
-
     {
-        id: "axeus",
+        id: "5",
         name: "AXEUS",
-        category: "Aplicativos",
-        price: "",
         description:
-            "O novo aplicativo AXEUS está chegando.",
+            "Aplicativo AXEUS.",
+        category: "Aplicativos",
         image: "",
+        price: 0,
         link: "",
         sold: 0,
         clicks: 0,
         status: "coming"
     }
-
 ];
 
 
 /* ============================================================
-   NORMALIZAÇÃO
+   LOGIN
    ============================================================ */
 
-function normalizeProduct(product) {
+function iniciarLogin() {
+    const loginForm = document.getElementById("loginForm");
+
+    if (!loginForm) {
+        return;
+    }
+
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const usernameInput =
+            document.getElementById("username");
+
+        const passwordInput =
+            document.getElementById("password");
+
+        const loginError =
+            document.getElementById("loginError");
+
+        const username =
+            usernameInput ? usernameInput.value.trim() : "";
+
+        const password =
+            passwordInput ? passwordInput.value : "";
+
+        if (
+            username === ADMIN_USER &&
+            password === ADMIN_PASSWORD
+        ) {
+            sessionStorage.setItem(
+                "axeus_admin_logged",
+                "true"
+            );
+
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        if (loginError) {
+            loginError.textContent =
+                "Usuário ou senha incorretos.";
+        }
+    });
+}
+
+
+/* ============================================================
+   MOSTRAR / OCULTAR SENHA
+   ============================================================ */
+
+function iniciarMostrarSenha() {
+    const showPassword =
+        document.getElementById("showPassword");
+
+    const password =
+        document.getElementById("password");
+
+    if (!showPassword || !password) {
+        return;
+    }
+
+    showPassword.addEventListener("change", function () {
+        password.type =
+            this.checked ? "text" : "password";
+    });
+}
+
+
+/* ============================================================
+   PROTEÇÃO DO DASHBOARD
+   ============================================================ */
+
+function verificarLoginAdmin() {
+    const logged =
+        sessionStorage.getItem("axeus_admin_logged");
+
+    if (logged !== "true") {
+        window.location.href = "adm.html";
+        return false;
+    }
+
+    return true;
+}
+
+const isDashboard =
+    document.querySelector(".admin-layout");
+
+if (
+    isDashboard &&
+    !verificarLoginAdmin()
+) {
+    throw new Error(
+        "Administrador não autenticado."
+    );
+}
+
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+
+function iniciarLogout() {
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    if (!logoutButton) {
+        return;
+    }
+
+    logoutButton.addEventListener("click", function () {
+        sessionStorage.removeItem(
+            "axeus_admin_logged"
+        );
+
+        window.location.href = "adm.html";
+    });
+}
+
+
+/* ============================================================
+   NORMALIZAÇÃO DE PRODUTO
+   ============================================================ */
+
+function normalizeProduct(product, index = 0) {
+    if (!product) {
+        return null;
+    }
 
     return {
+        id:
+            String(
+                product.id ??
+                Date.now() + index
+            ),
 
-        id: String(
-            product.id ||
-            ("product_" + Date.now())
-        ),
+        name:
+            String(
+                product.name ?? ""
+            ),
 
-        name: String(
-            product.name || ""
-        ),
+        description:
+            String(
+                product.description ?? ""
+            ),
 
-        description: String(
-            product.description || ""
-        ),
+        category:
+            String(
+                product.category ?? "Outros"
+            ),
 
-        category: String(
-            product.category || ""
-        ),
+        image:
+            String(
+                product.image ?? ""
+            ),
 
-        image: String(
-            product.image || ""
-        ),
+        price:
+            Number(
+                product.price ?? 0
+            ),
 
-        checkout: String(
-            product.checkout ||
-            product.link ||
-            ""
-        ),
+        link:
+            String(
+                product.link ??
+                product.checkout ??
+                ""
+            ),
 
-        link: String(
-            product.link ||
-            product.checkout ||
-            ""
-        ),
+        sold:
+            Number(
+                product.sold ?? 0
+            ),
 
-        clicks: Number(
-            product.clicks || 0
-        ),
+        clicks:
+            Number(
+                product.clicks ?? 0
+            ),
 
-        sold: Number(
-            product.sold || 0
-        ),
-
-        status: String(
-            product.status ||
+        status:
+            product.status ??
             "active"
-        ),
-
-        price: String(
-            product.price || ""
-        )
     };
+}
+
+
+/* ============================================================
+   STORAGE LOCAL
+   ============================================================ */
+
+function getLocalProducts() {
+    try {
+        const current =
+            localStorage.getItem(
+                PRODUCTS_KEY
+            );
+
+        if (current) {
+            const parsed =
+                JSON.parse(current);
+
+            if (Array.isArray(parsed)) {
+                return parsed.map(
+                    normalizeProduct
+                );
+            }
+        }
+
+        const old =
+            localStorage.getItem(
+                OLD_PRODUCTS_KEY
+            );
+
+        if (old) {
+            const parsed =
+                JSON.parse(old);
+
+            if (Array.isArray(parsed)) {
+                const products =
+                    parsed.map(
+                        normalizeProduct
+                    );
+
+                localStorage.setItem(
+                    PRODUCTS_KEY,
+                    JSON.stringify(products)
+                );
+
+                return products;
+            }
+        }
+    } catch (error) {
+        console.error(
+            "Erro ao ler produtos locais:",
+            error
+        );
+    }
+
+    return defaultProducts.map(
+        normalizeProduct
+    );
+}
+
+
+function saveLocalProducts(products) {
+    try {
+        localStorage.setItem(
+            PRODUCTS_KEY,
+            JSON.stringify(products)
+        );
+
+        localStorage.setItem(
+            OLD_PRODUCTS_KEY,
+            JSON.stringify(products)
+        );
+
+        localStorage.setItem(
+            "axeusProductsUpdated",
+            String(Date.now())
+        );
+    } catch (error) {
+        console.error(
+            "Erro ao salvar produtos:",
+            error
+        );
+    }
 }
 
 
@@ -306,55 +379,46 @@ async function supabaseRequest(
     endpoint,
     options = {}
 ) {
+    const url =
+        `${SUPABASE_URL}/rest/v1/${endpoint}`;
+
+    const headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+        ...(options.headers || {})
+    };
 
     const response =
-        await fetch(
-            SUPABASE_URL +
-            "/rest/v1/" +
-            endpoint,
-            {
-
-                ...options,
-
-                headers: {
-
-                    "apikey":
-                        SUPABASE_KEY,
-
-                    "Authorization":
-                        "Bearer " +
-                        SUPABASE_KEY,
-
-                    "Content-Type":
-                        "application/json",
-
-                    "Prefer":
-                        "return=representation",
-
-                    ...(options.headers || {})
-                }
-            }
-        );
+        await fetch(url, {
+            ...options,
+            headers
+        });
 
     if (!response.ok) {
-
-        const errorText =
+        const text =
             await response.text();
 
         throw new Error(
-            errorText ||
-            "Erro ao acessar o Supabase."
+            `Supabase ${response.status}: ${text}`
         );
     }
 
-    const text =
-        await response.text();
+    const contentType =
+        response.headers.get(
+            "content-type"
+        );
 
-    if (!text) {
-        return [];
+    if (
+        contentType &&
+        contentType.includes(
+            "application/json"
+        )
+    ) {
+        return await response.json();
     }
 
-    return JSON.parse(text);
+    return null;
 }
 
 
@@ -363,273 +427,102 @@ async function supabaseRequest(
    ============================================================ */
 
 async function loadProductsFromSupabase() {
-
-    const products =
-        await supabaseRequest(
-            "products?select=*&order=created_at.asc"
-        );
-
-    return Array.isArray(products)
-        ? products.map(normalizeProduct)
-        : [];
-}
-
-
-/* ============================================================
-   SALVAR PRODUTOS NO SUPABASE
-   ============================================================ */
-
-async function saveProductsToSupabase(
-    products
-) {
-
-    const normalized =
-        products.map(
-            normalizeProduct
-        );
-
-    /*
-       Primeiro buscamos os IDs atuais
-       para saber quais registros existem.
-    */
-
-    const current =
-        await loadProductsFromSupabase();
-
-    const currentIds =
-        new Set(
-            current.map(
-                product => product.id
-            )
-        );
-
-    const newIds =
-        new Set(
-            normalized.map(
-                product => product.id
-            )
-        );
-
-
-    /* ========================================================
-       INSERIR / ATUALIZAR
-       ======================================================== */
-
-    for (
-        const product of normalized
-    ) {
-
-        await supabaseRequest(
-            "products?on_conflict=id",
-            {
-
-                method: "POST",
-
-                body: JSON.stringify(
-                    product
-                )
-            }
-        );
-    }
-
-
-    /* ========================================================
-       EXCLUIR PRODUTOS REMOVIDOS
-       ======================================================== */
-
-    for (
-        const oldProduct of current
-    ) {
-
-        if (
-            !newIds.has(
-                oldProduct.id
-            )
-        ) {
-
-            await supabaseRequest(
-                "products?id=eq." +
-                encodeURIComponent(
-                    oldProduct.id
-                ),
-                {
-                    method: "DELETE"
-                }
-            );
-        }
-    }
-
-
-    /* ========================================================
-       CACHE LOCAL
-       ======================================================== */
-
-    localStorage.setItem(
-        PRODUCTS_KEY,
-        JSON.stringify(
-            normalized
-        )
-    );
-
-    window.dispatchEvent(
-        new CustomEvent(
-            "axeusProductsUpdated",
-            {
-                detail: normalized
-            }
-        )
-    );
-
-    return normalized;
-}
-
-
-/* ============================================================
-   OBTER PRODUTOS
-   ============================================================ */
-
-async function getProductsAsync() {
-
     try {
-
-        const products =
-            await loadProductsFromSupabase();
-
-        /*
-           Se o banco estiver vazio,
-           usamos os produtos padrão
-           apenas na primeira configuração.
-        */
+        const data =
+            await supabaseRequest(
+                "products?select=*&order=created_at.asc",
+                {
+                    method: "GET"
+                }
+            );
 
         if (
-            products.length === 0
+            Array.isArray(data) &&
+            data.length > 0
         ) {
-
-            await saveProductsToSupabase(
-                defaultProducts
-            );
-
-            return defaultProducts.map(
-                normalizeProduct
-            );
-        }
-
-        localStorage.setItem(
-            PRODUCTS_KEY,
-            JSON.stringify(
-                products
-            )
-        );
-
-        return products;
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao carregar Supabase:",
-            error
-        );
-
-        const saved =
-            localStorage.getItem(
-                PRODUCTS_KEY
-            );
-
-        if (saved) {
-
-            try {
-
-                const products =
-                    JSON.parse(saved);
-
-                if (
-                    Array.isArray(
-                        products
-                    )
-                ) {
-
-                    return products.map(
-                        normalizeProduct
-                    );
-                }
-
-            } catch {}
-        }
-
-        return defaultProducts.map(
-            normalizeProduct
-        );
-    }
-}
-
-
-/* ============================================================
-   CACHE / COMPATIBILIDADE
-   ============================================================ */
-
-function getProducts() {
-
-    const saved =
-        localStorage.getItem(
-            PRODUCTS_KEY
-        );
-
-    if (saved) {
-
-        try {
-
             const products =
-                JSON.parse(saved);
-
-            if (
-                Array.isArray(
-                    products
-                )
-            ) {
-
-                return products.map(
+                data.map(
                     normalizeProduct
                 );
-            }
 
-        } catch {}
+            saveLocalProducts(products);
+
+            return products;
+        }
+
+        return getLocalProducts();
+
+    } catch (error) {
+        console.error(
+            "Erro ao carregar produtos do Supabase:",
+            error
+        );
+
+        return getLocalProducts();
     }
+}
 
-    return defaultProducts.map(
-        normalizeProduct
+
+/* ============================================================
+   SALVAR PRODUTO NO SUPABASE
+   ============================================================ */
+
+async function saveProductToSupabase(product) {
+    const normalized =
+        normalizeProduct(product);
+
+    const payload = {
+        id: normalized.id,
+        name: normalized.name,
+        description: normalized.description,
+        category: normalized.category,
+        image: normalized.image,
+        price: normalized.price,
+        link: normalized.link,
+        sold: normalized.sold,
+        clicks: normalized.clicks,
+        status: normalized.status
+    };
+
+    return await supabaseRequest(
+        "products?on_conflict=id",
+        {
+            method: "POST",
+            headers: {
+                "Prefer":
+                    "resolution=merge-duplicates,return=representation"
+            },
+            body: JSON.stringify(payload)
+        }
     );
 }
 
 
 /* ============================================================
-   SALVAR
+   EXCLUIR PRODUTO DO SUPABASE
    ============================================================ */
 
-async function saveProducts(
-    products
-) {
+async function deleteProductFromSupabase(id) {
+    return await supabaseRequest(
+        `products?id=eq.${encodeURIComponent(id)}`,
+        {
+            method: "DELETE"
+        }
+    );
+}
 
-    try {
 
-        await saveProductsToSupabase(
-            products
-        );
+/* ============================================================
+   CARREGAR PRODUTOS
+   ============================================================ */
 
-        return true;
+let products = [];
 
-    } catch (error) {
+async function loadProducts() {
+    products =
+        await loadProductsFromSupabase();
 
-        console.error(
-            "Erro ao salvar produtos:",
-            error
-        );
-
-        showToast(
-            "Erro ao salvar no banco."
-        );
-
-        return false;
-    }
+    renderEverything();
 }
 
 
@@ -637,197 +530,67 @@ async function saveProducts(
    FORMATAÇÃO
    ============================================================ */
 
-function formatNumber(number) {
+function formatPrice(value) {
+    const number =
+        Number(value || 0);
 
-    return Number(
-        number || 0
-    ).toLocaleString(
-        "pt-BR"
+    return number.toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
     );
 }
 
 
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
 /* ============================================================
-   NAVEGAÇÃO
+   TOAST
    ============================================================ */
 
-const navItems =
-    document.querySelectorAll(
-        ".nav-item[data-section]"
-    );
-
-const sectionButtons =
-    document.querySelectorAll(
-        "[data-section]"
-    );
-
-const sections =
-    document.querySelectorAll(
-        ".admin-section"
-    );
-
-
-async function openSection(
-    sectionName
-) {
-
-    sections.forEach(
-        section => {
-            section.classList.remove(
-                "active"
-            );
-        }
-    );
-
-    const selected =
+function showToast(message) {
+    const toast =
         document.getElementById(
-            `section-${sectionName}`
+            "adminToast"
         );
 
-    if (selected) {
-
-        selected.classList.add(
-            "active"
-        );
-    }
-
-    navItems.forEach(
-        item => {
-
-            item.classList.toggle(
-                "active",
-                item.dataset.section ===
-                sectionName
-            );
-
-        }
-    );
-
-    const titles = {
-
-        dashboard:
-            "Dashboard",
-
-        produtos:
-            "Produtos",
-
-        cliques:
-            "Cliques",
-
-        adicionar:
-            "Novo produto"
-    };
-
-    const pageTitle =
+    const toastMessage =
         document.getElementById(
-            "pageTitle"
+            "toastMessage"
         );
 
-    if (pageTitle) {
-
-        pageTitle.textContent =
-            titles[sectionName] ||
-            "Dashboard";
+    if (!toast) {
+        return;
     }
 
-    if (
-        sectionName ===
-        "dashboard"
-    ) {
-
-        await renderDashboard();
+    if (toastMessage) {
+        toastMessage.textContent =
+            message;
     }
 
-    if (
-        sectionName ===
-        "produtos"
-    ) {
+    toast.classList.add("show");
 
-        await renderProductsTable();
-    }
-
-    if (
-        sectionName ===
-        "cliques"
-    ) {
-
-        await renderClicks();
-    }
-
-    if (
-        sectionName ===
-        "adicionar"
-    ) {
-
-        prepareNewProduct();
-    }
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-    });
-}
-
-
-sectionButtons.forEach(
-    button => {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                const section =
-                    button.dataset.section;
-
-                if (section) {
-
-                    openSection(
-                        section
-                    );
-                }
-            }
-        );
-    }
-);
-
-
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-
-const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
-
-if (logoutButton) {
-
-    logoutButton.addEventListener(
-        "click",
-        function () {
-
-            sessionStorage.removeItem(
-                "axeus_admin_logged"
-            );
-
-            window.location.href =
-                "adm.html";
-        }
-    );
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
 }
 
 
 /* ============================================================
-   DASHBOARD
+   DASHBOARD — ESTATÍSTICAS
    ============================================================ */
 
-async function renderDashboard() {
-
-    const products =
-        await getProductsAsync();
-
+function renderDashboardStats() {
     const totalProducts =
         document.getElementById(
             "totalProducts"
@@ -848,262 +611,105 @@ async function renderDashboard() {
             "topProduct"
         );
 
-    const clicksTotal =
+    const total =
+        products.length;
+
+    const clicks =
         products.reduce(
-            (total, product) =>
-                total +
-                Number(
-                    product.clicks || 0
-                ),
+            (sum, product) =>
+                sum +
+                Number(product.clicks || 0),
             0
         );
 
     const active =
         products.filter(
             product =>
-                product.status ===
-                "active"
+                product.status === "active"
         ).length;
 
-    const sorted =
-        [...products].sort(
-            (a, b) =>
-                Number(
-                    b.clicks || 0
-                ) -
-                Number(
-                    a.clicks || 0
-                )
-        );
-
-    if (totalProducts) {
-
-        totalProducts.textContent =
-            formatNumber(
-                products.length
-            );
-    }
-
-    if (totalClicks) {
-
-        totalClicks.textContent =
-            formatNumber(
-                clicksTotal
-            );
-    }
-
-    if (activeProducts) {
-
-        activeProducts.textContent =
-            formatNumber(
-                active
-            );
-    }
-
-    if (topProduct) {
-
-        topProduct.textContent =
-            sorted.length &&
-            Number(
-                sorted[0].clicks || 0
-            ) > 0
-                ? sorted[0].name
-                : "—";
-    }
-
-    renderChart(products);
-    renderRanking(products);
-    renderDashboardProducts(
-        products
-    );
-}
-
-
-/* ============================================================
-   GRÁFICO
-   ============================================================ */
-
-function renderChart(
-    products
-) {
-
-    const chart =
-        document.getElementById(
-            "clickChart"
-        );
-
-    if (!chart) return;
-
-    chart.innerHTML = "";
-
-    const sorted =
+    const top =
         [...products]
             .sort(
                 (a, b) =>
-                    Number(
-                        b.clicks || 0
-                    ) -
-                    Number(
-                        a.clicks || 0
-                    )
-            )
-            .slice(0, 6);
+                    Number(b.clicks || 0) -
+                    Number(a.clicks || 0)
+            )[0];
 
-    if (!sorted.length) {
-
-        chart.innerHTML =
-            `<div class="empty-state">
-                Nenhum produto cadastrado.
-            </div>`;
-
-        return;
+    if (totalProducts) {
+        totalProducts.textContent =
+            total;
     }
 
-    const maxClicks =
-        Math.max(
-            ...sorted.map(
-                product =>
-                    Number(
-                        product.clicks ||
-                        0
-                    )
-            ),
-            1
-        );
+    if (totalClicks) {
+        totalClicks.textContent =
+            clicks;
+    }
 
-    sorted.forEach(
-        product => {
+    if (activeProducts) {
+        activeProducts.textContent =
+            active;
+    }
 
-            const clicks =
-                Number(
-                    product.clicks ||
-                    0
-                );
-
-            const percentage =
-                (clicks /
-                    maxClicks) *
-                100;
-
-            const column =
-                document.createElement(
-                    "div"
-                );
-
-            column.className =
-                "chart-column";
-
-            column.innerHTML = `
-
-                <span class="chart-value">
-                    ${formatNumber(clicks)}
-                </span>
-
-                <div class="chart-bar-area">
-
-                    <div
-                        class="chart-bar"
-                        style="height:${Math.max(
-                            percentage,
-                            3
-                        )}%"
-                    ></div>
-
-                </div>
-
-                <span class="chart-label">
-                    ${escapeHtml(
-                        product.name
-                    )}
-                </span>
-            `;
-
-            chart.appendChild(
-                column
-            );
-        }
-    );
+    if (topProduct) {
+        topProduct.textContent =
+            top
+                ? top.name
+                : "Nenhum";
+    }
 }
 
 
 /* ============================================================
-   RANKING
+   RANKING DE PRODUTOS
    ============================================================ */
 
-function renderRanking(
-    products
-) {
-
+function renderTopProducts() {
     const container =
         document.getElementById(
             "topProductsList"
         );
 
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
-    const sorted =
+    const ranking =
         [...products]
             .sort(
                 (a, b) =>
-                    Number(
-                        b.clicks || 0
-                    ) -
-                    Number(
-                        a.clicks || 0
-                    )
+                    Number(b.clicks || 0) -
+                    Number(a.clicks || 0)
             )
             .slice(0, 5);
 
-    if (!sorted.length) {
-
+    if (!ranking.length) {
         container.innerHTML =
-            `<div class="empty-state">
-                Nenhum produto cadastrado.
-            </div>`;
+            "<p>Nenhum produto encontrado.</p>";
 
         return;
     }
 
     container.innerHTML =
-        sorted
-            .map(
-                (
-                    product,
-                    index
-                ) => `
-
-                    <div class="ranking-item">
-
-                        <div class="ranking-number">
-                            ${index + 1}
-                        </div>
-
-                        <div class="ranking-info">
-
-                            <strong>
-                                ${escapeHtml(
-                                    product.name
-                                )}
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    product.category
-                                )}
-                            </span>
-
-                        </div>
-
-                        <div class="ranking-clicks">
-                            ${formatNumber(
-                                product.clicks
-                            )}
-                        </div>
-
+        ranking.map(
+            (product, index) => `
+                <div class="top-product-item">
+                    <div class="top-product-position">
+                        ${index + 1}
                     </div>
-                `
-            )
-            .join("");
+
+                    <div class="top-product-info">
+                        <strong>
+                            ${escapeHTML(product.name)}
+                        </strong>
+
+                        <span>
+                            ${Number(product.clicks || 0)} cliques
+                        </span>
+                    </div>
+                </div>
+            `
+        ).join("");
 }
 
 
@@ -1111,75 +717,38 @@ function renderRanking(
    PRODUTOS DO DASHBOARD
    ============================================================ */
 
-function renderDashboardProducts(
-    products
-) {
-
+function renderDashboardProducts() {
     const container =
         document.getElementById(
             "dashboardProducts"
         );
 
-    if (!container) return;
-
-    const items =
-        products.slice(0, 6);
-
-    if (!items.length) {
-
-        container.innerHTML =
-            `<div class="empty-state">
-                Nenhum produto cadastrado.
-            </div>`;
-
+    if (!container) {
         return;
     }
 
     container.innerHTML =
-        items
-            .map(
-                product => `
+        products.map(
+            product => `
+                <div class="dashboard-product">
+                    <div>
+                        <strong>
+                            ${escapeHTML(product.name)}
+                        </strong>
 
-                    <div class="dashboard-product">
-
-                        <div class="product-mini-image">
-
-                            ${
-                                product.image
-                                    ? `
-                                        <img
-                                            src="${escapeAttribute(
-                                                product.image
-                                            )}"
-                                            alt=""
-                                        >
-                                      `
-                                    : "AX"
-                            }
-
-                        </div>
-
-                        <div class="dashboard-product-info">
-
-                            <strong>
-                                ${escapeHtml(
-                                    product.name
-                                )}
-                            </strong>
-
-                            <span>
-                                ${formatNumber(
-                                    product.clicks
-                                )}
-                                cliques
-                            </span>
-
-                        </div>
-
+                        <span>
+                            ${escapeHTML(product.category)}
+                        </span>
                     </div>
-                `
-            )
-            .join("");
+
+                    <div>
+                        <strong>
+                            ${formatPrice(product.price)}
+                        </strong>
+                    </div>
+                </div>
+            `
+        ).join("");
 }
 
 
@@ -1187,70 +756,50 @@ function renderDashboardProducts(
    TABELA DE PRODUTOS
    ============================================================ */
 
-async function renderProductsTable(
-    search = ""
+function renderProductsTable(
+    searchTerm = ""
 ) {
-
     const tbody =
         document.getElementById(
             "productsTableBody"
         );
 
-    if (!tbody) return;
+    if (!tbody) {
+        return;
+    }
 
-    let products =
-        await getProductsAsync();
+    const term =
+        searchTerm
+            .trim()
+            .toLowerCase();
 
-    const searchValue =
-        search.trim().toLowerCase();
+    const filtered =
+        products.filter(product => {
+            if (!term) {
+                return true;
+            }
 
-    if (searchValue) {
+            return (
+                product.name
+                    .toLowerCase()
+                    .includes(term) ||
 
-        products =
-            products.filter(
-                product =>
+                product.category
+                    .toLowerCase()
+                    .includes(term) ||
 
-                    product.name
-                        .toLowerCase()
-                        .includes(
-                            searchValue
-                        ) ||
-
-                    product.category
-                        .toLowerCase()
-                        .includes(
-                            searchValue
-                        )
+                product.description
+                    .toLowerCase()
+                    .includes(term)
             );
-    }
+        });
 
-    const productCount =
-        document.getElementById(
-            "productCount"
-        );
-
-    if (productCount) {
-
-        productCount.textContent =
-            `${products.length} ${
-                products.length === 1
-                    ? "produto"
-                    : "produtos"
-            }`;
-    }
-
-    if (!products.length) {
-
+    if (!filtered.length) {
         tbody.innerHTML = `
             <tr>
-
-                <td
-                    colspan="6"
-                    class="table-empty"
-                >
+                <td colspan="8">
                     Nenhum produto encontrado.
                 </td>
-
             </tr>
         `;
 
@@ -1258,119 +807,79 @@ async function renderProductsTable(
     }
 
     tbody.innerHTML =
-        products
-            .map(
-                product => `
-
-                    <tr>
-
-                        <td>
-
-                            <div class="table-product">
-
-                                <div class="table-product-image">
-
-                                    ${
-                                        product.image
-                                            ? `
-                                                <img
-                                                    src="${escapeAttribute(
-                                                        product.image
-                                                    )}"
-                                                    alt=""
-                                                >
-                                              `
-                                            : "AX"
-                                    }
-
-                                </div>
-
-                                <div>
-
-                                    <div class="table-product-name">
-                                        ${escapeHtml(
-                                            product.name
-                                        )}
+        filtered.map(
+            product => `
+                <tr>
+                    <td>
+                        ${
+                            product.image
+                                ? `
+                                    <img
+                                        src="${escapeHTML(product.image)}"
+                                        alt=""
+                                        class="product-table-image"
+                                    >
+                                  `
+                                : `
+                                    <div class="product-table-placeholder">
+                                        AX
                                     </div>
+                                  `
+                        }
+                    </td>
 
-                                    <div class="table-product-category">
-                                        ${formatNumber(
-                                            product.sold
-                                        )}
-                                        vendidos
-                                    </div>
+                    <td>
+                        <strong>
+                            ${escapeHTML(product.name)}
+                        </strong>
+                    </td>
 
-                                </div>
+                    <td>
+                        ${escapeHTML(product.category)}
+                    </td>
 
-                            </div>
+                    <td>
+                        ${formatPrice(product.price)}
+                    </td>
 
-                        </td>
+                    <td>
+                        ${Number(product.sold || 0)}
+                    </td>
 
-                        <td>
+                    <td>
+                        ${Number(product.clicks || 0)}
+                    </td>
 
-                            <span class="category-tag">
-                                ${escapeHtml(
-                                    product.category
-                                )}
-                            </span>
+                    <td>
+                        <span class="status status-${escapeHTML(product.status)}">
+                            ${getStatusLabel(product.status)}
+                        </span>
+                    </td>
 
-                        </td>
+                    <td>
+                        <div class="table-actions">
+                            <button
+                                type="button"
+                                class="edit-product"
+                                data-id="${escapeHTML(product.id)}"
+                            >
+                                Editar
+                            </button>
 
-                        <td>
-                            ${escapeHtml(
-                                product.price ||
-                                "—"
-                            )}
-                        </td>
+                            <button
+                                type="button"
+                                class="delete-product"
+                                data-id="${escapeHTML(product.id)}"
+                            >
+                                Excluir
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `
+        ).join("");
 
-                        <td>
-
-                            <strong>
-                                ${formatNumber(
-                                    product.clicks
-                                )}
-                            </strong>
-
-                        </td>
-
-                        <td>
-                            ${getStatusHTML(
-                                product.status
-                            )}
-                        </td>
-
-                        <td>
-
-                            <div class="action-buttons">
-
-                                <button
-                                    class="action-button"
-                                    title="Editar"
-                                    onclick="editProduct('${escapeAttribute(
-                                        product.id
-                                    )}')"
-                                >
-                                    ✎
-                                </button>
-
-                                <button
-                                    class="action-button delete"
-                                    title="Remover"
-                                    onclick="openDeleteModal('${escapeAttribute(
-                                        product.id
-                                    )}')"
-                                >
-                                    ×
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-                `
-            )
-            .join("");
+    bindTableActions();
 }
 
 
@@ -1378,266 +887,53 @@ async function renderProductsTable(
    STATUS
    ============================================================ */
 
-function getStatusHTML(
-    status
-) {
+function getStatusLabel(status) {
+    switch (status) {
+        case "active":
+            return "Ativo";
 
-    if (
-        status ===
-        "coming"
-    ) {
+        case "inactive":
+            return "Inativo";
 
-        return `
-            <span class="status coming">
-                <i></i>
-                Em breve
-            </span>
-        `;
+        case "coming":
+            return "Em breve";
+
+        default:
+            return "Ativo";
     }
-
-    if (
-        status ===
-        "inactive"
-    ) {
-
-        return `
-            <span class="status inactive">
-                <i></i>
-                Inativo
-            </span>
-        `;
-    }
-
-    return `
-        <span class="status active">
-            <i></i>
-            Ativo
-        </span>
-    `;
 }
 
 
 /* ============================================================
-   PESQUISA
+   AÇÕES DA TABELA
    ============================================================ */
 
-const productSearch =
-    document.getElementById(
-        "productSearch"
-    );
-
-if (productSearch) {
-
-    productSearch.addEventListener(
-        "input",
-        function () {
-
-            renderProductsTable(
-                productSearch.value
+function bindTableActions() {
+    document
+        .querySelectorAll(".edit-product")
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    editProduct(
+                        button.dataset.id
+                    );
+                }
             );
-        }
-    );
-}
-
-
-/* ============================================================
-   FORMULÁRIO
-   ============================================================ */
-
-const productForm =
-    document.getElementById(
-        "productForm"
-    );
-
-if (productForm) {
-
-    productForm.addEventListener(
-        "submit",
-        function (event) {
-
-            event.preventDefault();
-
-            saveProductFromForm();
-        }
-    );
-}
-
-
-/* ============================================================
-   SALVAR PRODUTO
-   ============================================================ */
-
-async function saveProductFromForm() {
-
-    const products =
-        await getProductsAsync();
-
-    const editingId =
-        document.getElementById(
-            "editingProductId"
-        ).value;
-
-    const name =
-        document.getElementById(
-            "productName"
-        ).value.trim();
-
-    const category =
-        document.getElementById(
-            "productCategory"
-        ).value;
-
-    const price =
-        document.getElementById(
-            "productPrice"
-        ).value.trim();
-
-    const description =
-        document.getElementById(
-            "productDescription"
-        ).value.trim();
-
-    const image =
-        document.getElementById(
-            "productImage"
-        ).value.trim();
-
-    const link =
-        document.getElementById(
-            "productLink"
-        ).value.trim();
-
-    const sold =
-        Number(
-            document.getElementById(
-                "productSold"
-            ).value
-        ) || 0;
-
-    const status =
-        document.getElementById(
-            "productStatus"
-        ).value;
-
-    if (
-        !name ||
-        !category
-    ) {
-
-        showToast(
-            "Preencha os campos obrigatórios."
-        );
-
-        return;
-    }
-
-
-    /* ========================================================
-       EDITAR
-       ======================================================== */
-
-    if (editingId) {
-
-        const index =
-            products.findIndex(
-                item =>
-                    item.id ===
-                    editingId
-            );
-
-        if (index === -1) {
-
-            showToast(
-                "Produto não encontrado."
-            );
-
-            return;
-        }
-
-        products[index] = {
-
-            ...products[index],
-
-            name,
-            category,
-            price,
-            description,
-            image,
-            link,
-            checkout: link,
-            sold,
-            status,
-
-            clicks:
-                Number(
-                    products[index]
-                        .clicks || 0
-                )
-        };
-
-        const saved =
-            await saveProducts(
-                products
-            );
-
-        if (!saved) return;
-
-        showToast(
-            "Produto atualizado com sucesso!"
-        );
-
-
-    /* ========================================================
-       NOVO PRODUTO
-       ======================================================== */
-
-    } else {
-
-        products.push({
-
-            id:
-                "product_" +
-                Date.now(),
-
-            name,
-            category,
-            price,
-            description,
-            image,
-            link,
-            checkout: link,
-            sold,
-            clicks: 0,
-            status
         });
 
-        const saved =
-            await saveProducts(
-                products
+    document
+        .querySelectorAll(".delete-product")
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    openDeleteModal(
+                        button.dataset.id
+                    );
+                }
             );
-
-        if (!saved) return;
-
-        showToast(
-            "Produto adicionado com sucesso!"
-        );
-    }
-
-    resetProductForm();
-
-    await renderDashboard();
-
-    await renderProductsTable();
-
-    await renderClicks();
-
-    setTimeout(
-        () =>
-            openSection(
-                "produtos"
-            ),
-        500
-    );
+        });
 }
 
 
@@ -1645,83 +941,109 @@ async function saveProductFromForm() {
    EDITAR PRODUTO
    ============================================================ */
 
-async function editProduct(
-    id
-) {
-
-    const products =
-        await getProductsAsync();
-
+function editProduct(id) {
     const product =
         products.find(
             item =>
-                item.id === id
+                String(item.id) ===
+                String(id)
         );
 
-    if (!product) return;
-
-    document.getElementById(
-        "editingProductId"
-    ).value =
-        product.id;
-
-    document.getElementById(
-        "productName"
-    ).value =
-        product.name || "";
-
-    document.getElementById(
-        "productCategory"
-    ).value =
-        product.category || "";
-
-    document.getElementById(
-        "productPrice"
-    ).value =
-        product.price || "";
-
-    document.getElementById(
-        "productDescription"
-    ).value =
-        product.description || "";
-
-    document.getElementById(
-        "productImage"
-    ).value =
-        product.image || "";
-
-    document.getElementById(
-        "productLink"
-    ).value =
-        product.link ||
-        product.checkout ||
-        "";
-
-    document.getElementById(
-        "productSold"
-    ).value =
-        product.sold || 0;
-
-    document.getElementById(
-        "productStatus"
-    ).value =
-        product.status ||
-        "active";
-
-    const formTitle =
-        document.getElementById(
-            "formTitle"
-        );
-
-    if (formTitle) {
-
-        formTitle.textContent =
-            "Editar produto";
+    if (!product) {
+        return;
     }
 
-    openSection(
-        "adicionar"
-    );
+    const editingProductId =
+        document.getElementById(
+            "editingProductId"
+        );
+
+    const productName =
+        document.getElementById(
+            "productName"
+        );
+
+    const productCategory =
+        document.getElementById(
+            "productCategory"
+        );
+
+    const productPrice =
+        document.getElementById(
+            "productPrice"
+        );
+
+    const productDescription =
+        document.getElementById(
+            "productDescription"
+        );
+
+    const productImage =
+        document.getElementById(
+            "productImage"
+        );
+
+    const productLink =
+        document.getElementById(
+            "productLink"
+        );
+
+    const productSold =
+        document.getElementById(
+            "productSold"
+        );
+
+    const productStatus =
+        document.getElementById(
+            "productStatus"
+        );
+
+    if (editingProductId)
+        editingProductId.value =
+            product.id;
+
+    if (productName)
+        productName.value =
+            product.name;
+
+    if (productCategory)
+        productCategory.value =
+            product.category;
+
+    if (productPrice)
+        productPrice.value =
+            product.price;
+
+    if (productDescription)
+        productDescription.value =
+            product.description;
+
+    if (productImage)
+        productImage.value =
+            product.image;
+
+    if (productLink)
+        productLink.value =
+            product.link;
+
+    if (productSold)
+        productSold.value =
+            product.sold;
+
+    if (productStatus)
+        productStatus.value =
+            product.status;
+
+    const section =
+        document.getElementById(
+            "section-adicionar"
+        );
+
+    if (section) {
+        section.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
 }
 
 
@@ -1729,103 +1051,237 @@ async function editProduct(
    NOVO PRODUTO
    ============================================================ */
 
-function prepareNewProduct() {
+function resetProductForm() {
+    const form =
+        document.getElementById(
+            "productForm"
+        );
 
-    const editing =
+    if (form) {
+        form.reset();
+    }
+
+    const editingProductId =
         document.getElementById(
             "editingProductId"
         );
 
-    if (!editing) return;
-
-    if (!editing.value) {
-
-        const formTitle =
-            document.getElementById(
-                "formTitle"
-            );
-
-        if (formTitle) {
-
-            formTitle.textContent =
-                "Novo produto";
-        }
+    if (editingProductId) {
+        editingProductId.value = "";
     }
-}
 
-
-/* ============================================================
-   RESET FORM
-   ============================================================ */
-
-function resetProductForm() {
-
-    if (!productForm) return;
-
-    productForm.reset();
-
-    document.getElementById(
-        "editingProductId"
-    ).value = "";
-
-    document.getElementById(
-        "productSold"
-    ).value = 0;
-
-    document.getElementById(
-        "productStatus"
-    ).value =
-        "active";
-
-    const formTitle =
+    const productSold =
         document.getElementById(
-            "formTitle"
+            "productSold"
         );
 
-    if (formTitle) {
+    if (productSold) {
+        productSold.value = "0";
+    }
 
-        formTitle.textContent =
-            "Novo produto";
+    const productStatus =
+        document.getElementById(
+            "productStatus"
+        );
+
+    if (productStatus) {
+        productStatus.value =
+            "active";
     }
 }
 
 
 /* ============================================================
-   CANCELAR PRODUTO
+   SALVAR FORMULÁRIO
    ============================================================ */
 
-const cancelProductButton =
-    document.getElementById(
-        "cancelProductButton"
-    );
+function iniciarProductForm() {
+    const form =
+        document.getElementById(
+            "productForm"
+        );
 
-if (cancelProductButton) {
+    if (!form) {
+        return;
+    }
 
-    cancelProductButton.addEventListener(
-        "click",
-        function () {
+    form.addEventListener(
+        "submit",
+        async function (event) {
+            event.preventDefault();
 
-            resetProductForm();
+            const editingProductId =
+                document.getElementById(
+                    "editingProductId"
+                );
 
-            openSection(
-                "produtos"
-            );
+            const productName =
+                document.getElementById(
+                    "productName"
+                );
+
+            const productCategory =
+                document.getElementById(
+                    "productCategory"
+                );
+
+            const productPrice =
+                document.getElementById(
+                    "productPrice"
+                );
+
+            const productDescription =
+                document.getElementById(
+                    "productDescription"
+                );
+
+            const productImage =
+                document.getElementById(
+                    "productImage"
+                );
+
+            const productLink =
+                document.getElementById(
+                    "productLink"
+                );
+
+            const productSold =
+                document.getElementById(
+                    "productSold"
+                );
+
+            const productStatus =
+                document.getElementById(
+                    "productStatus"
+                );
+
+            const editingId =
+                editingProductId
+                    ? editingProductId.value
+                    : "";
+
+            const existing =
+                products.find(
+                    item =>
+                        String(item.id) ===
+                        String(editingId)
+                );
+
+            const product = normalizeProduct({
+                id:
+                    existing
+                        ? existing.id
+                        : crypto.randomUUID(),
+
+                name:
+                    productName
+                        ? productName.value.trim()
+                        : "",
+
+                category:
+                    productCategory
+                        ? productCategory.value.trim()
+                        : "Outros",
+
+                price:
+                    productPrice
+                        ? Number(productPrice.value || 0)
+                        : 0,
+
+                description:
+                    productDescription
+                        ? productDescription.value.trim()
+                        : "",
+
+                image:
+                    productImage
+                        ? productImage.value.trim()
+                        : "",
+
+                link:
+                    productLink
+                        ? productLink.value.trim()
+                        : "",
+
+                sold:
+                    productSold
+                        ? Number(productSold.value || 0)
+                        : 0,
+
+                clicks:
+                    existing
+                        ? existing.clicks
+                        : 0,
+
+                status:
+                    productStatus
+                        ? productStatus.value
+                        : "active"
+            });
+
+            if (!product.name) {
+                showToast(
+                    "Digite o nome do produto."
+                );
+
+                return;
+            }
+
+            try {
+                await saveProductToSupabase(
+                    product
+                );
+
+                if (existing) {
+                    const index =
+                        products.findIndex(
+                            item =>
+                                String(item.id) ===
+                                String(product.id)
+                        );
+
+                    if (index !== -1) {
+                        products[index] =
+                            product;
+                    }
+                } else {
+                    products.push(product);
+                }
+
+                saveLocalProducts(
+                    products
+                );
+
+                renderEverything();
+
+                resetProductForm();
+
+                showToast(
+                    existing
+                        ? "Produto atualizado com sucesso!"
+                        : "Produto adicionado com sucesso!"
+                );
+
+            } catch (error) {
+                console.error(error);
+
+                showToast(
+                    "Erro ao salvar produto no Supabase."
+                );
+            }
         }
     );
 }
 
 
 /* ============================================================
-   EXCLUSÃO
+   DELETE MODAL
    ============================================================ */
 
 let productToDelete = null;
 
 
-function openDeleteModal(
-    id
-) {
-
+function openDeleteModal(id) {
     productToDelete = id;
 
     const modal =
@@ -1834,32 +1290,13 @@ function openDeleteModal(
         );
 
     if (modal) {
-
-        modal.classList.add(
-            "show"
-        );
+        modal.classList.add("show");
     }
 }
 
 
-const cancelDeleteButton =
-    document.getElementById(
-        "cancelDeleteButton"
-    );
-
-if (cancelDeleteButton) {
-
-    cancelDeleteButton.addEventListener(
-        "click",
-        closeDeleteModal
-    );
-}
-
-
 function closeDeleteModal() {
-
-    productToDelete =
-        null;
+    productToDelete = null;
 
     const modal =
         document.getElementById(
@@ -1867,59 +1304,94 @@ function closeDeleteModal() {
         );
 
     if (modal) {
+        modal.classList.remove("show");
+    }
+}
 
-        modal.classList.remove(
-            "show"
+
+function iniciarDeleteModal() {
+    const cancelButton =
+        document.getElementById(
+            "cancelDeleteButton"
+        );
+
+    const confirmButton =
+        document.getElementById(
+            "confirmDeleteButton"
+        );
+
+    if (cancelButton) {
+        cancelButton.addEventListener(
+            "click",
+            closeDeleteModal
+        );
+    }
+
+    if (confirmButton) {
+        confirmButton.addEventListener(
+            "click",
+            async function () {
+                if (!productToDelete) {
+                    return;
+                }
+
+                try {
+                    await deleteProductFromSupabase(
+                        productToDelete
+                    );
+
+                    products =
+                        products.filter(
+                            product =>
+                                String(product.id) !==
+                                String(productToDelete)
+                        );
+
+                    saveLocalProducts(
+                        products
+                    );
+
+                    closeDeleteModal();
+
+                    renderEverything();
+
+                    showToast(
+                        "Produto excluído com sucesso!"
+                    );
+
+                } catch (error) {
+                    console.error(error);
+
+                    showToast(
+                        "Erro ao excluir produto."
+                    );
+                }
+            }
         );
     }
 }
 
 
-const confirmDeleteButton =
-    document.getElementById(
-        "confirmDeleteButton"
-    );
+/* ============================================================
+   BUSCA
+   ============================================================ */
 
-if (confirmDeleteButton) {
+function iniciarBusca() {
+    const search =
+        document.getElementById(
+            "productSearch"
+        );
 
-    confirmDeleteButton.addEventListener(
-        "click",
-        async function () {
+    if (!search) {
+        return;
+    }
 
-            if (
-                !productToDelete
-            ) {
-                return;
-            }
-
-            let products =
-                await getProductsAsync();
-
-            products =
-                products.filter(
-                    product =>
-                        product.id !==
-                        productToDelete
-                );
-
-            const saved =
-                await saveProducts(
-                    products
-                );
-
-            if (!saved) return;
-
-            closeDeleteModal();
-
-            showToast(
-                "Produto removido com sucesso!"
+    search.addEventListener(
+        "input",
+        function () {
+            renderProductsTable(
+                this.value
             );
-
-            await renderProductsTable();
-
-            await renderDashboard();
-
-            await renderClicks();
         }
     );
 }
@@ -1929,30 +1401,7 @@ if (confirmDeleteButton) {
    CLIQUES
    ============================================================ */
 
-async function renderClicks() {
-
-    const products =
-        await getProductsAsync();
-
-    const total =
-        products.reduce(
-            (sum, product) =>
-                sum +
-                Number(
-                    product.clicks ||
-                    0
-                ),
-            0
-        );
-
-    const average =
-        products.length
-            ? Math.round(
-                total /
-                products.length
-            )
-            : 0;
-
+function renderClicks() {
     const totalElement =
         document.getElementById(
             "clicksTotalPage"
@@ -1963,226 +1412,259 @@ async function renderClicks() {
             "clickAverage"
         );
 
-    if (totalElement) {
-
-        totalElement.textContent =
-            formatNumber(
-                total
-            );
-    }
-
-    if (averageElement) {
-
-        averageElement.textContent =
-            formatNumber(
-                average
-            );
-    }
-
-    const container =
+    const list =
         document.getElementById(
             "clicksList"
         );
 
-    if (!container) return;
-
-    const sorted =
-        [...products].sort(
-            (a, b) =>
-                Number(
-                    b.clicks || 0
-                ) -
-                Number(
-                    a.clicks || 0
-                )
+    const total =
+        products.reduce(
+            (sum, product) =>
+                sum +
+                Number(product.clicks || 0),
+            0
         );
 
-    if (!sorted.length) {
+    if (totalElement) {
+        totalElement.textContent =
+            total;
+    }
 
-        container.innerHTML =
-            `<div class="empty-state">
-                Nenhum produto cadastrado.
-            </div>`;
+    const average =
+        products.length
+            ? Math.round(
+                  total /
+                  products.length
+              )
+            : 0;
 
+    if (averageElement) {
+        averageElement.textContent =
+            average;
+    }
+
+    if (!list) {
+        return;
+    }
+
+    const ranking =
+        [...products]
+            .sort(
+                (a, b) =>
+                    Number(b.clicks || 0) -
+                    Number(a.clicks || 0)
+            );
+
+    if (!ranking.length) {
+        list.innerHTML =
+            "<p>Nenhum clique registrado.</p>";
+
+        return;
+    }
+
+    list.innerHTML =
+        ranking.map(
+            product => `
+                <div class="click-item">
+                    <div>
+                        <strong>
+                            ${escapeHTML(product.name)}
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(product.category)}
+                        </span>
+                    </div>
+
+                    <strong>
+                        ${Number(product.clicks || 0)}
+                    </strong>
+                </div>
+            `
+        ).join("");
+}
+
+
+/* ============================================================
+   GRÁFICO
+   ============================================================ */
+
+function renderClickChart() {
+    const canvas =
+        document.getElementById(
+            "clickChart"
+        );
+
+    if (!canvas) {
+        return;
+    }
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const width =
+        canvas.width =
+            canvas.clientWidth * 2;
+
+    const height =
+        canvas.height =
+            canvas.clientHeight * 2;
+
+    ctx.scale(2, 2);
+
+    const drawWidth =
+        canvas.clientWidth;
+
+    const drawHeight =
+        canvas.clientHeight;
+
+    ctx.clearRect(
+        0,
+        0,
+        drawWidth,
+        drawHeight
+    );
+
+    const values =
+        products
+            .slice(0, 7)
+            .map(
+                product =>
+                    Number(
+                        product.clicks || 0
+                    )
+            );
+
+    if (!values.length) {
         return;
     }
 
     const max =
         Math.max(
-            ...sorted.map(
-                product =>
-                    Number(
-                        product.clicks ||
-                        0
-                    )
-            ),
+            ...values,
             1
         );
 
-    container.innerHTML =
-        sorted
-            .map(
-                product => {
+    const padding = 30;
 
-                    const clicks =
-                        Number(
-                            product.clicks ||
-                            0
-                        );
+    const chartWidth =
+        drawWidth -
+        padding * 2;
 
-                    const percentage =
-                        (
-                            clicks /
-                            max
-                        ) * 100;
+    const chartHeight =
+        drawHeight -
+        padding * 2;
 
-                    return `
+    ctx.beginPath();
 
-                        <div class="click-item">
+    values.forEach(
+        (value, index) => {
+            const x =
+                padding +
+                (
+                    index /
+                    Math.max(
+                        values.length - 1,
+                        1
+                    )
+                ) *
+                    chartWidth;
 
-                            <div class="click-item-info">
+            const y =
+                drawHeight -
+                padding -
+                (
+                    value / max
+                ) *
+                    chartHeight;
 
-                                <strong>
-                                    ${escapeHtml(
-                                        product.name
-                                    )}
-                                </strong>
-
-                                <span>
-                                    ${escapeHtml(
-                                        product.category
-                                    )}
-                                </span>
-
-                            </div>
-
-                            <div class="click-progress">
-
-                                <span
-                                    style="width:${Math.max(
-                                        percentage,
-                                        2
-                                    )}%"
-                                ></span>
-
-                            </div>
-
-                            <div class="click-value">
-                                ${formatNumber(
-                                    clicks
-                                )}
-                            </div>
-
-                        </div>
-                    `;
-                }
-            )
-            .join("");
-}
-
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-
-let toastTimer;
-
-
-function showToast(
-    message
-) {
-
-    const toast =
-        document.getElementById(
-            "adminToast"
-        );
-
-    const messageElement =
-        document.getElementById(
-            "toastMessage"
-        );
-
-    if (
-        !toast ||
-        !messageElement
-    ) {
-        return;
-    }
-
-    messageElement.textContent =
-        message;
-
-    toast.classList.add(
-        "show"
-    );
-
-    clearTimeout(
-        toastTimer
-    );
-
-    toastTimer =
-        setTimeout(
-            function () {
-
-                toast.classList.remove(
-                    "show"
+            if (index === 0) {
+                ctx.moveTo(
+                    x,
+                    y
                 );
+            } else {
+                ctx.lineTo(
+                    x,
+                    y
+                );
+            }
+        }
+    );
 
-            },
-            3000
-        );
+    ctx.stroke();
+
+
+    values.forEach(
+        (value, index) => {
+            const x =
+                padding +
+                (
+                    index /
+                    Math.max(
+                        values.length - 1,
+                        1
+                    )
+                ) *
+                    chartWidth;
+
+            const y =
+                drawHeight -
+                padding -
+                (
+                    value / max
+                ) *
+                    chartHeight;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+        }
+    );
 }
 
 
 /* ============================================================
-   SEGURANÇA HTML
+   CONTAGEM DE PRODUTOS
    ============================================================ */
 
-function escapeHtml(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
+function renderProductCount() {
+    const count =
+        document.getElementById(
+            "productCount"
         );
+
+    if (count) {
+        count.textContent =
+            `${products.length} produto${
+                products.length === 1
+                    ? ""
+                    : "s"
+            }`;
+    }
 }
 
 
-function escapeAttribute(
-    value
-) {
+/* ============================================================
+   RENDERIZAÇÃO GERAL
+   ============================================================ */
 
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+function renderEverything() {
+    renderDashboardStats();
+    renderTopProducts();
+    renderDashboardProducts();
+    renderProductsTable();
+    renderClicks();
+    renderClickChart();
+    renderProductCount();
 }
 
 
@@ -2190,27 +1672,26 @@ function escapeAttribute(
    MENU MOBILE
    ============================================================ */
 
-const mobileMenu =
-    document.getElementById(
-        "mobileMenu"
-    );
+function iniciarMobileMenu() {
+    const menuButton =
+        document.querySelector(
+            ".mobile-menu-button"
+        );
 
-const sidebar =
-    document.querySelector(
-        ".sidebar"
-    );
+    const sidebar =
+        document.querySelector(
+            ".admin-sidebar"
+        );
 
-if (
-    mobileMenu &&
-    sidebar
-) {
+    if (!menuButton || !sidebar) {
+        return;
+    }
 
-    mobileMenu.addEventListener(
+    menuButton.addEventListener(
         "click",
-        function () {
-
+        () => {
             sidebar.classList.toggle(
-                "mobile-open"
+                "open"
             );
         }
     );
@@ -2218,26 +1699,149 @@ if (
 
 
 /* ============================================================
-   EXPORTAÇÕES
+   NAVEGAÇÃO DO DASHBOARD
    ============================================================ */
 
-window.editProduct =
-    editProduct;
+function iniciarNavegacao() {
+    const links =
+        document.querySelectorAll(
+            "[data-section]"
+        );
 
-window.openDeleteModal =
-    openDeleteModal;
+    const sections =
+        document.querySelectorAll(
+            ".admin-section"
+        );
 
-window.closeDeleteModal =
-    closeDeleteModal;
+    if (!links.length) {
+        return;
+    }
 
-window.getProducts =
-    getProducts;
+    links.forEach(link => {
+        link.addEventListener(
+            "click",
+            function (event) {
+                event.preventDefault();
 
-window.getProductsAsync =
-    getProductsAsync;
+                const target =
+                    this.dataset.section;
 
-window.saveProducts =
-    saveProducts;
+                sections.forEach(
+                    section => {
+                        section.classList.remove(
+                            "active"
+                        );
+                    }
+                );
+
+                const selected =
+                    document.getElementById(
+                        `section-${target}`
+                    );
+
+                if (selected) {
+                    selected.classList.add(
+                        "active"
+                    );
+                }
+
+                links.forEach(
+                    item => {
+                        item.classList.remove(
+                            "active"
+                        );
+                    }
+                );
+
+                this.classList.add(
+                    "active"
+                );
+            }
+        );
+    });
+}
+
+
+/* ============================================================
+   BOTÃO CANCELAR FORMULÁRIO
+   ============================================================ */
+
+function iniciarResetButton() {
+    const buttons =
+        document.querySelectorAll(
+            "[data-reset-product]"
+        );
+
+    buttons.forEach(button => {
+        button.addEventListener(
+            "click",
+            resetProductForm
+        );
+    });
+}
+
+
+/* ============================================================
+   EXPORTAR PRODUTOS
+   ============================================================ */
+
+function exportProducts() {
+    const data =
+        JSON.stringify(
+            products,
+            null,
+            2
+        );
+
+    const blob =
+        new Blob(
+            [data],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+    a.href = url;
+
+    a.download =
+        "axeus-products.json";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    URL.revokeObjectURL(
+        url
+    );
+}
+
+
+function iniciarExportacao() {
+    const buttons =
+        document.querySelectorAll(
+            "[data-export]"
+        );
+
+    buttons.forEach(button => {
+        button.addEventListener(
+            "click",
+            exportProducts
+        );
+    });
+}
 
 
 /* ============================================================
@@ -2247,23 +1851,42 @@ window.saveProducts =
 window.addEventListener(
     "storage",
     function (event) {
-
         if (
             event.key ===
-            PRODUCTS_KEY
+            "axeusProductsUpdated"
         ) {
+            products =
+                getLocalProducts();
 
-            renderDashboard();
-
-            renderProductsTable(
-                productSearch
-                    ? productSearch.value
-                    : ""
-            );
-
-            renderClicks();
+            renderEverything();
         }
     }
+);
+
+
+/* ============================================================
+   AUTO REFRESH
+   ============================================================ */
+
+setInterval(
+    async function () {
+        if (!isDashboard) {
+            return;
+        }
+
+        try {
+            products =
+                await loadProductsFromSupabase();
+
+            renderEverything();
+        } catch (error) {
+            console.error(
+                "Erro no auto refresh:",
+                error
+            );
+        }
+    },
+    30000
 );
 
 
@@ -2271,11 +1894,32 @@ window.addEventListener(
    INICIALIZAÇÃO
    ============================================================ */
 
-if (isDashboard) {
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
 
-    renderDashboard();
+        iniciarLogin();
 
-    renderProductsTable();
+        iniciarMostrarSenha();
 
-    renderClicks();
-}
+        iniciarLogout();
+
+        iniciarProductForm();
+
+        iniciarDeleteModal();
+
+        iniciarBusca();
+
+        iniciarMobileMenu();
+
+        iniciarNavegacao();
+
+        iniciarResetButton();
+
+        iniciarExportacao();
+
+        if (isDashboard) {
+            await loadProducts();
+        }
+    }
+);
