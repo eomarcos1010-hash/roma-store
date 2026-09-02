@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AXEUS STORE — Admin</title>
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <div class="login-card">
+
+            <div class="logo">
+                <span>AXEUS</span>
+                <strong>STORE</strong>
+            </div>
+
+            <div class="login-header">
+                <h1>Painel Administrativo</h1>
+                <p>Acesse o gerenciamento da sua loja</p>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label for="username">Usuário</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Digite seu usuário"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Senha</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-button">
+                    ENTRAR NO PAINEL
+                </button>
+
+                <p id="loginError" class="login-error"></p>
+
+            </form>
+
+            <div class="login-footer">
+                <span>AXEUS STORE</span>
+                <span>Área restrita</span>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="admin.js"></script>
+
+</body>
+</html>

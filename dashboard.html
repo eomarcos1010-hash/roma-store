@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AXEUS STORE — Dashboard</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                A
+            </div>
+
+            <div>
+                <h1>AXEUS</h1>
+                <span>STORE</span>
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-profile">
+
+            <div class="profile-avatar">
+                R
+            </div>
+
+            <div class="profile-info">
+
+                <strong>romazx</strong>
+
+                <span>
+                    <i></i>
+                    Administrador
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <span class="nav-label">
+                PRINCIPAL
+            </span>
+
+            <button
+                class="nav-item active"
+                data-section="dashboard"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-section="produtos"
+            >
+                <span class="nav-icon">▦</span>
+                <span>Produtos</span>
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-section="cliques"
+            >
+                <span class="nav-icon">⌁</span>
+                <span>Cliques</span>
+            </button>
+
+
+            <span class="nav-label">
+                GERENCIAMENTO
+            </span>
+
+
+            <button
+                class="nav-item"
+                data-section="adicionar"
+            >
+                <span class="nav-icon">＋</span>
+                <span>Novo produto</span>
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="../index.html"
+                class="sidebar-link"
+            >
+                <span>↗</span>
+                Ver minha loja
+            </a>
+
+            <button
+                class="sidebar-link logout"
+                id="logoutButton"
+            >
+                <span>⇥</span>
+                Sair da conta
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTEÚDO
+         ===================================================== -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <button
+                class="mobile-menu"
+                id="mobileMenu"
+            >
+                ☰
+            </button>
+
+            <div class="topbar-search">
+
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    placeholder="Pesquisar..."
+                    id="globalSearch"
+                >
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <button class="icon-button">
+                    ♢
+                </button>
+
+                <a
+                    href="../index.html"
+                    class="store-button"
+                >
+                    Ver loja ↗
+                </a>
+
+                <div class="topbar-user">
+
+                    <div class="small-avatar">
+                        R
+                    </div>
+
+                    <div>
+                        <strong>romazx</strong>
+                        <span>Administrador</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             DASHBOARD
+             ===================================================== -->
+
+        <section
+            id="section-dashboard"
+            class="admin-section active"
+        >
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="page-eyebrow">
+                        VISÃO GERAL
+                    </span>
+
+                    <h2>
+                        Olá, romazx 👋
+                    </h2>
+
+                    <p>
+                        Aqui está o desempenho da sua AXEUS STORE.
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-button"
+                    data-section="adicionar"
+                >
+                    ＋ Novo produto
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 ESTATÍSTICAS
+                 ================================================= -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon blue">
+                            ▦
+                        </div>
+
+                        <span class="stat-badge">
+                            Produtos
+                        </span>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>Total de produtos</span>
+
+                        <strong id="totalProducts">
+                            0
+                        </strong>
+
+                    </div>
+
+                    <div class="stat-line">
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon purple">
+                            ⌁
+                        </div>
+
+                        <span class="stat-badge">
+                            Acessos
+                        </span>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>Total de cliques</span>
+
+                        <strong id="totalClicks">
+                            0
+                        </strong>
+
+                    </div>
+
+                    <div class="stat-line">
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon green">
+                            ✓
+                        </div>
+
+                        <span class="stat-badge">
+                            Ativos
+                        </span>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>Produtos ativos</span>
+
+                        <strong id="activeProducts">
+                            0
+                        </strong>
+
+                    </div>
+
+                    <div class="stat-line">
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon orange">
+                            ★
+                        </div>
+
+                        <span class="stat-badge">
+                            Top produto
+                        </span>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>Mais acessado</span>
+
+                        <strong
+                            id="topProduct"
+                            class="top-product-name"
+                        >
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="stat-line">
+                        <span></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 GRÁFICO + RANKING
+                 ================================================= -->
+
+            <div class="dashboard-grid">
+
+                <div class="admin-panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <span class="panel-eyebrow">
+                                ANALYTICS
+                            </span>
+
+                            <h3>
+                                Cliques por produto
+                            </h3>
+
+                        </div>
+
+                        <span class="panel-period">
+                            Atual
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="clickChart"
+                        class="bar-chart"
+                    >
+                    </div>
+
+                </div>
+
+
+                <div class="admin-panel ranking-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <span class="panel-eyebrow">
+                                DESEMPENHO
+                            </span>
+
+                            <h3>
+                                Produtos mais acessados
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="topProductsList"
+                        class="ranking-list"
+                    >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ATIVIDADE RECENTE
+                 ================================================= -->
+
+            <div class="admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            GERENCIAMENTO
+                        </span>
+
+                        <h3>
+                            Resumo dos produtos
+                        </h3>
+
+                    </div>
+
+                    <button
+                        class="text-button"
+                        data-section="produtos"
+                    >
+                        Ver todos →
+                    </button>
+
+                </div>
+
+                <div
+                    id="dashboardProducts"
+                    class="dashboard-products"
+                >
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             PRODUTOS
+             ===================================================== -->
+
+        <section
+            id="section-produtos"
+            class="admin-section"
+        >
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="page-eyebrow">
+                        CATÁLOGO
+                    </span>
+
+                    <h2>
+                        Produtos
+                    </h2>
+
+                    <p>
+                        Gerencie todos os produtos da sua loja.
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-button"
+                    data-section="adicionar"
+                >
+                    ＋ Novo produto
+                </button>
+
+            </div>
+
+
+            <div class="admin-panel">
+
+                <div class="table-toolbar">
+
+                    <div class="table-title">
+
+                        <h3>
+                            Produtos cadastrados
+                        </h3>
+
+                        <span id="productCount">
+                            0 produtos
+                        </span>
+
+                    </div>
+
+                    <div class="table-search">
+
+                        <span>⌕</span>
+
+                        <input
+                            type="text"
+                            id="productSearch"
+                            placeholder="Pesquisar produto..."
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table class="products-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Produto</th>
+
+                                <th>Categoria</th>
+
+                                <th>Preço</th>
+
+                                <th>Cliques</th>
+
+                                <th>Status</th>
+
+                                <th>Ações</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="productsTableBody">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CLIQUES
+             ===================================================== -->
+
+        <section
+            id="section-cliques"
+            class="admin-section"
+        >
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="page-eyebrow">
+                        ANALYTICS
+                    </span>
+
+                    <h2>
+                        Cliques
+                    </h2>
+
+                    <p>
+                        Acompanhe os acessos de cada produto.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="click-summary">
+
+                <div class="click-summary-card">
+
+                    <span>
+                        Total de cliques
+                    </span>
+
+                    <strong id="clicksTotalPage">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="click-summary-card">
+
+                    <span>
+                        Média por produto
+                    </span>
+
+                    <strong id="clickAverage">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            RELATÓRIO
+                        </span>
+
+                        <h3>
+                            Cliques por produto
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="clicksList"
+                    class="clicks-list"
+                >
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ADICIONAR / EDITAR
+             ===================================================== -->
+
+        <section
+            id="section-adicionar"
+            class="admin-section"
+        >
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="page-eyebrow">
+                        GERENCIAMENTO
+                    </span>
+
+                    <h2 id="formTitle">
+                        Novo produto
+                    </h2>
+
+                    <p>
+                        Cadastre um produto para aparecer na sua loja.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-panel product-form-panel">
+
+                <form id="productForm">
+
+                    <input
+                        type="hidden"
+                        id="editingProductId"
+                    >
+
+
+                    <div class="form-section-title">
+
+                        <span>01</span>
+
+                        <div>
+                            <h3>Informações principais</h3>
+                            <p>Dados básicos do produto.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group full">
+
+                            <label for="productName">
+                                Nome do produto
+                            </label>
+
+                            <input
+                                type="text"
+                                id="productName"
+                                placeholder="Ex: Ganchos para TikTok Shop"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="productCategory">
+                                Categoria
+                            </label>
+
+                            <select
+                                id="productCategory"
+                                required
+                            >
+
+                                <option value="">
+                                    Selecione
+                                </option>
+
+                                <option value="TikTok Shop">
+                                    TikTok Shop
+                                </option>
+
+                                <option value="PC">
+                                    PC
+                                </option>
+
+                                <option value="Entretenimento">
+                                    Entretenimento
+                                </option>
+
+                                <option value="Aplicativos">
+                                    Aplicativos
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="productPrice">
+                                Preço
+                            </label>
+
+                            <input
+                                type="text"
+                                id="productPrice"
+                                placeholder="R$ 19,90"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-section-title">
+
+                        <span>02</span>
+
+                        <div>
+                            <h3>Descrição</h3>
+                            <p>Explique o que o cliente receberá.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="productDescription">
+                            Descrição do produto
+                        </label>
+
+                        <textarea
+                            id="productDescription"
+                            rows="5"
+                            placeholder="Digite uma descrição para o produto..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-section-title">
+
+                        <span>03</span>
+
+                        <div>
+                            <h3>Venda e imagem</h3>
+                            <p>Configure a apresentação e o checkout.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group full">
+
+                            <label for="productImage">
+                                URL da imagem
+                            </label>
+
+                            <input
+                                type="text"
+                                id="productImage"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <label for="productLink">
+                                Link de compra
+                            </label>
+
+                            <input
+                                type="url"
+                                id="productLink"
+                                placeholder="https://pay.cakto.com.br/..."
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="productSold">
+                                Quantidade de vendidos
+                            </label>
+
+                            <input
+                                type="number"
+                                id="productSold"
+                                min="0"
+                                value="0"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="productStatus">
+                                Status
+                            </label>
+
+                            <select id="productStatus">
+
+                                <option value="active">
+                                    Ativo
+                                </option>
+
+                                <option value="inactive">
+                                    Inativo
+                                </option>
+
+                                <option value="coming">
+                                    Em breve
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="cancelProductButton"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                        >
+                            Salvar produto
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL DE EXCLUSÃO
+     ========================================================= -->
+
+<div
+    id="deleteModal"
+    class="modal"
+>
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-card">
+
+        <div class="modal-danger-icon">
+            !
+        </div>
+
+        <h3>
+            Remover produto?
+        </h3>
+
+        <p>
+            O produto será removido da loja.
+            Essa ação não pode ser desfeita.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-button"
+                id="cancelDeleteButton"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="danger-button"
+                id="confirmDeleteButton"
+            >
+                Remover produto
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
+<div
+    id="adminToast"
+    class="admin-toast"
+>
+
+    <span id="toastMessage">
+        Operação realizada.
+    </span>
+
+</div>
+
+
+<script src="admin.js"></script>
+
+</body>
+</html>
