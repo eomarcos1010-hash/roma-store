@@ -23,7 +23,6 @@ const OLD_STORAGE_KEYS = [
 
 /* ============================================================
    PRODUTOS PADRÃO
-   Usados somente se o Admin ainda não tiver criado produtos.
    ============================================================ */
 
 const DEFAULT_PRODUCTS = [
@@ -35,10 +34,8 @@ const DEFAULT_PRODUCTS = [
         category: "TIKTOK SHOP",
         price: "29,90",
         image: "",
-        checkout:
-            "https://pay.cakto.com.br/3erj75x_1080094",
-        link:
-            "https://pay.cakto.com.br/3erj75x_1080094",
+        checkout: "https://pay.cakto.com.br/3erj75x_1080094",
+        link: "https://pay.cakto.com.br/3erj75x_1080094",
         sold: 1207,
         clicks: 0,
         status: "active"
@@ -52,10 +49,8 @@ const DEFAULT_PRODUCTS = [
         category: "PC",
         price: "19,90",
         image: "",
-        checkout:
-            "https://pay.cakto.com.br/szk82cw_1007831",
-        link:
-            "https://pay.cakto.com.br/szk82cw_1007831",
+        checkout: "https://pay.cakto.com.br/szk82cw_1007831",
+        link: "https://pay.cakto.com.br/szk82cw_1007831",
         sold: 842,
         clicks: 0,
         status: "active"
@@ -69,10 +64,8 @@ const DEFAULT_PRODUCTS = [
         category: "ENTRETENIMENTO",
         price: "24,90",
         image: "",
-        checkout:
-            "https://pay.cakto.com.br/po9btzm_997956",
-        link:
-            "https://pay.cakto.com.br/po9btzm_997956",
+        checkout: "https://pay.cakto.com.br/po9btzm_997956",
+        link: "https://pay.cakto.com.br/po9btzm_997956",
         sold: 913,
         clicks: 0,
         status: "active"
@@ -86,10 +79,8 @@ const DEFAULT_PRODUCTS = [
         category: "PC",
         price: "29,90",
         image: "",
-        checkout:
-            "https://pay.cakto.com.br/r9phmxw_864564",
-        link:
-            "https://pay.cakto.com.br/r9phmxw_864564",
+        checkout: "https://pay.cakto.com.br/r9phmxw_864564",
+        link: "https://pay.cakto.com.br/r9phmxw_864564",
         sold: 536,
         clicks: 0,
         status: "active"
@@ -117,7 +108,6 @@ const DEFAULT_PRODUCTS = [
    ============================================================ */
 
 let allProducts = [];
-
 let currentFilter = "TODOS";
 
 
@@ -127,7 +117,6 @@ let currentFilter = "TODOS";
 
 let productsGrid;
 let emptyProducts;
-
 let heroProductsCount;
 let heroClicksCount;
 
@@ -150,9 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     heroClicksCount =
         document.getElementById("hero-clicks-count");
 
-
     initializeStore();
-
 });
 
 
@@ -171,7 +158,6 @@ function initializeStore() {
     updateHeroStats();
 
     setupStorageListener();
-
 }
 
 
@@ -183,10 +169,6 @@ function loadProducts() {
 
     let savedProducts = null;
 
-    /*
-     * Primeiro tenta a chave principal.
-     */
-
     try {
 
         const data =
@@ -196,7 +178,6 @@ function loadProducts() {
 
             savedProducts =
                 JSON.parse(data);
-
         }
 
     } catch (error) {
@@ -205,13 +186,8 @@ function loadProducts() {
             "Erro ao carregar produtos:",
             error
         );
-
     }
 
-
-    /*
-     * Se não encontrou, tenta chaves antigas.
-     */
 
     if (!Array.isArray(savedProducts)) {
 
@@ -231,7 +207,8 @@ function loadProducts() {
 
                 if (Array.isArray(parsed)) {
 
-                    savedProducts = parsed;
+                    savedProducts =
+                        parsed;
 
                     break;
                 }
@@ -242,23 +219,17 @@ function loadProducts() {
                     "Não foi possível ler:",
                     key
                 );
-
             }
-
         }
-
     }
 
-
-    /*
-     * Se o Admin ainda não criou produtos,
-     * cria os produtos iniciais.
-     */
 
     if (!Array.isArray(savedProducts)) {
 
         allProducts =
-            normalizeProducts(DEFAULT_PRODUCTS);
+            normalizeProducts(
+                DEFAULT_PRODUCTS
+            );
 
         saveProducts();
 
@@ -267,8 +238,9 @@ function loadProducts() {
 
 
     allProducts =
-        normalizeProducts(savedProducts);
-
+        normalizeProducts(
+            savedProducts
+        );
 }
 
 
@@ -287,9 +259,7 @@ function normalizeProducts(products) {
             };
 
 
-            /*
-             * ID
-             */
+            /* ID */
 
             if (
                 !normalized.id ||
@@ -301,13 +271,10 @@ function normalizeProducts(products) {
                         normalized.name ||
                         `produto-${index + 1}`
                     );
-
             }
 
 
-            /*
-             * Nome
-             */
+            /* NOME */
 
             normalized.name =
                 String(
@@ -317,9 +284,7 @@ function normalizeProducts(products) {
                 );
 
 
-            /*
-             * Descrição
-             */
+            /* DESCRIÇÃO */
 
             normalized.description =
                 String(
@@ -329,9 +294,7 @@ function normalizeProducts(products) {
                 );
 
 
-            /*
-             * Categoria
-             */
+            /* CATEGORIA */
 
             normalized.category =
                 normalizeCategory(
@@ -341,9 +304,7 @@ function normalizeProducts(products) {
                 );
 
 
-            /*
-             * Imagem
-             */
+            /* IMAGEM */
 
             normalized.image =
                 normalized.image ||
@@ -352,27 +313,27 @@ function normalizeProducts(products) {
                 "";
 
 
-            /*
-             * Link de compra
-             */
+            /* LINK DE COMPRA */
 
             normalized.checkout =
-                normalized.checkout ||
-                normalized.buyLink ||
-                normalized.paymentLink ||
-                normalized.link ||
-                "";
+                cleanProductLink(
+                    normalized.checkout ||
+                    normalized.buyLink ||
+                    normalized.paymentLink ||
+                    normalized.link ||
+                    ""
+                );
 
 
             normalized.link =
-                normalized.link ||
-                normalized.checkout ||
-                "";
+                cleanProductLink(
+                    normalized.link ||
+                    normalized.checkout ||
+                    ""
+                );
 
 
-            /*
-             * Cliques
-             */
+            /* CLIQUES */
 
             normalized.clicks =
                 toNumber(
@@ -380,11 +341,7 @@ function normalizeProducts(products) {
                 );
 
 
-            /*
-             * Vendidos
-             *
-             * Se o Admin já usa "sold", mantém.
-             */
+            /* VENDIDOS */
 
             normalized.sold =
                 toNumber(
@@ -392,9 +349,7 @@ function normalizeProducts(products) {
                 );
 
 
-            /*
-             * Status
-             */
+            /* STATUS */
 
             normalized.status =
                 normalizeStatus(
@@ -402,9 +357,7 @@ function normalizeProducts(products) {
                 );
 
 
-            /*
-             * Preço
-             */
+            /* PREÇO */
 
             normalized.price =
                 normalized.price == null
@@ -413,9 +366,53 @@ function normalizeProducts(products) {
 
 
             return normalized;
-
         });
+}
 
+
+/* ============================================================
+   LIMPAR LINK
+   ============================================================ */
+
+function cleanProductLink(link) {
+
+    if (!link) {
+        return "";
+    }
+
+    let value =
+        String(link).trim();
+
+
+    /*
+     * Se alguém colocou Markdown:
+     *
+     * [https://site.com](https://site.com)
+     *
+     * transforma automaticamente em:
+     *
+     * https://site.com
+     */
+
+    const markdownMatch =
+        value.match(
+            /^\[.*?\]\((https?:\/\/.*?)\)$/
+        );
+
+    if (markdownMatch) {
+        value = markdownMatch[1];
+    }
+
+
+    /*
+     * Remove espaços.
+     */
+
+    value =
+        value.replace(/\s+/g, "");
+
+
+    return value;
 }
 
 
@@ -438,9 +435,7 @@ function saveProducts() {
             "Erro ao salvar produtos:",
             error
         );
-
     }
-
 }
 
 
@@ -475,6 +470,7 @@ function setupFilters() {
 
                 filterButtons.forEach(
                     item => {
+
                         item.classList.remove(
                             "active"
                         );
@@ -488,12 +484,9 @@ function setupFilters() {
 
 
                 renderProducts();
-
             }
         );
-
     });
-
 }
 
 
@@ -512,10 +505,6 @@ function renderProducts() {
         [...allProducts];
 
 
-    /*
-     * Aplicar filtro
-     */
-
     if (currentFilter !== "TODOS") {
 
         products =
@@ -524,22 +513,12 @@ function renderProducts() {
                 return normalizeCategory(
                     product.category
                 ) === currentFilter;
-
             });
-
     }
 
 
-    /*
-     * Limpar grid
-     */
-
     productsGrid.innerHTML = "";
 
-
-    /*
-     * Nenhum produto
-     */
 
     if (products.length === 0) {
 
@@ -547,11 +526,9 @@ function renderProducts() {
 
             emptyProducts.style.display =
                 "flex";
-
         }
 
         return;
-
     }
 
 
@@ -559,13 +536,8 @@ function renderProducts() {
 
         emptyProducts.style.display =
             "none";
-
     }
 
-
-    /*
-     * Criar cards
-     */
 
     products.forEach(product => {
 
@@ -573,16 +545,10 @@ function renderProducts() {
             createProductCard(product);
 
         productsGrid.appendChild(card);
-
     });
 
 
-    /*
-     * Atualizar estatísticas
-     */
-
     updateHeroStats();
-
 }
 
 
@@ -595,6 +561,7 @@ function createProductCard(product) {
     const card =
         document.createElement("article");
 
+
     card.className =
         "product-card";
 
@@ -603,44 +570,77 @@ function createProductCard(product) {
         product.id;
 
 
-    /*
-     * Clique no card
-     */
+    /* ========================================================
+       CLIQUE NO CARD
+       ======================================================== */
 
     card.addEventListener(
         "click",
         function (event) {
 
             /*
-             * Se clicou em botão ou link,
-             * não conta novamente.
+             * Se clicou no botão Comprar,
+             * o próprio botão já registra o clique.
              */
 
             if (
                 event.target.closest(
                     ".product-buy-button"
-                ) ||
-                event.target.closest(
-                    "a"
                 )
             ) {
-
                 return;
             }
 
 
-            registerClick(product.id);
+            /*
+             * Se clicou em algum link,
+             * não registra novamente.
+             */
 
+            if (
+                event.target.closest("a")
+            ) {
+                return;
+            }
+
+
+            /*
+             * Clique normal no produto.
+             */
+
+            registerClick(
+                product.id
+            );
+
+
+            /*
+             * Se tiver link,
+             * também abre o produto.
+             */
+
+            const productLink =
+                getProductLink(product);
+
+
+            if (productLink) {
+
+                window.open(
+                    productLink,
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+            }
         }
     );
 
 
-    /*
-     * IMAGEM
-     */
+    /* ========================================================
+       IMAGEM
+       ======================================================== */
 
     const imageWrapper =
         document.createElement("div");
+
 
     imageWrapper.className =
         "product-image";
@@ -651,11 +651,14 @@ function createProductCard(product) {
         const image =
             document.createElement("img");
 
+
         image.src =
             product.image;
 
+
         image.alt =
             product.name;
+
 
         image.loading =
             "lazy";
@@ -667,15 +670,16 @@ function createProductCard(product) {
                 image.style.display =
                     "none";
 
+
                 imageWrapper.classList.add(
                     "image-error"
                 );
+
 
                 imageWrapper.innerHTML +=
                     createProductPlaceholder(
                         product.name
                     );
-
             };
 
 
@@ -689,19 +693,20 @@ function createProductCard(product) {
             createProductPlaceholder(
                 product.name
             );
-
     }
 
 
-    /*
-     * BADGE DA CATEGORIA
-     */
+    /* ========================================================
+       BADGE
+       ======================================================== */
 
     const categoryBadge =
         document.createElement("span");
 
+
     categoryBadge.className =
         "product-category";
+
 
     categoryBadge.textContent =
         product.category;
@@ -712,101 +717,107 @@ function createProductCard(product) {
     );
 
 
-    /*
-     * CONTEÚDO
-     */
+    /* ========================================================
+       CONTEÚDO
+       ======================================================== */
 
     const content =
         document.createElement("div");
+
 
     content.className =
         "product-content";
 
 
-    /*
-     * Título
-     */
+    /* TÍTULO */
 
     const title =
         document.createElement("h3");
 
+
     title.className =
         "product-title";
+
 
     title.textContent =
         product.name;
 
 
-    /*
-     * Descrição
-     */
+    /* DESCRIÇÃO */
 
     const description =
         document.createElement("p");
 
+
     description.className =
         "product-description";
+
 
     description.textContent =
         product.description;
 
 
-    /*
-     * Rodapé
-     */
+    /* ========================================================
+       RODAPÉ
+       ======================================================== */
 
     const footer =
         document.createElement("div");
+
 
     footer.className =
         "product-footer";
 
 
-    /*
-     * Informações
-     */
+    /* ========================================================
+       INFORMAÇÕES
+       ======================================================== */
 
     const info =
         document.createElement("div");
+
 
     info.className =
         "product-info";
 
 
-    /*
-     * Preço
-     */
+    /* PREÇO */
 
     if (product.price) {
 
         const price =
             document.createElement("strong");
 
+
         price.className =
             "product-price";
 
+
         price.textContent =
-            formatPrice(product.price);
+            formatPrice(
+                product.price
+            );
+
 
         info.appendChild(
             price
         );
-
     }
 
 
-    /*
-     * Contador
-     */
+    /* VENDIDOS */
 
     const sold =
         document.createElement("span");
 
+
     sold.className =
         "product-sold";
 
+
     sold.dataset.soldFor =
         product.id;
+
 
     sold.textContent =
         formatNumber(
@@ -820,20 +831,21 @@ function createProductCard(product) {
     );
 
 
-    /*
-     * BOTÃO
-     */
+    /* ========================================================
+       BOTÃO COMPRAR
+       ======================================================== */
 
     const button =
         document.createElement("a");
+
 
     button.className =
         "product-buy-button";
 
 
-    /*
-     * Produto em breve
-     */
+    /* ========================================================
+       PRODUTO EM BREVE
+       ======================================================== */
 
     if (
         normalizeStatus(
@@ -842,11 +854,13 @@ function createProductCard(product) {
     ) {
 
         button.href =
-            "javascript:void(0)";
+            "#";
+
 
         button.classList.add(
             "coming-soon"
         );
+
 
         button.textContent =
             "Em breve";
@@ -857,84 +871,112 @@ function createProductCard(product) {
             function (event) {
 
                 event.preventDefault();
-                event.stopPropagation();
-
-            }
-        );
-
-    }
-
-    /*
-     * Produto disponível
-     */
-
-    else if (
-        product.checkout ||
-        product.link
-    ) {
-
-        button.href =
-            product.checkout ||
-            product.link;
-
-        button.target =
-            "_blank";
-
-        button.rel =
-            "noopener noreferrer";
-
-        button.textContent =
-            "Comprar";
-
-
-        /*
-         * Clique no botão não conta
-         * como clique no card.
-         */
-
-        button.addEventListener(
-            "click",
-            function (event) {
 
                 event.stopPropagation();
-
             }
         );
-
     }
 
-    /*
-     * Sem link
-     */
+
+    /* ========================================================
+       PRODUTO DISPONÍVEL
+       ======================================================== */
 
     else {
 
-        button.href =
-            "javascript:void(0)";
+        const productLink =
+            getProductLink(product);
 
-        button.textContent =
-            "Ver produto";
 
-        button.addEventListener(
-            "click",
-            function (event) {
+        if (productLink) {
 
-                event.preventDefault();
-                event.stopPropagation();
+            button.href =
+                productLink;
 
-                registerClick(
-                    product.id
-                );
 
-            }
-        );
+            button.target =
+                "_blank";
 
+
+            button.rel =
+                "noopener noreferrer";
+
+
+            button.textContent =
+                "Comprar";
+
+
+            /*
+             * IMPORTANTE:
+             *
+             * O botão agora registra o clique
+             * antes de abrir o link.
+             */
+
+            button.addEventListener(
+                "click",
+                function (event) {
+
+                    /*
+                     * Impede o evento de subir
+                     * para o card.
+                     *
+                     * Assim não conta duas vezes.
+                     */
+
+                    event.stopPropagation();
+
+
+                    /*
+                     * REGISTRA O CLIQUE.
+                     */
+
+                    registerClick(
+                        product.id
+                    );
+
+                    /*
+                     * O navegador continua
+                     * normalmente para o href.
+                     */
+                }
+            );
+
+        } else {
+
+            button.href =
+                "#";
+
+
+            button.textContent =
+                "Ver produto";
+
+
+            button.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                    registerClick(
+                        product.id
+                    );
+                }
+            );
+        }
     }
 
+
+    /* ========================================================
+       MONTAR CARD
+       ======================================================== */
 
     footer.appendChild(
         info
     );
+
 
     footer.appendChild(
         button
@@ -945,9 +987,11 @@ function createProductCard(product) {
         title
     );
 
+
     content.appendChild(
         description
     );
+
 
     content.appendChild(
         footer
@@ -958,14 +1002,15 @@ function createProductCard(product) {
         imageWrapper
     );
 
+
     card.appendChild(
         content
     );
 
 
-    /*
-     * Classes adicionais
-     */
+    /* ========================================================
+       CLASSE COMING SOON
+       ======================================================== */
 
     if (
         normalizeStatus(
@@ -976,23 +1021,50 @@ function createProductCard(product) {
         card.classList.add(
             "product-coming-soon"
         );
-
     }
 
 
     return card;
-
 }
 
 
 /* ============================================================
-   PLACEHOLDER DA IMAGEM
+   OBTER LINK DO PRODUTO
+   ============================================================ */
+
+function getProductLink(product) {
+
+    if (!product) {
+        return "";
+    }
+
+
+    const checkout =
+        cleanProductLink(
+            product.checkout
+        );
+
+
+    const link =
+        cleanProductLink(
+            product.link
+        );
+
+
+    return checkout || link || "";
+}
+
+
+/* ============================================================
+   PLACEHOLDER
    ============================================================ */
 
 function createProductPlaceholder(name) {
 
     const letter =
-        String(name || "A")
+        String(
+            name || "A"
+        )
             .trim()
             .charAt(0)
             .toUpperCase();
@@ -1005,7 +1077,6 @@ function createProductPlaceholder(name) {
             </div>
         </div>
     `;
-
 }
 
 
@@ -1029,37 +1100,45 @@ function registerClick(productId) {
 
 
     /*
-     * Incrementa clique.
+     * Incrementa cliques.
      */
 
     product.clicks =
-        toNumber(product.clicks) + 1;
+        toNumber(
+            product.clicks
+        ) + 1;
 
 
     /*
-     * O contador visual da loja
-     * também aumenta.
-     *
-     * Isso mantém compatibilidade
-     * com a lógica antiga da loja.
+     * Mantém o comportamento antigo
+     * do contador de vendidos.
      */
 
     product.sold =
-        toNumber(product.sold) + 1;
+        toNumber(
+            product.sold
+        ) + 1;
 
+
+    /*
+     * Salvar.
+     */
 
     saveProducts();
 
 
     /*
-     * Atualizar somente o card
-     * sem precisar recarregar página.
+     * Atualizar card.
      */
 
     updateProductCounter(
         product
     );
 
+
+    /*
+     * Atualizar estatísticas.
+     */
 
     updateHeroStats();
 
@@ -1076,12 +1155,11 @@ function registerClick(productId) {
             }
         )
     );
-
 }
 
 
 /* ============================================================
-   ATUALIZAR CONTADOR DO CARD
+   ATUALIZAR CONTADOR
    ============================================================ */
 
 function updateProductCounter(product) {
@@ -1104,7 +1182,6 @@ function updateProductCounter(product) {
             getDisplayedCount(product)
         ) +
         " vendidos";
-
 }
 
 
@@ -1113,13 +1190,6 @@ function updateProductCounter(product) {
    ============================================================ */
 
 function getDisplayedCount(product) {
-
-    /*
-     * Se existe sold, utiliza sold.
-     *
-     * Isso preserva os números originais
-     * dos produtos da loja.
-     */
 
     if (
         Number.isFinite(
@@ -1130,14 +1200,12 @@ function getDisplayedCount(product) {
         return Number(
             product.sold
         );
-
     }
 
 
     return Number(
         product.clicks || 0
     );
-
 }
 
 
@@ -1153,7 +1221,6 @@ function updateHeroStats() {
             formatNumber(
                 allProducts.length
             );
-
     }
 
 
@@ -1167,17 +1234,16 @@ function updateHeroStats() {
                         toNumber(
                             product.clicks
                         );
-
                 },
                 0
             );
 
 
         heroClicksCount.textContent =
-            formatNumber(total);
-
+            formatNumber(
+                total
+            );
     }
-
 }
 
 
@@ -1195,32 +1261,18 @@ function setupStorageListener() {
                 event.key !==
                 STORAGE_KEY
             ) {
-
                 return;
-
             }
 
-
-            /*
-             * Recarrega os produtos
-             * quando o Admin alterar
-             * o localStorage.
-             */
 
             loadProducts();
 
             renderProducts();
 
             updateHeroStats();
-
         }
     );
 
-
-    /*
-     * Evento personalizado para quando
-     * o Admin estiver na mesma página.
-     */
 
     window.addEventListener(
         "axeusProductsUpdated",
@@ -1231,15 +1283,13 @@ function setupStorageListener() {
             renderProducts();
 
             updateHeroStats();
-
         }
     );
-
 }
 
 
 /* ============================================================
-   FUNÇÃO PARA FORÇAR ATUALIZAÇÃO
+   FORÇAR ATUALIZAÇÃO
    ============================================================ */
 
 window.refreshAxeusStore =
@@ -1250,12 +1300,11 @@ window.refreshAxeusStore =
         renderProducts();
 
         updateHeroStats();
-
     };
 
 
 /* ============================================================
-   FUNÇÕES AUXILIARES
+   CONVERTER PARA NÚMERO
    ============================================================ */
 
 function toNumber(value) {
@@ -1266,7 +1315,6 @@ function toNumber(value) {
     ) {
 
         return value;
-
     }
 
 
@@ -1277,7 +1325,6 @@ function toNumber(value) {
     ) {
 
         return 0;
-
     }
 
 
@@ -1294,7 +1341,6 @@ function toNumber(value) {
     return Number.isFinite(number)
         ? number
         : 0;
-
 }
 
 
@@ -1314,7 +1360,6 @@ function formatNumber(value) {
             )
         )
     );
-
 }
 
 
@@ -1331,19 +1376,12 @@ function formatPrice(value) {
     ) {
 
         return "";
-
     }
 
 
     const stringValue =
-        String(value)
-            .trim();
+        String(value).trim();
 
-
-    /*
-     * Se já contém R$,
-     * não adiciona novamente.
-     */
 
     if (
         stringValue
@@ -1352,7 +1390,6 @@ function formatPrice(value) {
     ) {
 
         return stringValue;
-
     }
 
 
@@ -1376,12 +1413,10 @@ function formatPrice(value) {
                 currency: "BRL"
             }
         );
-
     }
 
 
     return stringValue;
-
 }
 
 
@@ -1391,12 +1426,8 @@ function formatPrice(value) {
 
 function normalizeCategory(category) {
 
-    if (
-        !category
-    ) {
-
+    if (!category) {
         return "OUTROS";
-
     }
 
 
@@ -1408,28 +1439,43 @@ function normalizeCategory(category) {
 
     const aliases = {
 
-        "TIKTOK": "TIKTOK SHOP",
-        "TIKTOK SHOP": "TIKTOK SHOP",
+        "TIKTOK":
+            "TIKTOK SHOP",
 
-        "PC": "PC",
-        "COMPUTADOR": "PC",
+        "TIKTOK SHOP":
+            "TIKTOK SHOP",
 
-        "ENTRETENIMENTO": "ENTRETENIMENTO",
-        "STREAMING": "ENTRETENIMENTO",
+        "PC":
+            "PC",
 
-        "APLICATIVO": "APLICATIVOS",
-        "APLICATIVOS": "APLICATIVOS",
-        "APP": "APLICATIVOS",
-        "APPS": "APLICATIVOS",
+        "COMPUTADOR":
+            "PC",
 
-        "TODOS": "TODOS"
+        "ENTRETENIMENTO":
+            "ENTRETENIMENTO",
 
+        "STREAMING":
+            "ENTRETENIMENTO",
+
+        "APLICATIVO":
+            "APLICATIVOS",
+
+        "APLICATIVOS":
+            "APLICATIVOS",
+
+        "APP":
+            "APLICATIVOS",
+
+        "APPS":
+            "APLICATIVOS",
+
+        "TODOS":
+            "TODOS"
     };
 
 
     return aliases[value] ||
         value;
-
 }
 
 
@@ -1439,12 +1485,8 @@ function normalizeCategory(category) {
 
 function normalizeStatus(status) {
 
-    if (
-        !status
-    ) {
-
+    if (!status) {
         return "active";
-
     }
 
 
@@ -1462,12 +1504,10 @@ function normalizeStatus(status) {
     ) {
 
         return "coming-soon";
-
     }
 
 
     return "active";
-
 }
 
 
@@ -1478,28 +1518,33 @@ function normalizeStatus(status) {
 function createProductId(name) {
 
     return String(name)
+
         .toLowerCase()
+
         .normalize("NFD")
+
         .replace(
             /[\u0300-\u036f]/g,
             ""
         )
+
         .replace(
             /[^a-z0-9]+/g,
             "-"
         )
+
         .replace(
             /^-+|-+$/g,
             ""
         )
+
         .substring(
             0,
             60
         )
-        +
-        "-" +
-        Date.now();
 
+        + "-" +
+        Date.now();
 }
 
 
@@ -1509,28 +1554,34 @@ function createProductId(name) {
 
 function escapeHTML(value) {
 
-    return String(value || "")
+    return String(
+        value || ""
+    )
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
         );
-
 }
 
 
@@ -1542,9 +1593,11 @@ window.AxeusStore = {
 
     getProducts: function () {
 
-        return [...allProducts];
-
+        return [
+            ...allProducts
+        ];
     },
+
 
     refresh: function () {
 
@@ -1553,19 +1606,19 @@ window.AxeusStore = {
         renderProducts();
 
         updateHeroStats();
-
     },
+
 
     registerClick: function (productId) {
 
-        registerClick(productId);
-
+        registerClick(
+            productId
+        );
     },
+
 
     getStorageKey: function () {
 
         return STORAGE_KEY;
-
     }
-
 };
