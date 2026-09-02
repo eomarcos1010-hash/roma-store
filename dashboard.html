@@ -105,6 +105,19 @@
                 <span>Novo produto</span>
             </button>
 
+
+            <!-- =================================================
+                 CATEGORIAS
+                 ================================================= -->
+
+            <button
+                class="nav-item"
+                data-section="categorias"
+            >
+                <span class="nav-icon">◈</span>
+                <span>Categorias</span>
+            </button>
+
         </nav>
 
 
@@ -919,6 +932,102 @@
                     </div>
 
                 </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CATEGORIAS
+             ===================================================== -->
+
+        <section
+            id="section-categorias"
+            class="admin-section"
+        >
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="page-eyebrow">
+                        GERENCIAMENTO
+                    </span>
+
+                    <h2>
+                        Categorias
+                    </h2>
+
+                    <p>
+                        Crie e gerencie as categorias dos seus produtos.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            CATEGORIAS
+                        </span>
+
+                        <h3>
+                            Categorias cadastradas
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="category-form">
+
+                    <form id="categoryForm">
+
+                        <div class="form-group">
+
+                            <label for="categoryName">
+                                Nome da categoria
+                            </label>
+
+                            <input
+                                type="text"
+                                id="categoryName"
+                                placeholder="Ex: Cursos"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="primary-button"
+                            >
+                                ＋ Adicionar categoria
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <div
+                    id="categoriesList"
+                    class="categories-list"
+                >
+                </div>
 
             </div>
 
