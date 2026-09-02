@@ -13,7 +13,7 @@ const SUPABASE_URL =
     "https://qgztuzjqxnwdqdsasche.supabase.co";
 
 const SUPABASE_KEY =
-    "https://qgztuzjqxnwdqdsasche.supabase.co/rest/v1/";
+    "COLE_AQUI_SUA_PUBLISHABLE_KEY";
 
 
 /* ============================================================
@@ -22,6 +22,7 @@ const SUPABASE_KEY =
 
 const PRODUCTS_KEY = "axeus_products";
 const OLD_PRODUCTS_KEY = "axeus_store_products";
+const CATEGORIES_KEY = "axeus_categories";
 
 const ADMIN_USER = "SEU_USUARIO";
 const ADMIN_PASSWORD = "SUA_SENHA";
@@ -583,6 +584,570 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.remove("show");
     }, 3000);
+}
+
+
+/* ============================================================
+   CATEGORIAS
+   ============================================================ */
+
+let categories = [];
+
+
+/* ============================================================
+   CATEGORIAS PADRÃO
+   ============================================================ */
+
+const defaultCategories = [
+    "TikTok Shop",
+    "PC",
+    "Entretenimento",
+    "Aplicativos"
+];
+
+
+/* ============================================================
+   NORMALIZAÇÃO DE CATEGORIA
+   ============================================================ */
+
+function normalizeCategory(
+    category,
+    index = 0
+) {
+    if (!category) {
+        return null;
+    }
+
+    return {
+        id:
+            String(
+                category.id ??
+                `category-${Date.now()}-${index}`
+            ),
+
+        name:
+            String(
+                category.name ?? ""
+            ).trim(),
+
+        created_at:
+            category.created_at ??
+            null
+    };
+}
+
+
+/* ============================================================
+   STORAGE LOCAL — CATEGORIAS
+   ============================================================ */
+
+function getLocalCategories() {
+    try {
+        const saved =
+            localStorage.getItem(
+                CATEGORIES_KEY
+            );
+
+        if (saved) {
+            const parsed =
+                JSON.parse(saved);
+
+            if (Array.isArray(parsed)) {
+                return parsed
+                    .map(normalizeCategory)
+                    .filter(
+                        category =>
+                            category &&
+                            category.name
+                    );
+            }
+        }
+    } catch (error) {
+        console.error(
+            "Erro ao carregar categorias locais:",
+            error
+        );
+    }
+
+    return defaultCategories.map(
+        (name, index) =>
+            normalizeCategory({
+                id: `default-${index + 1}`,
+                name
+            })
+    );
+}
+
+
+function saveLocalCategories(
+    categoriesList
+) {
+    try {
+        localStorage.setItem(
+            CATEGORIES_KEY,
+            JSON.stringify(categoriesList)
+        );
+    } catch (error) {
+        console.error(
+            "Erro ao salvar categorias locais:",
+            error
+        );
+    }
+}
+
+
+/* ============================================================
+   CARREGAR CATEGORIAS DO SUPABASE
+   ============================================================ */
+
+async function loadCategoriesFromSupabase() {
+    try {
+        const data =
+            await supabaseRequest(
+                "categories?select=*&order=name.asc",
+                {
+                    method: "GET"
+                }
+            );
+
+        if (Array.isArray(data)) {
+            const loaded =
+                data
+                    .map(normalizeCategory)
+                    .filter(
+                        category =>
+                            category &&
+                            category.name
+                    );
+
+            if (loaded.length > 0) {
+                saveLocalCategories(
+                    loaded
+                );
+
+                return loaded;
+            }
+        }
+
+        return getLocalCategories();
+
+    } catch (error) {
+        console.error(
+            "Erro ao carregar categorias do Supabase:",
+            error
+        );
+
+        return getLocalCategories();
+    }
+}
+
+
+/* ============================================================
+   SALVAR CATEGORIA NO SUPABASE
+   ============================================================ */
+
+async function saveCategoryToSupabase(
+    category
+) {
+    const normalized =
+        normalizeCategory(category);
+
+    const payload = {
+        id: normalized.id,
+        name: normalized.name
+    };
+
+    return await supabaseRequest(
+        "categories",
+        {
+            method: "POST",
+            headers: {
+                "Prefer":
+                    "return=representation"
+            },
+            body:
+                JSON.stringify(payload)
+        }
+    );
+}
+
+
+/* ============================================================
+   EXCLUIR CATEGORIA DO SUPABASE
+   ============================================================ */
+
+async function deleteCategoryFromSupabase(
+    id
+) {
+    return await supabaseRequest(
+        `categories?id=eq.${encodeURIComponent(id)}`,
+        {
+            method: "DELETE"
+        }
+    );
+}
+
+
+/* ============================================================
+   CARREGAR CATEGORIAS
+   ============================================================ */
+
+async function loadCategories() {
+    categories =
+        await loadCategoriesFromSupabase();
+
+    renderCategories();
+
+    updateProductCategorySelect();
+}
+
+
+/* ============================================================
+   RENDERIZAR CATEGORIAS
+   ============================================================ */
+
+function renderCategories() {
+    const container =
+        document.getElementById(
+            "categoriesList"
+        );
+
+    const count =
+        document.getElementById(
+            "categoryCount"
+        );
+
+    if (count) {
+        count.textContent =
+            categories.length;
+    }
+
+    if (!container) {
+        return;
+    }
+
+    if (!categories.length) {
+        container.innerHTML = `
+            <div class="category-empty">
+                Nenhuma categoria cadastrada.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        categories.map(
+            category => `
+                <div
+                    class="category-item"
+                    data-category-id="${escapeHTML(category.id)}"
+                >
+                    <div class="category-item-info">
+                        <strong>
+                            ${escapeHTML(category.name)}
+                        </strong>
+
+                        <span>
+                            Categoria da loja
+                        </span>
+                    </div>
+
+                    <div class="category-item-actions">
+                        <button
+                            type="button"
+                            class="delete-category"
+                            data-id="${escapeHTML(category.id)}"
+                        >
+                            Excluir
+                        </button>
+                    </div>
+                </div>
+            `
+        ).join("");
+
+    bindCategoryActions();
+}
+
+
+/* ============================================================
+   ATUALIZAR SELECT DE CATEGORIA
+   ============================================================ */
+
+function updateProductCategorySelect() {
+    const select =
+        document.getElementById(
+            "productCategory"
+        );
+
+    if (!select) {
+        return;
+    }
+
+    const currentValue =
+        select.value;
+
+    select.innerHTML = "";
+
+    if (!categories.length) {
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value = "";
+        option.textContent =
+            "Nenhuma categoria";
+
+        select.appendChild(
+            option
+        );
+
+        return;
+    }
+
+    categories.forEach(
+        category => {
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                category.name;
+
+            option.textContent =
+                category.name;
+
+            select.appendChild(
+                option
+            );
+        }
+    );
+
+    if (
+        currentValue &&
+        categories.some(
+            category =>
+                category.name ===
+                currentValue
+        )
+    ) {
+        select.value =
+            currentValue;
+    }
+}
+
+
+/* ============================================================
+   AÇÕES DAS CATEGORIAS
+   ============================================================ */
+
+function bindCategoryActions() {
+    document
+        .querySelectorAll(
+            ".delete-category"
+        )
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                async function () {
+                    const id =
+                        this.dataset.id;
+
+                    const category =
+                        categories.find(
+                            item =>
+                                String(item.id) ===
+                                String(id)
+                        );
+
+                    if (!category) {
+                        return;
+                    }
+
+                    const usedByProducts =
+                        products.some(
+                            product =>
+                                String(
+                                    product.category
+                                ).toLowerCase() ===
+                                String(
+                                    category.name
+                                ).toLowerCase()
+                        );
+
+                    if (usedByProducts) {
+                        showToast(
+                            "Não é possível excluir uma categoria usada por produtos."
+                        );
+
+                        return;
+                    }
+
+                    const confirmed =
+                        window.confirm(
+                            `Excluir a categoria "${category.name}"?`
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    try {
+                        if (
+                            !String(
+                                category.id
+                            ).startsWith(
+                                "default-"
+                            )
+                        ) {
+                            await deleteCategoryFromSupabase(
+                                category.id
+                            );
+                        }
+
+                        categories =
+                            categories.filter(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) !==
+                                    String(id)
+                            );
+
+                        saveLocalCategories(
+                            categories
+                        );
+
+                        renderCategories();
+
+                        updateProductCategorySelect();
+
+                        showToast(
+                            "Categoria excluída com sucesso!"
+                        );
+
+                    } catch (error) {
+                        console.error(
+                            "Erro ao excluir categoria:",
+                            error
+                        );
+
+                        showToast(
+                            "Erro ao excluir categoria."
+                        );
+                    }
+                }
+            );
+        });
+}
+
+
+/* ============================================================
+   FORMULÁRIO DE CATEGORIA
+   ============================================================ */
+
+function iniciarCategoryForm() {
+    const form =
+        document.getElementById(
+            "categoryForm"
+        );
+
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+            event.preventDefault();
+
+            const input =
+                document.getElementById(
+                    "categoryName"
+                );
+
+            const name =
+                input
+                    ? input.value.trim()
+                    : "";
+
+            if (!name) {
+                showToast(
+                    "Digite o nome da categoria."
+                );
+
+                return;
+            }
+
+            const alreadyExists =
+                categories.some(
+                    category =>
+                        category.name
+                            .toLowerCase() ===
+                        name.toLowerCase()
+                );
+
+            if (alreadyExists) {
+                showToast(
+                    "Essa categoria já existe."
+                );
+
+                return;
+            }
+
+            const category =
+                normalizeCategory({
+                    id:
+                        crypto.randomUUID(),
+                    name
+                });
+
+            try {
+                await saveCategoryToSupabase(
+                    category
+                );
+
+                categories.push(
+                    category
+                );
+
+                categories =
+                    categories.sort(
+                        (a, b) =>
+                            a.name.localeCompare(
+                                b.name,
+                                "pt-BR"
+                            )
+                    );
+
+                saveLocalCategories(
+                    categories
+                );
+
+                renderCategories();
+
+                updateProductCategorySelect();
+
+                form.reset();
+
+                showToast(
+                    "Categoria adicionada com sucesso!"
+                );
+
+            } catch (error) {
+                console.error(
+                    "Erro ao salvar categoria:",
+                    error
+                );
+
+                showToast(
+                    "Erro ao salvar categoria no Supabase."
+                );
+            }
+        }
+    );
 }
 
 
@@ -1665,6 +2230,7 @@ function renderEverything() {
     renderClicks();
     renderClickChart();
     renderProductCount();
+    renderCategories();
 }
 
 
@@ -1878,7 +2444,13 @@ setInterval(
             products =
                 await loadProductsFromSupabase();
 
+            categories =
+                await loadCategoriesFromSupabase();
+
             renderEverything();
+
+            updateProductCategorySelect();
+
         } catch (error) {
             console.error(
                 "Erro no auto refresh:",
@@ -1906,6 +2478,8 @@ document.addEventListener(
 
         iniciarProductForm();
 
+        iniciarCategoryForm();
+
         iniciarDeleteModal();
 
         iniciarBusca();
@@ -1920,6 +2494,8 @@ document.addEventListener(
 
         if (isDashboard) {
             await loadProducts();
+
+            await loadCategories();
         }
     }
 );
