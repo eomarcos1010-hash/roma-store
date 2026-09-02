@@ -133,6 +133,13 @@ let heroClicksCount;
 
 
 /* ============================================================
+   ELEMENTOS DOS DETALHES
+   ============================================================ */
+
+let productDetailsModal;
+
+
+/* ============================================================
    INICIALIZAÇÃO
    ============================================================ */
 
@@ -149,6 +156,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     heroClicksCount =
         document.getElementById("hero-clicks-count");
+
+
+    /*
+     * Cria a área de detalhes automaticamente.
+     * Assim não é necessário criar outro HTML.
+     */
+
+    createProductDetails();
+
 
     await initializeStore();
 });
@@ -209,9 +225,10 @@ async function supabaseRequest(
                     "apikey":
                         SUPABASE_KEY,
 
-                    "Authorization":
-                        "Bearer " +
-                        SUPABASE_KEY,
+                    /*
+                     * A chave publishable é enviada pelo
+                     * header apikey. Não utiliza Bearer.
+                     */
 
                     "Content-Type":
                         "application/json",
@@ -587,10 +604,6 @@ async function saveProducts() {
     /*
      * O dashboard será responsável pelas
      * alterações principais no Supabase.
-     *
-     * A loja não faz um PUT de todos os produtos,
-     * evitando sobrescrever alterações feitas
-     * no dashboard.
      */
 
     window.dispatchEvent(
@@ -740,6 +753,11 @@ function createProductCard(product) {
         "click",
         function (event) {
 
+            /*
+             * Se clicou no botão Comprar,
+             * deixa o link funcionar normalmente.
+             */
+
             if (
                 event.target.closest(
                     ".product-buy-button"
@@ -756,23 +774,21 @@ function createProductCard(product) {
             }
 
 
+            /*
+             * Registra o clique.
+             */
+
             registerClick(
                 product.id
             );
 
 
-            const productLink =
-                getProductLink(product);
+            /*
+             * Agora abre os detalhes em vez
+             * de mandar diretamente para o checkout.
+             */
 
-
-            if (productLink) {
-
-                window.open(
-                    productLink,
-                    "_blank",
-                    "noopener,noreferrer"
-                );
-            }
+            openProductDetails(product);
         }
     );
 
@@ -1082,6 +1098,10 @@ function createProductCard(product) {
                     registerClick(
                         product.id
                     );
+
+                    openProductDetails(
+                        product
+                    );
                 }
             );
         }
@@ -1140,6 +1160,547 @@ function createProductCard(product) {
 
 
     return card;
+}
+
+
+/* ============================================================
+   CRIAR ÁREA DE DETALHES
+   ============================================================ */
+
+function createProductDetails() {
+
+    /*
+     * Evita criar duas vezes.
+     */
+
+    if (
+        document.getElementById(
+            "productDetailsModal"
+        )
+    ) {
+
+        productDetailsModal =
+            document.getElementById(
+                "productDetailsModal"
+            );
+
+        return;
+    }
+
+
+    const modal =
+        document.createElement("div");
+
+
+    modal.id =
+        "productDetailsModal";
+
+
+    modal.className =
+        "product-details-modal";
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    modal.innerHTML = `
+
+        <div class="product-details-backdrop"></div>
+
+        <div
+            class="product-details-container"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="productDetailsTitle"
+        >
+
+            <button
+                type="button"
+                class="product-details-close"
+                id="productDetailsClose"
+                aria-label="Fechar"
+            >
+                ×
+            </button>
+
+
+            <div class="product-details-image-wrapper">
+
+                <img
+                    id="productDetailsImage"
+                    class="product-details-image"
+                    src=""
+                    alt=""
+                >
+
+                <div
+                    id="productDetailsPlaceholder"
+                    class="product-details-placeholder"
+                >
+                </div>
+
+            </div>
+
+
+            <div class="product-details-content">
+
+                <span
+                    id="productDetailsCategory"
+                    class="product-details-category"
+                >
+                </span>
+
+
+                <h2
+                    id="productDetailsTitle"
+                    class="product-details-title"
+                >
+                </h2>
+
+
+                <div class="product-details-meta">
+
+                    <div class="product-details-price-box">
+
+                        <span>
+                            PREÇO
+                        </span>
+
+                        <strong
+                            id="productDetailsPrice"
+                        >
+                        </strong>
+
+                    </div>
+
+
+                    <div class="product-details-sold-box">
+
+                        <span>
+                            VENDIDOS
+                        </span>
+
+                        <strong
+                            id="productDetailsSold"
+                        >
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="product-details-description-box">
+
+                    <span>
+                        SOBRE O PRODUTO
+                    </span>
+
+                    <p
+                        id="productDetailsDescription"
+                    >
+                    </p>
+
+                </div>
+
+
+                <a
+                    id="productDetailsBuy"
+                    class="product-details-buy"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    COMPRAR AGORA
+                </a>
+
+            </div>
+
+        </div>
+    `;
+
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    productDetailsModal =
+        modal;
+
+
+    /* ========================================================
+       FECHAR
+       ======================================================== */
+
+    const closeButton =
+        document.getElementById(
+            "productDetailsClose"
+        );
+
+
+    const backdrop =
+        modal.querySelector(
+            ".product-details-backdrop"
+        );
+
+
+    closeButton.addEventListener(
+        "click",
+        closeProductDetails
+    );
+
+
+    backdrop.addEventListener(
+        "click",
+        closeProductDetails
+    );
+
+
+    /*
+     * ESC fecha o detalhe.
+     */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("active")
+            ) {
+
+                closeProductDetails();
+            }
+        }
+    );
+}
+
+
+/* ============================================================
+   ABRIR DETALHES
+   ============================================================ */
+
+function openProductDetails(product) {
+
+    if (!product) {
+        return;
+    }
+
+
+    /*
+     * Garante que o modal existe.
+     */
+
+    if (!productDetailsModal) {
+        createProductDetails();
+    }
+
+
+    const image =
+        document.getElementById(
+            "productDetailsImage"
+        );
+
+
+    const placeholder =
+        document.getElementById(
+            "productDetailsPlaceholder"
+        );
+
+
+    const category =
+        document.getElementById(
+            "productDetailsCategory"
+        );
+
+
+    const title =
+        document.getElementById(
+            "productDetailsTitle"
+        );
+
+
+    const price =
+        document.getElementById(
+            "productDetailsPrice"
+        );
+
+
+    const sold =
+        document.getElementById(
+            "productDetailsSold"
+        );
+
+
+    const description =
+        document.getElementById(
+            "productDetailsDescription"
+        );
+
+
+    const buyButton =
+        document.getElementById(
+            "productDetailsBuy"
+        );
+
+
+    /* ========================================================
+       CATEGORIA
+       ======================================================== */
+
+    category.textContent =
+        product.category;
+
+
+    /* ========================================================
+       TÍTULO
+       ======================================================== */
+
+    title.textContent =
+        product.name;
+
+
+    /* ========================================================
+       PREÇO
+       ======================================================== */
+
+    if (product.price) {
+
+        price.textContent =
+            formatPrice(
+                product.price
+            );
+
+    } else {
+
+        price.textContent =
+            "Em breve";
+    }
+
+
+    /* ========================================================
+       VENDIDOS
+       ======================================================== */
+
+    sold.textContent =
+        formatNumber(
+            getDisplayedCount(product)
+        );
+
+
+    /* ========================================================
+       DESCRIÇÃO
+       ======================================================== */
+
+    description.textContent =
+        product.description;
+
+
+    /* ========================================================
+       IMAGEM
+       ======================================================== */
+
+    if (product.image) {
+
+        image.src =
+            product.image;
+
+
+        image.alt =
+            product.name;
+
+
+        image.style.display =
+            "block";
+
+
+        placeholder.innerHTML =
+            "";
+
+
+        image.onerror =
+            function () {
+
+                image.style.display =
+                    "none";
+
+
+                placeholder.innerHTML =
+                    createProductPlaceholder(
+                        product.name
+                    );
+            };
+
+    } else {
+
+        image.removeAttribute(
+            "src"
+        );
+
+
+        image.style.display =
+            "none";
+
+
+        placeholder.innerHTML =
+            createProductPlaceholder(
+                product.name
+            );
+    }
+
+
+    /* ========================================================
+       BOTÃO DE COMPRA
+       ======================================================== */
+
+    const productLink =
+        getProductLink(product);
+
+
+    if (
+        normalizeStatus(
+            product.status
+        ) === "coming-soon"
+    ) {
+
+        buyButton.href =
+            "#";
+
+
+        buyButton.textContent =
+            "EM BREVE";
+
+
+        buyButton.classList.add(
+            "disabled"
+        );
+
+
+        buyButton.onclick =
+            function (event) {
+
+                event.preventDefault();
+            };
+
+    } else if (productLink) {
+
+        buyButton.href =
+            productLink;
+
+
+        buyButton.target =
+            "_blank";
+
+
+        buyButton.rel =
+            "noopener noreferrer";
+
+
+        buyButton.textContent =
+            "COMPRAR AGORA";
+
+
+        buyButton.classList.remove(
+            "disabled"
+        );
+
+
+        buyButton.onclick =
+            function () {
+
+                registerClick(
+                    product.id
+                );
+            };
+
+    } else {
+
+        buyButton.href =
+            "#";
+
+
+        buyButton.textContent =
+            "LINK INDISPONÍVEL";
+
+
+        buyButton.classList.add(
+            "disabled"
+        );
+
+
+        buyButton.onclick =
+            function (event) {
+
+                event.preventDefault();
+            };
+    }
+
+
+    /* ========================================================
+       ABRIR MODAL
+       ======================================================== */
+
+    productDetailsModal.classList.add(
+        "active"
+    );
+
+
+    productDetailsModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    document.body.classList.add(
+        "product-details-open"
+    );
+
+
+    /*
+     * Volta para o topo do detalhe.
+     */
+
+    const container =
+        productDetailsModal.querySelector(
+            ".product-details-container"
+        );
+
+
+    if (container) {
+        container.scrollTop = 0;
+    }
+}
+
+
+/* ============================================================
+   FECHAR DETALHES
+   ============================================================ */
+
+function closeProductDetails() {
+
+    if (!productDetailsModal) {
+        return;
+    }
+
+
+    productDetailsModal.classList.remove(
+        "active"
+    );
+
+
+    productDetailsModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    document.body.classList.remove(
+        "product-details-open"
+    );
 }
 
 
@@ -1774,5 +2335,31 @@ window.AxeusStore = {
     getSupabaseUrl: function () {
 
         return SUPABASE_URL;
-    }
+    },
+
+
+    openProductDetails: function (productId) {
+
+        const product =
+            allProducts.find(
+                item =>
+                    String(item.id) ===
+                    String(productId)
+            );
+
+
+        if (product) {
+
+            openProductDetails(
+                product
+            );
+        }
+    },
+
+
+    closeProductDetails:
+        function () {
+
+            closeProductDetails();
+        }
 };
