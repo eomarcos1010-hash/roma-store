@@ -13,7 +13,7 @@ const SUPABASE_URL =
     "https://qgztuzjqxnwdqdsasche.supabase.co";
 
 const SUPABASE_KEY =
-    "COLE_AQUI_SUA_PUBLISHABLE_KEY";
+    "sb_publishable_E4AZ79FjRSaXIuoLJead4A_DMaH51t_";
 
 
 /* ============================================================
