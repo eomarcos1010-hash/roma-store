@@ -144,6 +144,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     heroClicksCount =
         document.getElementById("hero-clicks-count");
 
+    /*
+     * Cria a área de detalhes do produto.
+     */
+
+    createProductDetails();
+
     await initializeStore();
 });
 
@@ -162,12 +168,6 @@ async function initializeStore() {
     updateHeroStats();
 
     setupStorageListener();
-
-    /*
-     * Atualiza os produtos periodicamente.
-     * Isso permite que alterações feitas no
-     * dashboard apareçam na loja.
-     */
 
     setInterval(async function () {
 
@@ -199,10 +199,6 @@ async function supabaseRequest(
 
                 headers: {
                     "apikey":
-                        SUPABASE_KEY,
-
-                    "Authorization":
-                        "Bearer " +
                         SUPABASE_KEY,
 
                     "Content-Type":
@@ -251,10 +247,6 @@ async function supabaseRequest(
 
 async function loadProducts() {
 
-    /*
-     * Primeiro tenta Supabase.
-     */
-
     try {
 
         const data =
@@ -266,11 +258,6 @@ async function loadProducts() {
 
             allProducts =
                 normalizeProducts(data);
-
-            /*
-             * Guarda uma cópia local apenas como
-             * fallback/offline.
-             */
 
             saveLocalCache();
 
@@ -284,10 +271,6 @@ async function loadProducts() {
             error
         );
     }
-
-    /*
-     * Se Supabase falhar, usa cache local.
-     */
 
     let savedProducts = null;
 
@@ -356,11 +339,6 @@ async function loadProducts() {
         return;
     }
 
-    /*
-     * Último fallback:
-     * produtos padrão.
-     */
-
     allProducts =
         normalizeProducts(
             DEFAULT_PRODUCTS
@@ -403,8 +381,6 @@ function normalizeProducts(products) {
                 ...product
             };
 
-            /* ID */
-
             if (
                 !normalized.id ||
                 String(normalized.id).trim() === ""
@@ -417,16 +393,12 @@ function normalizeProducts(products) {
                     );
             }
 
-            /* NOME */
-
             normalized.name =
                 String(
                     normalized.name ||
                     normalized.title ||
                     `Produto ${index + 1}`
                 );
-
-            /* DESCRIÇÃO */
 
             normalized.description =
                 String(
@@ -435,8 +407,6 @@ function normalizeProducts(products) {
                     "Produto digital AXEUS."
                 );
 
-            /* CATEGORIA */
-
             normalized.category =
                 normalizeCategory(
                     normalized.category ||
@@ -444,15 +414,11 @@ function normalizeProducts(products) {
                     "OUTROS"
                 );
 
-            /* IMAGEM */
-
             normalized.image =
                 normalized.image ||
                 normalized.imageUrl ||
                 normalized.photo ||
                 "";
-
-            /* LINK DE COMPRA */
 
             normalized.checkout =
                 cleanProductLink(
@@ -470,28 +436,20 @@ function normalizeProducts(products) {
                     ""
                 );
 
-            /* CLIQUES */
-
             normalized.clicks =
                 toNumber(
                     normalized.clicks
                 );
-
-            /* VENDIDOS */
 
             normalized.sold =
                 toNumber(
                     normalized.sold
                 );
 
-            /* STATUS */
-
             normalized.status =
                 normalizeStatus(
                     normalized.status
                 );
-
-            /* PREÇO */
 
             normalized.price =
                 normalized.price == null
@@ -536,20 +494,7 @@ function cleanProductLink(link) {
 
 async function saveProducts() {
 
-    /*
-     * Mantém cache local.
-     */
-
     saveLocalCache();
-
-    /*
-     * O dashboard será responsável pelas
-     * alterações principais no Supabase.
-     *
-     * A loja não faz um PUT de todos os produtos,
-     * evitando sobrescrever alterações feitas
-     * no dashboard.
-     */
 
     window.dispatchEvent(
         new CustomEvent(
@@ -680,6 +625,11 @@ function createProductCard(product) {
         "click",
         function (event) {
 
+            /*
+             * Se clicou no botão de comprar,
+             * deixa o botão executar normalmente.
+             */
+
             if (
                 event.target.closest(
                     ".product-buy-button"
@@ -688,27 +638,33 @@ function createProductCard(product) {
                 return;
             }
 
+            /*
+             * Se houver algum outro link,
+             * não interfere.
+             */
+
             if (
                 event.target.closest("a")
             ) {
                 return;
             }
 
+            /*
+             * Registra o clique.
+             */
+
             registerClick(
                 product.id
             );
 
-            const productLink =
-                getProductLink(product);
+            /*
+             * Abre os detalhes em vez
+             * de mandar diretamente para o checkout.
+             */
 
-            if (productLink) {
-
-                window.open(
-                    productLink,
-                    "_blank",
-                    "noopener,noreferrer"
-                );
-            }
+            openProductDetails(
+                product
+            );
         }
     );
 
@@ -969,6 +925,10 @@ function createProductCard(product) {
                     registerClick(
                         product.id
                     );
+
+                    openProductDetails(
+                        product
+                    );
                 }
             );
         }
@@ -1018,6 +978,520 @@ function createProductCard(product) {
     }
 
     return card;
+}
+
+/* ============================================================
+   DETALHES DO PRODUTO
+   ============================================================ */
+
+function createProductDetails() {
+
+    if (
+        document.getElementById(
+            "productDetailsModal"
+        )
+    ) {
+        return;
+    }
+
+    const modal =
+        document.createElement("div");
+
+    modal.id =
+        "productDetailsModal";
+
+    modal.className =
+        "product-details-modal";
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    modal.innerHTML = `
+
+        <div
+            class="product-details-backdrop"
+            data-product-details-close
+        ></div>
+
+        <div
+            class="product-details-container"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="productDetailsTitle"
+        >
+
+            <button
+                type="button"
+                class="product-details-close"
+                id="productDetailsClose"
+                aria-label="Fechar"
+            >
+                ×
+            </button>
+
+            <div class="product-details-image-wrapper">
+
+                <img
+                    id="productDetailsImage"
+                    class="product-details-image"
+                    src=""
+                    alt=""
+                >
+
+                <div
+                    id="productDetailsPlaceholder"
+                    class="product-details-placeholder"
+                ></div>
+
+            </div>
+
+            <div class="product-details-content">
+
+                <span
+                    id="productDetailsCategory"
+                    class="product-details-category"
+                ></span>
+
+                <h2
+                    id="productDetailsTitle"
+                    class="product-details-title"
+                ></h2>
+
+                <div class="product-details-meta">
+
+                    <div class="product-details-price-box">
+
+                        <span>
+                            PREÇO
+                        </span>
+
+                        <strong
+                            id="productDetailsPrice"
+                        ></strong>
+
+                    </div>
+
+                    <div class="product-details-sold-box">
+
+                        <span>
+                            VENDIDOS
+                        </span>
+
+                        <strong
+                            id="productDetailsSold"
+                        ></strong>
+
+                    </div>
+
+                </div>
+
+                <div class="product-details-description-box">
+
+                    <span>
+                        SOBRE O PRODUTO
+                    </span>
+
+                    <p
+                        id="productDetailsDescription"
+                    ></p>
+
+                </div>
+
+                <a
+                    id="productDetailsBuy"
+                    class="product-details-buy"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    COMPRAR AGORA
+                </a>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(
+        modal
+    );
+
+    const closeButton =
+        document.getElementById(
+            "productDetailsClose"
+        );
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeProductDetails
+        );
+    }
+
+    modal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target.hasAttribute(
+                    "data-product-details-close"
+                )
+            ) {
+
+                closeProductDetails();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeProductDetails();
+            }
+        }
+    );
+
+    const buyButton =
+        document.getElementById(
+            "productDetailsBuy"
+        );
+
+    if (buyButton) {
+
+        buyButton.addEventListener(
+            "click",
+            function (event) {
+
+                const productId =
+                    this.dataset.productId;
+
+                if (!productId) {
+                    return;
+                }
+
+                registerClick(
+                    productId
+                );
+            }
+        );
+    }
+}
+
+/* ============================================================
+   ABRIR DETALHES
+   ============================================================ */
+
+function openProductDetails(product) {
+
+    if (!product) {
+        return;
+    }
+
+    createProductDetails();
+
+    const modal =
+        document.getElementById(
+            "productDetailsModal"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+    const image =
+        document.getElementById(
+            "productDetailsImage"
+        );
+
+    const placeholder =
+        document.getElementById(
+            "productDetailsPlaceholder"
+        );
+
+    const category =
+        document.getElementById(
+            "productDetailsCategory"
+        );
+
+    const title =
+        document.getElementById(
+            "productDetailsTitle"
+        );
+
+    const price =
+        document.getElementById(
+            "productDetailsPrice"
+        );
+
+    const sold =
+        document.getElementById(
+            "productDetailsSold"
+        );
+
+    const description =
+        document.getElementById(
+            "productDetailsDescription"
+        );
+
+    const buyButton =
+        document.getElementById(
+            "productDetailsBuy"
+        );
+
+    /* ========================================================
+       CATEGORIA
+       ======================================================== */
+
+    if (category) {
+
+        category.textContent =
+            product.category || "OUTROS";
+    }
+
+    /* ========================================================
+       TÍTULO
+       ======================================================== */
+
+    if (title) {
+
+        title.textContent =
+            product.name || "Produto";
+    }
+
+    /* ========================================================
+       PREÇO
+       ======================================================== */
+
+    if (price) {
+
+        price.textContent =
+            product.price
+                ? formatPrice(product.price)
+                : "Grátis";
+    }
+
+    /* ========================================================
+       VENDIDOS
+       ======================================================== */
+
+    if (sold) {
+
+        sold.textContent =
+            formatNumber(
+                getDisplayedCount(product)
+            );
+    }
+
+    /* ========================================================
+       DESCRIÇÃO
+       ======================================================== */
+
+    if (description) {
+
+        description.textContent =
+            product.description ||
+            "Produto digital AXEUS.";
+    }
+
+    /* ========================================================
+       IMAGEM
+       ======================================================== */
+
+    if (image && placeholder) {
+
+        if (product.image) {
+
+            image.src =
+                product.image;
+
+            image.alt =
+                product.name || "Produto";
+
+            image.style.display =
+                "block";
+
+            placeholder.innerHTML =
+                "";
+
+            placeholder.style.display =
+                "none";
+
+            image.onerror =
+                function () {
+
+                    image.style.display =
+                        "none";
+
+                    placeholder.innerHTML =
+                        createProductPlaceholder(
+                            product.name
+                        );
+
+                    placeholder.style.display =
+                        "flex";
+                };
+
+        } else {
+
+            image.removeAttribute(
+                "src"
+            );
+
+            image.style.display =
+                "none";
+
+            placeholder.innerHTML =
+                createProductPlaceholder(
+                    product.name
+                );
+
+            placeholder.style.display =
+                "flex";
+        }
+    }
+
+    /* ========================================================
+       BOTÃO DE COMPRA
+       ======================================================== */
+
+    if (buyButton) {
+
+        buyButton.dataset.productId =
+            product.id;
+
+        const productLink =
+            getProductLink(product);
+
+        const comingSoon =
+            normalizeStatus(
+                product.status
+            ) === "coming-soon";
+
+        if (
+            comingSoon ||
+            !productLink
+        ) {
+
+            buyButton.href =
+                "#";
+
+            buyButton.textContent =
+                comingSoon
+                    ? "EM BREVE"
+                    : "INDISPONÍVEL";
+
+            buyButton.classList.add(
+                "disabled"
+            );
+
+            buyButton.setAttribute(
+                "aria-disabled",
+                "true"
+            );
+
+            buyButton.onclick =
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+                };
+
+        } else {
+
+            buyButton.href =
+                productLink;
+
+            buyButton.target =
+                "_blank";
+
+            buyButton.rel =
+                "noopener noreferrer";
+
+            buyButton.textContent =
+                "COMPRAR AGORA";
+
+            buyButton.classList.remove(
+                "disabled"
+            );
+
+            buyButton.removeAttribute(
+                "aria-disabled"
+            );
+
+            buyButton.onclick =
+                function () {
+
+                    registerClick(
+                        product.id
+                    );
+                };
+        }
+    }
+
+    /* ========================================================
+       ABRIR MODAL
+       ======================================================== */
+
+    modal.classList.add(
+        "active"
+    );
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.classList.add(
+        "product-details-open"
+    );
+
+    /*
+     * Evita que a página fique rolando
+     * enquanto os detalhes estão abertos.
+     */
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+/* ============================================================
+   FECHAR DETALHES
+   ============================================================ */
+
+function closeProductDetails() {
+
+    const modal =
+        document.getElementById(
+            "productDetailsModal"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.remove(
+        "active"
+    );
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.classList.remove(
+        "product-details-open"
+    );
+
+    document.body.style.overflow =
+        "";
 }
 
 /* ============================================================
@@ -1083,44 +1557,27 @@ async function registerClick(productId) {
         return;
     }
 
-    /*
-     * Incrementa localmente imediatamente.
-     */
-
     product.clicks =
         toNumber(
             product.clicks
         ) + 1;
-
-    /*
-     * Mantém exatamente o comportamento
-     * antigo do seu site.
-     */
 
     product.sold =
         toNumber(
             product.sold
         ) + 1;
 
-    /*
-     * Atualiza visual.
-     */
-
     updateProductCounter(
+        product
+    );
+
+    updateProductDetailsCounter(
         product
     );
 
     updateHeroStats();
 
-    /*
-     * Salva cache local.
-     */
-
     saveLocalCache();
-
-    /*
-     * Atualiza diretamente o Supabase.
-     */
 
     try {
 
@@ -1154,10 +1611,6 @@ async function registerClick(productId) {
         );
     }
 
-    /*
-     * Evento personalizado.
-     */
-
     window.dispatchEvent(
         new CustomEvent(
             "axeusProductClick",
@@ -1166,6 +1619,27 @@ async function registerClick(productId) {
             }
         )
     );
+}
+
+/* ============================================================
+   ATUALIZAR CONTADOR DO MODAL
+   ============================================================ */
+
+function updateProductDetailsCounter(product) {
+
+    const counter =
+        document.getElementById(
+            "productDetailsSold"
+        );
+
+    if (!counter || !product) {
+        return;
+    }
+
+    counter.textContent =
+        formatNumber(
+            getDisplayedCount(product)
+        );
 }
 
 /* ============================================================
@@ -1588,6 +2062,28 @@ window.AxeusStore = {
         registerClick(
             productId
         );
+    },
+
+    openProductDetails: function (productId) {
+
+        const product =
+            allProducts.find(
+                item =>
+                    String(item.id) ===
+                    String(productId)
+            );
+
+        if (product) {
+
+            openProductDetails(
+                product
+            );
+        }
+    },
+
+    closeProductDetails: function () {
+
+        closeProductDetails();
     },
 
     getStorageKey: function () {
