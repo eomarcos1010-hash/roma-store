@@ -267,6 +267,58 @@ function iniciarLogout() {
 
 
 /* ============================================================
+   CONVERTER PREÇO
+   ============================================================ */
+
+function parsePrice(value) {
+
+    if (typeof value === "number") {
+
+        return Number.isFinite(value)
+            ? value
+            : 0;
+
+    }
+
+    let text =
+        String(value ?? "").trim();
+
+    if (!text) {
+        return 0;
+    }
+
+    text =
+        text
+            .replace(/\s/g, "")
+            .replace(/R\$/gi, "");
+
+    if (text.includes(",")) {
+
+        text =
+            text
+                .replace(/\./g, "")
+                .replace(",", ".");
+
+    } else {
+
+        text =
+            text.replace(
+                /[^\d.-]/g,
+                ""
+            );
+
+    }
+
+    const number =
+        Number(text);
+
+    return Number.isFinite(number)
+        ? number
+        : 0;
+}
+
+
+/* ============================================================
    NORMALIZAÇÃO DE PRODUTO
    ============================================================ */
 
@@ -309,7 +361,7 @@ function normalizeProduct(
             ),
 
         price:
-            Number(
+            parsePrice(
                 product.price ?? 0
             ),
 
@@ -323,12 +375,12 @@ function normalizeProduct(
         sold:
             Number(
                 product.sold ?? 0
-            ),
+            ) || 0,
 
         clicks:
             Number(
                 product.clicks ?? 0
-            ),
+            ) || 0,
 
         status:
             product.status ??
@@ -358,9 +410,9 @@ function getLocalProducts() {
 
             if (Array.isArray(parsed)) {
 
-                return parsed.map(
-                    normalizeProduct
-                );
+                return parsed
+                    .map(normalizeProduct)
+                    .filter(Boolean);
 
             }
         }
@@ -379,13 +431,12 @@ function getLocalProducts() {
             if (Array.isArray(parsed)) {
 
                 const products =
-                    parsed.map(
-                        normalizeProduct
-                    );
+                    parsed
+                        .map(normalizeProduct)
+                        .filter(Boolean);
 
-                localStorage.setItem(
-                    PRODUCTS_KEY,
-                    JSON.stringify(products)
+                saveLocalProducts(
+                    products
                 );
 
                 return products;
@@ -527,9 +578,9 @@ async function loadProductsFromSupabase() {
         ) {
 
             const loadedProducts =
-                data.map(
-                    normalizeProduct
-                );
+                data
+                    .map(normalizeProduct)
+                    .filter(Boolean);
 
             saveLocalProducts(
                 loadedProducts
@@ -658,7 +709,7 @@ async function loadProducts() {
 function formatPrice(value) {
 
     const number =
-        Number(value || 0);
+        parsePrice(value);
 
     return number.toLocaleString(
         "pt-BR",
@@ -749,10 +800,6 @@ function showToast(message) {
 
 let categories = [];
 
-
-/* ============================================================
-   CATEGORIAS PADRÃO
-   ============================================================ */
 
 const defaultCategories = [
 
@@ -1214,7 +1261,6 @@ function bindCategoryActions() {
                             return;
                         }
 
-
                         const usedByProducts =
                             products.some(
                                 product =>
@@ -1226,7 +1272,6 @@ function bindCategoryActions() {
                                     ).toLowerCase()
                             );
 
-
                         if (usedByProducts) {
 
                             showToast(
@@ -1236,17 +1281,14 @@ function bindCategoryActions() {
                             return;
                         }
 
-
                         const confirmed =
                             window.confirm(
                                 `Excluir a categoria "${category.name}"?`
                             );
 
-
                         if (!confirmed) {
                             return;
                         }
-
 
                         try {
 
@@ -1264,7 +1306,6 @@ function bindCategoryActions() {
 
                             }
 
-
                             categories =
                                 categories.filter(
                                     item =>
@@ -1274,16 +1315,13 @@ function bindCategoryActions() {
                                         String(id)
                                 );
 
-
                             saveLocalCategories(
                                 categories
                             );
 
-
                             renderCategories();
 
                             updateProductCategorySelect();
-
 
                             showToast(
                                 "Categoria excluída com sucesso!"
@@ -1331,18 +1369,15 @@ function iniciarCategoryForm() {
 
             event.preventDefault();
 
-
             const input =
                 document.getElementById(
                     "categoryName"
                 );
 
-
             const name =
                 input
                     ? input.value.trim()
                     : "";
-
 
             if (!name) {
 
@@ -1353,7 +1388,6 @@ function iniciarCategoryForm() {
                 return;
             }
 
-
             const alreadyExists =
                 categories.some(
                     category =>
@@ -1361,7 +1395,6 @@ function iniciarCategoryForm() {
                             .toLowerCase() ===
                         name.toLowerCase()
                 );
-
 
             if (alreadyExists) {
 
@@ -1371,7 +1404,6 @@ function iniciarCategoryForm() {
 
                 return;
             }
-
 
             const category =
                 normalizeCategory({
@@ -1383,18 +1415,15 @@ function iniciarCategoryForm() {
 
                 });
 
-
             try {
 
                 await saveCategoryToSupabase(
                     category
                 );
 
-
                 categories.push(
                     category
                 );
-
 
                 categories =
                     categories.sort(
@@ -1405,19 +1434,15 @@ function iniciarCategoryForm() {
                             )
                     );
 
-
                 saveLocalCategories(
                     categories
                 );
-
 
                 renderCategories();
 
                 updateProductCategorySelect();
 
-
                 form.reset();
-
 
                 showToast(
                     "Categoria adicionada com sucesso!"
@@ -1467,10 +1492,8 @@ function renderDashboardStats() {
             "topProduct"
         );
 
-
     const total =
         products.length;
-
 
     const clicks =
         products.reduce(
@@ -1482,14 +1505,12 @@ function renderDashboardStats() {
             0
         );
 
-
     const active =
         products.filter(
             product =>
                 product.status ===
                 "active"
         ).length;
-
 
     const top =
         [...products]
@@ -1503,14 +1524,12 @@ function renderDashboardStats() {
                     )
             )[0];
 
-
     if (totalProducts) {
 
         totalProducts.textContent =
             total;
 
     }
-
 
     if (totalClicks) {
 
@@ -1519,14 +1538,12 @@ function renderDashboardStats() {
 
     }
 
-
     if (activeProducts) {
 
         activeProducts.textContent =
             active;
 
     }
-
 
     if (topProduct) {
 
@@ -1554,7 +1571,6 @@ function renderTopProducts() {
         return;
     }
 
-
     const ranking =
         [...products]
             .sort(
@@ -1568,7 +1584,6 @@ function renderTopProducts() {
             )
             .slice(0, 5);
 
-
     if (!ranking.length) {
 
         container.innerHTML =
@@ -1576,7 +1591,6 @@ function renderTopProducts() {
 
         return;
     }
-
 
     container.innerHTML =
         ranking.map(
@@ -1622,7 +1636,6 @@ function renderDashboardProducts() {
     if (!container) {
         return;
     }
-
 
     container.innerHTML =
         products.map(
@@ -1674,12 +1687,10 @@ function renderProductsTable(
         return;
     }
 
-
     const term =
         searchTerm
             .trim()
             .toLowerCase();
-
 
     const filtered =
         products.filter(
@@ -1708,7 +1719,6 @@ function renderProductsTable(
             }
         );
 
-
     if (!filtered.length) {
 
         tbody.innerHTML = `
@@ -1721,7 +1731,6 @@ function renderProductsTable(
 
         return;
     }
-
 
     tbody.innerHTML =
         filtered.map(
@@ -1753,7 +1762,6 @@ function renderProductsTable(
 
                     </td>
 
-
                     <td>
 
                         <strong>
@@ -1762,26 +1770,21 @@ function renderProductsTable(
 
                     </td>
 
-
                     <td>
                         ${escapeHTML(product.category)}
                     </td>
-
 
                     <td>
                         ${formatPrice(product.price)}
                     </td>
 
-
                     <td>
                         ${Number(product.sold || 0)}
                     </td>
 
-
                     <td>
                         ${Number(product.clicks || 0)}
                     </td>
-
 
                     <td>
 
@@ -1792,7 +1795,6 @@ function renderProductsTable(
                         </span>
 
                     </td>
-
 
                     <td>
 
@@ -1805,7 +1807,6 @@ function renderProductsTable(
                             >
                                 Editar
                             </button>
-
 
                             <button
                                 type="button"
@@ -1823,7 +1824,6 @@ function renderProductsTable(
 
             `
         ).join("");
-
 
     bindTableActions();
 }
@@ -1880,7 +1880,6 @@ function bindTableActions() {
             }
         );
 
-
     document
         .querySelectorAll(
             ".delete-product"
@@ -1920,7 +1919,6 @@ function editProduct(id) {
     if (!product) {
         return;
     }
-
 
     const editingProductId =
         document.getElementById(
@@ -1967,62 +1965,84 @@ function editProduct(id) {
             "productStatus"
         );
 
-
     if (editingProductId)
         editingProductId.value =
             product.id;
-
 
     if (productName)
         productName.value =
             product.name;
 
+    if (productCategory) {
 
-    if (productCategory)
         productCategory.value =
             product.category;
 
+    }
 
     if (productPrice)
         productPrice.value =
-            product.price;
-
+            parsePrice(product.price)
+                .toFixed(2)
+                .replace(".", ",");
 
     if (productDescription)
         productDescription.value =
             product.description;
 
-
     if (productImage)
         productImage.value =
             product.image;
-
 
     if (productLink)
         productLink.value =
             product.link;
 
-
     if (productSold)
         productSold.value =
             product.sold;
-
 
     if (productStatus)
         productStatus.value =
             product.status;
 
+    const formTitle =
+        document.getElementById(
+            "formTitle"
+        );
+
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Editar produto";
+
+    }
 
     const section =
         document.getElementById(
             "section-adicionar"
         );
 
-
     if (section) {
 
+        document
+            .querySelectorAll(
+                ".admin-section"
+            )
+            .forEach(
+                item =>
+                    item.classList.remove(
+                        "active"
+                    )
+            );
+
+        section.classList.add(
+            "active"
+        );
+
         section.scrollIntoView({
-            behavior: "smooth"
+            behavior: "smooth",
+            block: "start"
         });
 
     }
@@ -2044,12 +2064,10 @@ function resetProductForm() {
         form.reset();
     }
 
-
     const editingProductId =
         document.getElementById(
             "editingProductId"
         );
-
 
     if (editingProductId) {
 
@@ -2058,12 +2076,10 @@ function resetProductForm() {
 
     }
 
-
     const productSold =
         document.getElementById(
             "productSold"
         );
-
 
     if (productSold) {
 
@@ -2072,17 +2088,27 @@ function resetProductForm() {
 
     }
 
-
     const productStatus =
         document.getElementById(
             "productStatus"
         );
 
-
     if (productStatus) {
 
         productStatus.value =
             "active";
+
+    }
+
+    const formTitle =
+        document.getElementById(
+            "formTitle"
+        );
+
+    if (formTitle) {
+
+        formTitle.textContent =
+            "Novo produto";
 
     }
 }
@@ -2103,13 +2129,11 @@ function iniciarProductForm() {
         return;
     }
 
-
     form.addEventListener(
         "submit",
         async function (event) {
 
             event.preventDefault();
-
 
             const editingProductId =
                 document.getElementById(
@@ -2156,12 +2180,10 @@ function iniciarProductForm() {
                     "productStatus"
                 );
 
-
             const editingId =
                 editingProductId
                     ? editingProductId.value
                     : "";
-
 
             const existing =
                 products.find(
@@ -2169,7 +2191,6 @@ function iniciarProductForm() {
                         String(item.id) ===
                         String(editingId)
                 );
-
 
             const product =
                 normalizeProduct({
@@ -2191,9 +2212,8 @@ function iniciarProductForm() {
 
                     price:
                         productPrice
-                            ? Number(
-                                  productPrice.value ||
-                                  0
+                            ? parsePrice(
+                                  productPrice.value
                               )
                             : 0,
 
@@ -2232,7 +2252,6 @@ function iniciarProductForm() {
 
                 });
 
-
             if (!product.name) {
 
                 showToast(
@@ -2242,13 +2261,11 @@ function iniciarProductForm() {
                 return;
             }
 
-
             try {
 
                 await saveProductToSupabase(
                     product
                 );
-
 
                 if (existing) {
 
@@ -2262,7 +2279,6 @@ function iniciarProductForm() {
                                     product.id
                                 )
                         );
-
 
                     if (index !== -1) {
 
@@ -2279,17 +2295,24 @@ function iniciarProductForm() {
 
                 }
 
-
                 saveLocalProducts(
                     products
                 );
 
+                try {
 
-                renderEverything();
+                    renderEverything();
 
+                } catch (renderError) {
+
+                    console.error(
+                        "Erro ao atualizar interface após salvar:",
+                        renderError
+                    );
+
+                }
 
                 resetProductForm();
-
 
                 showToast(
                     existing
@@ -2300,6 +2323,7 @@ function iniciarProductForm() {
             } catch (error) {
 
                 console.error(
+                    "Erro ao salvar produto:",
                     error
                 );
 
@@ -2373,7 +2397,6 @@ function iniciarDeleteModal() {
             "confirmDeleteButton"
         );
 
-
     if (cancelButton) {
 
         cancelButton.addEventListener(
@@ -2382,7 +2405,6 @@ function iniciarDeleteModal() {
         );
 
     }
-
 
     if (confirmButton) {
 
@@ -2394,13 +2416,11 @@ function iniciarDeleteModal() {
                     return;
                 }
 
-
                 try {
 
                     await deleteProductFromSupabase(
                         productToDelete
                     );
-
 
                     products =
                         products.filter(
@@ -2413,17 +2433,13 @@ function iniciarDeleteModal() {
                                 )
                         );
 
-
                     saveLocalProducts(
                         products
                     );
 
-
                     closeDeleteModal();
 
-
                     renderEverything();
-
 
                     showToast(
                         "Produto excluído com sucesso!"
@@ -2463,7 +2479,6 @@ function iniciarBusca() {
         return;
     }
 
-
     search.addEventListener(
         "input",
         function () {
@@ -2498,7 +2513,6 @@ function renderClicks() {
             "clicksList"
         );
 
-
     const total =
         products.reduce(
             (sum, product) =>
@@ -2509,14 +2523,12 @@ function renderClicks() {
             0
         );
 
-
     if (totalElement) {
 
         totalElement.textContent =
             total;
 
     }
-
 
     const average =
         products.length
@@ -2526,7 +2538,6 @@ function renderClicks() {
               )
             : 0;
 
-
     if (averageElement) {
 
         averageElement.textContent =
@@ -2534,11 +2545,9 @@ function renderClicks() {
 
     }
 
-
     if (!list) {
         return;
     }
-
 
     const ranking =
         [...products]
@@ -2552,7 +2561,6 @@ function renderClicks() {
                     )
             );
 
-
     if (!ranking.length) {
 
         list.innerHTML =
@@ -2560,7 +2568,6 @@ function renderClicks() {
 
         return;
     }
-
 
     list.innerHTML =
         ranking.map(
@@ -2597,53 +2604,14 @@ function renderClicks() {
 
 function renderClickChart() {
 
-    const canvas =
+    const chart =
         document.getElementById(
             "clickChart"
         );
 
-    if (!canvas) {
+    if (!chart) {
         return;
     }
-
-
-    const ctx =
-        canvas.getContext(
-            "2d"
-        );
-
-
-    const width =
-        canvas.width =
-            canvas.clientWidth * 2;
-
-
-    const height =
-        canvas.height =
-            canvas.clientHeight * 2;
-
-
-    ctx.scale(
-        2,
-        2
-    );
-
-
-    const drawWidth =
-        canvas.clientWidth;
-
-
-    const drawHeight =
-        canvas.clientHeight;
-
-
-    ctx.clearRect(
-        0,
-        0,
-        drawWidth,
-        drawHeight
-    );
-
 
     const values =
         products
@@ -2655,11 +2623,16 @@ function renderClickChart() {
                     )
             );
 
-
     if (!values.length) {
+
+        chart.innerHTML = `
+            <div class="chart-empty">
+                Nenhum clique registrado.
+            </div>
+        `;
+
         return;
     }
-
 
     const max =
         Math.max(
@@ -2667,113 +2640,47 @@ function renderClickChart() {
             1
         );
 
+    chart.innerHTML =
+        values.map(
+            (value, index) => {
 
-    const padding =
-        30;
+                const product =
+                    products[index];
 
-
-    const chartWidth =
-        drawWidth -
-        padding * 2;
-
-
-    const chartHeight =
-        drawHeight -
-        padding * 2;
-
-
-    ctx.beginPath();
-
-
-    values.forEach(
-        (value, index) => {
-
-            const x =
-                padding +
-                (
-                    index /
+                const percentage =
                     Math.max(
-                        values.length - 1,
-                        1
-                    )
-                ) *
-                    chartWidth;
+                        5,
+                        (value / max) * 100
+                    );
 
+                return `
+                    <div class="chart-bar-item">
 
-            const y =
-                drawHeight -
-                padding -
-                (
-                    value /
-                    max
-                ) *
-                    chartHeight;
+                        <div class="chart-bar-value">
+                            ${value}
+                        </div>
 
+                        <div class="chart-bar-track">
 
-            if (index === 0) {
+                            <div
+                                class="chart-bar-fill"
+                                style="height: ${percentage}%"
+                            ></div>
 
-                ctx.moveTo(
-                    x,
-                    y
-                );
+                        </div>
 
-            } else {
+                        <span class="chart-bar-label">
+                            ${escapeHTML(
+                                product?.name ||
+                                `Produto ${index + 1}`
+                            )}
+                        </span>
 
-                ctx.lineTo(
-                    x,
-                    y
-                );
+                    </div>
+                `;
 
             }
-
-        }
-    );
-
-
-    ctx.stroke();
-
-
-    values.forEach(
-        (value, index) => {
-
-            const x =
-                padding +
-                (
-                    index /
-                    Math.max(
-                        values.length - 1,
-                        1
-                    )
-                ) *
-                    chartWidth;
-
-
-            const y =
-                drawHeight -
-                padding -
-                (
-                    value /
-                    max
-                ) *
-                    chartHeight;
-
-
-            ctx.beginPath();
-
-
-            ctx.arc(
-                x,
-                y,
-                4,
-                0,
-                Math.PI * 2
-            );
-
-
-            ctx.fill();
-
-        }
-    );
+        ).join("");
 }
 
 
@@ -2842,11 +2749,9 @@ function iniciarMobileMenu() {
             ".sidebar"
         );
 
-
     if (!menuButton || !sidebar) {
         return;
     }
-
 
     menuButton.addEventListener(
         "click",
@@ -2872,17 +2777,14 @@ function iniciarNavegacao() {
             "[data-section]"
         );
 
-
     const sections =
         document.querySelectorAll(
             ".admin-section"
         );
 
-
     if (!links.length) {
         return;
     }
-
 
     links.forEach(
         link => {
@@ -2893,10 +2795,8 @@ function iniciarNavegacao() {
 
                     event.preventDefault();
 
-
                     const target =
                         this.dataset.section;
-
 
                     sections.forEach(
                         section => {
@@ -2908,12 +2808,10 @@ function iniciarNavegacao() {
                         }
                     );
 
-
                     const selected =
                         document.getElementById(
                             `section-${target}`
                         );
-
 
                     if (selected) {
 
@@ -2922,7 +2820,6 @@ function iniciarNavegacao() {
                         );
 
                     }
-
 
                     links.forEach(
                         item => {
@@ -2933,7 +2830,6 @@ function iniciarNavegacao() {
 
                         }
                     );
-
 
                     this.classList.add(
                         "active"
@@ -2955,16 +2851,19 @@ function iniciarResetButton() {
 
     const buttons =
         document.querySelectorAll(
-            "[data-reset-product]"
+            "[data-reset-product], #cancelProductButton"
         );
-
 
     buttons.forEach(
         button => {
 
             button.addEventListener(
                 "click",
-                resetProductForm
+                function () {
+
+                    resetProductForm();
+
+                }
             );
 
         }
@@ -2985,7 +2884,6 @@ function exportProducts() {
             2
         );
 
-
     const blob =
         new Blob(
             [data],
@@ -2995,37 +2893,29 @@ function exportProducts() {
             }
         );
 
-
     const url =
         URL.createObjectURL(
             blob
         );
-
 
     const a =
         document.createElement(
             "a"
         );
 
-
     a.href =
         url;
 
-
     a.download =
         "axeus-products.json";
-
 
     document.body.appendChild(
         a
     );
 
-
     a.click();
 
-
     a.remove();
-
 
     URL.revokeObjectURL(
         url
@@ -3039,7 +2929,6 @@ function iniciarExportacao() {
         document.querySelectorAll(
             "[data-export]"
         );
-
 
     buttons.forEach(
         button => {
@@ -3089,19 +2978,15 @@ setInterval(
             return;
         }
 
-
         try {
 
             products =
                 await loadProductsFromSupabase();
 
-
             categories =
                 await loadCategoriesFromSupabase();
 
-
             renderEverything();
-
 
             updateProductCategorySelect();
 
@@ -3148,7 +3033,6 @@ document.addEventListener(
         iniciarResetButton();
 
         iniciarExportacao();
-
 
         if (isDashboard) {
 
