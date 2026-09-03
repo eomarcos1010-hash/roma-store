@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,9 +10,11 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <title>AXEUS STORE — Produtos Digitais</title>
+
     <meta
         name="description"
-        content="AXEUS STORE — Produtos digitais, aplicativos, entretenimento e ferramentas para potencializar sua experiência digital."
+        content="AXEUS STORE — Produtos digitais, aplicativos, ferramentas e soluções para sua experiência digital."
     >
 
     <meta
@@ -18,46 +22,55 @@
         content="#05080f"
     >
 
-    <title>AXEUS STORE — Produtos Digitais</title>
-
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link
+        rel="icon"
+        type="image/png"
+        href="favicon.png"
+    >
 
     <link
         rel="stylesheet"
         href="style.css"
     >
+
 </head>
 
 <body>
 
     <!-- =====================================================
          HEADER
-         ===================================================== -->
+    ====================================================== -->
 
     <header class="header">
 
-        <div class="header-content">
+        <div class="container header-content">
 
             <!-- LOGO -->
+
             <a
                 href="#inicio"
                 class="logo"
                 aria-label="AXEUS STORE - Início"
             >
 
-                <div class="logo-icon">
+                <span
+                    class="logo-icon"
+                    aria-hidden="true"
+                >
                     A
-                </div>
+                </span>
 
-                <div class="logo-text">
-                    <span class="logo-store">AXEUS</span>
-                    <span class="logo-subtitle">STORE</span>
-                </div>
+                <span>
+                    AXEUS
+                    <span class="logo-store">
+                        STORE
+                    </span>
+                </span>
 
             </a>
 
-
             <!-- NAVEGAÇÃO -->
+
             <nav
                 class="nav"
                 aria-label="Navegação principal"
@@ -78,6 +91,13 @@
                 </a>
 
                 <a
+                    href="#categorias"
+                    class="nav-link"
+                >
+                    Categorias
+                </a>
+
+                <a
                     href="#aplicativos"
                     class="nav-link"
                 >
@@ -86,17 +106,17 @@
 
             </nav>
 
+            <!-- AÇÕES -->
 
-            <!-- AÇÕES DO HEADER -->
             <div class="header-actions">
 
                 <a
                     href="adm.html"
                     class="admin-home-button"
-                    aria-label="Acessar painel administrativo"
+                    aria-label="Abrir painel administrativo"
+                    title="Painel administrativo"
                 >
-                    <span class="admin-icon">⚙</span>
-                    <span>Admin</span>
+                    🏠
                 </a>
 
                 <a
@@ -104,7 +124,6 @@
                     class="header-button"
                 >
                     Ver produtos
-                    <span>→</span>
                 </a>
 
             </div>
@@ -115,54 +134,70 @@
 
 
     <!-- =====================================================
-         HERO
-         ===================================================== -->
+         CONTEÚDO PRINCIPAL
+    ====================================================== -->
 
     <main>
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
 
         <section
             id="inicio"
             class="hero"
         >
 
-            <div class="hero-background">
-
-                <div class="hero-glow hero-glow-one"></div>
-                <div class="hero-glow hero-glow-two"></div>
-
-                <div class="hero-grid"></div>
-
-            </div>
+            <div
+                class="hero-background"
+                aria-hidden="true"
+            ></div>
 
 
-            <div class="hero-content">
+            <div class="container hero-content">
 
-                <!-- TEXTO PRINCIPAL -->
+
+                <!-- ================================
+                     TEXTO PRINCIPAL
+                ================================= -->
+
                 <div class="hero-text">
 
                     <div class="hero-badge">
 
-                        <span class="badge-dot"></span>
+                        <span
+                            class="badge-dot"
+                            aria-hidden="true"
+                        ></span>
 
-                        <span>
-                            PRODUTOS DIGITAIS
-                        </span>
+                        PRODUTOS DIGITAIS
 
                     </div>
 
 
                     <h1>
+
                         Sua experiência
-                        <span>digital começa aqui.</span>
+
+                        <span>
+                            começa aqui.
+                        </span>
+
                     </h1>
 
 
                     <p>
-                        Encontre produtos digitais, aplicativos,
-                        ferramentas e soluções desenvolvidas para
-                        tornar sua experiência mais completa.
+
+                        Descubra produtos digitais,
+                        aplicativos e ferramentas pensados
+                        para tornar sua experiência mais
+                        simples, prática e completa.
+
                     </p>
 
+
+                    <!-- BOTÕES -->
 
                     <div class="hero-buttons">
 
@@ -170,22 +205,32 @@
                             href="#produtos"
                             class="btn btn-primary"
                         >
-                            <span>Explorar produtos</span>
-                            <span class="btn-arrow">→</span>
+
+                            Explorar produtos
+
+                            <span aria-hidden="true">
+                                →
+                            </span>
+
                         </a>
 
+
                         <a
-                            href="#aplicativos"
+                            href="#categorias"
                             class="btn btn-secondary"
                         >
-                            Conhecer a AXEUS
+
+                            Ver categorias
+
                         </a>
 
                     </div>
 
 
                     <!-- ESTATÍSTICAS -->
+
                     <div class="hero-stats">
+
 
                         <div class="stat">
 
@@ -200,9 +245,6 @@
                         </div>
 
 
-                        <div class="stat-divider"></div>
-
-
                         <div class="stat">
 
                             <strong id="hero-clicks-count">
@@ -210,13 +252,10 @@
                             </strong>
 
                             <span>
-                                Acessos
+                                Interações
                             </span>
 
                         </div>
-
-
-                        <div class="stat-divider"></div>
 
 
                         <div class="stat">
@@ -231,77 +270,72 @@
 
                         </div>
 
+
                     </div>
 
                 </div>
 
 
-                <!-- VISUAL HERO -->
+                <!-- ================================
+                     CARD VISUAL
+                ================================= -->
+
                 <div class="hero-card-wrapper">
 
                     <div class="hero-card">
 
+                        <div
+                            class="hero-card-glow"
+                            aria-hidden="true"
+                        ></div>
+
+
                         <div class="hero-card-top">
 
-                            <div class="hero-card-brand">
+                            <span class="hero-card-label">
+                                AXEUS STORE
+                            </span>
 
-                                <div class="hero-card-logo">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>
-                                        AXEUS STORE
-                                    </strong>
-
-                                    <span>
-                                        DIGITAL EXPERIENCE
-                                    </span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="hero-card-status">
-
-                                <span></span>
-
-                                ONLINE
-
-                            </div>
+                            <span class="hero-card-status">
+                                ● ONLINE
+                            </span>
 
                         </div>
 
 
-                        <div class="hero-card-main">
-
-                            <div class="hero-card-label">
-                                SUA LOJA DIGITAL
-                            </div>
-
-                            <div class="hero-card-title">
-                                TUDO EM UM
-                            </div>
-
-                            <div class="hero-card-description">
-                                Produtos, ferramentas e experiências
-                                digitais em um só lugar.
-                            </div>
-
+                        <div
+                            class="hero-card-logo"
+                            aria-hidden="true"
+                        >
+                            A
                         </div>
 
 
-                        <div class="hero-card-line"></div>
+                        <h3>
+                            Tudo em um só lugar.
+                        </h3>
+
+
+                        <p>
+                            Produtos digitais selecionados
+                            para você.
+                        </p>
+
+
+                        <div
+                            class="hero-card-line"
+                            aria-hidden="true"
+                        ></div>
 
 
                         <div class="hero-card-bottom">
 
                             <span>
-                                AXEUS STORE
+                                EXPLORE A LOJA
                             </span>
 
-                            <span>
-                                EXPLORE →
+                            <span aria-hidden="true">
+                                →
                             </span>
 
                         </div>
@@ -315,45 +349,259 @@
         </section>
 
 
-        <!-- =====================================================
+        <!-- =================================================
+             CATEGORIAS
+        ================================================== -->
+
+        <section
+            id="categorias"
+            class="categories-section"
+        >
+
+            <div class="container">
+
+
+                <div class="section-header">
+
+                    <div>
+
+                        <span class="section-label">
+                            CATEGORIAS
+                        </span>
+
+                        <h2>
+                            Encontre o que procura
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+
+                        Navegue pelas categorias
+                        e encontre produtos que
+                        combinam com você.
+
+                    </p>
+
+                </div>
+
+
+                <div class="categories-grid">
+
+
+                    <!-- TIKTOK SHOP -->
+
+                    <button
+                        type="button"
+                        class="category-card"
+                        data-category="TIKTOK SHOP"
+                        aria-label="Ver produtos de TikTok Shop"
+                    >
+
+                        <div
+                            class="category-icon"
+                            aria-hidden="true"
+                        >
+                            ♪
+                        </div>
+
+
+                        <div class="category-info">
+
+                            <h3>
+                                TikTok Shop
+                            </h3>
+
+                            <span>
+                                Conteúdo e vendas
+                            </span>
+
+                        </div>
+
+
+                        <span
+                            class="category-arrow"
+                            aria-hidden="true"
+                        >
+                            →
+                        </span>
+
+                    </button>
+
+
+                    <!-- PC -->
+
+                    <button
+                        type="button"
+                        class="category-card"
+                        data-category="PC"
+                        aria-label="Ver produtos para PC"
+                    >
+
+                        <div
+                            class="category-icon"
+                            aria-hidden="true"
+                        >
+                            ◈
+                        </div>
+
+
+                        <div class="category-info">
+
+                            <h3>
+                                PC
+                            </h3>
+
+                            <span>
+                                Ferramentas e otimização
+                            </span>
+
+                        </div>
+
+
+                        <span
+                            class="category-arrow"
+                            aria-hidden="true"
+                        >
+                            →
+                        </span>
+
+                    </button>
+
+
+                    <!-- ENTRETENIMENTO -->
+
+                    <button
+                        type="button"
+                        class="category-card"
+                        data-category="ENTRETENIMENTO"
+                        aria-label="Ver produtos de entretenimento"
+                    >
+
+                        <div
+                            class="category-icon"
+                            aria-hidden="true"
+                        >
+                            ▶
+                        </div>
+
+
+                        <div class="category-info">
+
+                            <h3>
+                                Entretenimento
+                            </h3>
+
+                            <span>
+                                Filmes, séries e diversão
+                            </span>
+
+                        </div>
+
+
+                        <span
+                            class="category-arrow"
+                            aria-hidden="true"
+                        >
+                            →
+                        </span>
+
+                    </button>
+
+
+                    <!-- APLICATIVOS -->
+
+                    <button
+                        type="button"
+                        class="category-card"
+                        data-category="APLICATIVOS"
+                        aria-label="Ver aplicativos"
+                    >
+
+                        <div
+                            class="category-icon"
+                            aria-hidden="true"
+                        >
+                            ▦
+                        </div>
+
+
+                        <div class="category-info">
+
+                            <h3>
+                                Aplicativos
+                            </h3>
+
+                            <span>
+                                Apps e soluções digitais
+                            </span>
+
+                        </div>
+
+
+                        <span
+                            class="category-arrow"
+                            aria-hidden="true"
+                        >
+                            →
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
              PRODUTOS
-             ===================================================== -->
+        ================================================== -->
 
         <section
             id="produtos"
             class="products-section"
         >
 
-            <div class="section-container">
+            <div class="container">
+
 
                 <!-- CABEÇALHO -->
-                <div class="section-header">
+
+                <div class="section-header products-header">
 
                     <div>
 
-                        <div class="section-label">
-                            <span></span>
-                            NOSSO CATÁLOGO
-                        </div>
+                        <span class="section-label">
+                            AXEUS STORE
+                        </span>
 
                         <h2>
                             Produtos em destaque
                         </h2>
 
-                        <p>
-                            Escolha a solução ideal para você.
-                        </p>
-
                     </div>
+
+
+                    <p>
+
+                        Escolha um produto para
+                        visualizar informações,
+                        detalhes e opções de acesso.
+
+                    </p>
 
                 </div>
 
 
                 <!-- FILTROS -->
+
                 <div
                     class="products-filters"
-                    role="tablist"
-                    aria-label="Filtrar produtos"
+                    aria-label="Filtrar produtos por categoria"
                 >
 
                     <button
@@ -364,6 +612,7 @@
                         Todos
                     </button>
 
+
                     <button
                         type="button"
                         class="filter-button"
@@ -371,6 +620,7 @@
                     >
                         TikTok Shop
                     </button>
+
 
                     <button
                         type="button"
@@ -380,6 +630,7 @@
                         PC
                     </button>
 
+
                     <button
                         type="button"
                         class="filter-button"
@@ -387,6 +638,7 @@
                     >
                         Entretenimento
                     </button>
+
 
                     <button
                         type="button"
@@ -399,20 +651,24 @@
                 </div>
 
 
-                <!-- GRID DINÂMICO DE PRODUTOS -->
+                <!-- =================================================
+                     GRID DINÂMICO
+
+                     NÃO ALTERAR ESTE ID.
+                     O script.js utiliza #products-grid.
+                ================================================== -->
+
                 <div
                     id="products-grid"
                     class="products-grid"
                 >
 
-                    <!--
-                        Os produtos são carregados
-                        automaticamente pelo script.js.
-                    -->
-
                     <div class="products-loading">
 
-                        <div class="loading-spinner"></div>
+                        <div
+                            class="loading-spinner"
+                            aria-hidden="true"
+                        ></div>
 
                         <span>
                             Carregando produtos...
@@ -423,23 +679,29 @@
                 </div>
 
 
-                <!-- ESTADO VAZIO -->
+                <!-- NENHUM PRODUTO -->
+
                 <div
                     id="empty-products"
                     class="empty-products"
                     style="display: none;"
                 >
 
-                    <div class="empty-icon">
-                        ◈
+                    <div
+                        class="empty-icon"
+                        aria-hidden="true"
+                    >
+                        ◌
                     </div>
+
 
                     <h3>
                         Nenhum produto encontrado
                     </h3>
 
+
                     <p>
-                        Não encontramos produtos nessa categoria.
+                        Não existem produtos nesta categoria no momento.
                     </p>
 
                 </div>
@@ -449,140 +711,78 @@
         </section>
 
 
-        <!-- =====================================================
-             APLICATIVOS
-             ===================================================== -->
+        <!-- =================================================
+             APLICATIVO AXEUS
+        ================================================== -->
 
         <section
             id="aplicativos"
             class="apps-section"
         >
 
-            <div class="section-container">
+            <div class="container">
+
 
                 <div class="app-highlight">
 
+
                     <!-- TEXTO -->
+
                     <div class="app-highlight-content">
 
-                        <div class="section-label">
-
-                            <span></span>
-
-                            ECOSSISTEMA AXEUS
-
-                        </div>
-
-
-                        <div class="app-status">
-
-                            <span class="app-status-dot"></span>
-
-                            EM DESENVOLVIMENTO
-
-                        </div>
+                        <span class="section-label">
+                            PROJETO AXEUS
+                        </span>
 
 
                         <h2>
-                            Uma experiência
-                            <span>mais completa.</span>
+
+                            Conheça o
+
+                            <span>
+                                AXEUS
+                            </span>
+
                         </h2>
 
 
                         <p>
-                            A AXEUS está desenvolvendo novas soluções
-                            para facilitar o acesso aos seus produtos
-                            e serviços digitais em um único ambiente.
+
+                            Uma nova experiência criada para
+                            personalizar, otimizar e transformar
+                            a utilização do Windows.
+
                         </p>
 
 
-                        <div class="app-features">
+                        <div class="app-status">
 
-                            <div class="app-feature">
+                            <span
+                                aria-hidden="true"
+                            ></span>
 
-                                <span class="app-feature-icon">
-                                    ✓
-                                </span>
-
-                                <div>
-
-                                    <strong>
-                                        Interface moderna
-                                    </strong>
-
-                                    <small>
-                                        Experiência simples e intuitiva
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="app-feature">
-
-                                <span class="app-feature-icon">
-                                    ✓
-                                </span>
-
-                                <div>
-
-                                    <strong>
-                                        Acesso rápido
-                                    </strong>
-
-                                    <small>
-                                        Tudo organizado em um só lugar
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="app-feature">
-
-                                <span class="app-feature-icon">
-                                    ✓
-                                </span>
-
-                                <div>
-
-                                    <strong>
-                                        Novidades constantes
-                                    </strong>
-
-                                    <small>
-                                        Novos recursos em desenvolvimento
-                                    </small>
-
-                                </div>
-
-                            </div>
+                            Desenvolvimento em andamento
 
                         </div>
-
-
-                        <button
-                            type="button"
-                            class="btn btn-secondary app-button"
-                        >
-                            Em breve
-                            <span>→</span>
-                        </button>
 
                     </div>
 
 
-                    <!-- VISUAL DO APLICATIVO -->
+                    <!-- PREVIEW -->
+
                     <div class="app-visual">
 
                         <div class="app-window">
 
-                            <!-- HEADER DA JANELA -->
+
+                            <!-- BARRA DA JANELA -->
+
                             <div class="app-window-header">
 
-                                <div class="window-dots">
+                                <div
+                                    class="window-dots"
+                                    aria-hidden="true"
+                                >
 
                                     <span></span>
                                     <span></span>
@@ -590,22 +790,23 @@
 
                                 </div>
 
-                                <span class="window-title">
-                                    AXEUS APP
-                                </span>
 
-                                <span class="window-status">
-                                    ●
+                                <span>
+                                    AXEUS
                                 </span>
 
                             </div>
 
 
                             <!-- CORPO -->
+
                             <div class="app-window-body">
 
+
                                 <!-- SIDEBAR -->
-                                <aside class="app-sidebar">
+
+                                <div class="app-sidebar">
+
 
                                     <div class="app-sidebar-logo">
                                         A
@@ -614,117 +815,54 @@
 
                                     <div
                                         class="app-sidebar-item active"
+                                        aria-hidden="true"
                                     >
-                                        <span>⌂</span>
+                                        ◈
                                     </div>
 
 
-                                    <div class="app-sidebar-item">
-                                        <span>◈</span>
+                                    <div
+                                        class="app-sidebar-item"
+                                        aria-hidden="true"
+                                    >
+                                        ▦
                                     </div>
 
 
-                                    <div class="app-sidebar-item">
-                                        <span>▦</span>
+                                    <div
+                                        class="app-sidebar-item"
+                                        aria-hidden="true"
+                                    >
+                                        ⚙
                                     </div>
 
 
-                                    <div class="app-sidebar-item">
-                                        <span>⚙</span>
-                                    </div>
-
-                                </aside>
+                                </div>
 
 
                                 <!-- DASHBOARD -->
+
                                 <div class="app-dashboard">
-
-                                    <div class="app-dashboard-top">
-
-                                        <div>
-
-                                            <span>
-                                                BEM-VINDO À
-                                            </span>
-
-                                            <strong>
-                                                AXEUS
-                                            </strong>
-
-                                        </div>
-
-                                        <div class="dashboard-avatar">
-                                            A
-                                        </div>
-
-                                    </div>
 
 
                                     <div class="app-dashboard-title">
-                                        Seus produtos
+                                        AXEUS
                                     </div>
 
 
                                     <div class="app-dashboard-cards">
 
-                                        <div class="dashboard-card">
-
-                                            <span>
-                                                PRODUTOS
-                                            </span>
-
-                                            <strong>
-                                                12
-                                            </strong>
-
-                                        </div>
-
-
-                                        <div class="dashboard-card">
-
-                                            <span>
-                                                ACESSOS
-                                            </span>
-
-                                            <strong>
-                                                248
-                                            </strong>
-
-                                        </div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
 
                                     </div>
 
 
-                                    <div class="app-dashboard-large">
-
-                                        <div class="dashboard-large-header">
-
-                                            <span>
-                                                ATIVIDADE
-                                            </span>
-
-                                            <span>
-                                                ⋮
-                                            </span>
-
-                                        </div>
-
-
-                                        <div class="dashboard-chart">
-
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-
-                                        </div>
-
-                                    </div>
+                                    <div class="app-dashboard-large"></div>
 
                                 </div>
+
 
                             </div>
 
@@ -739,113 +877,148 @@
         </section>
 
 
-        <!-- =====================================================
+        <!-- =================================================
              BENEFÍCIOS
-             ===================================================== -->
+        ================================================== -->
 
         <section class="benefits-section">
 
-            <div class="section-container">
+            <div class="container">
 
-                <div class="section-header centered">
 
-                    <div>
+                <div class="section-header center">
 
-                        <div class="section-label">
-                            <span></span>
-                            POR QUE AXEUS?
-                        </div>
+                    <span class="section-label">
+                        POR QUE AXEUS?
+                    </span>
 
-                        <h2>
-                            Feito para uma experiência melhor
-                        </h2>
 
-                        <p>
-                            Tudo pensado para tornar sua jornada
-                            mais simples, rápida e segura.
-                        </p>
+                    <h2>
+                        Uma loja pensada para você
+                    </h2>
 
-                    </div>
+
+                    <p>
+
+                        Experiência simples, produtos digitais
+                        e uma plataforma criada para facilitar
+                        sua jornada.
+
+                    </p>
 
                 </div>
 
 
                 <div class="benefits-grid">
 
-                    <!-- BENEFÍCIO 1 -->
-                    <article class="benefit-card">
 
-                        <div class="benefit-icon">
+                    <!-- BENEFÍCIO 1 -->
+
+                    <div class="benefit-card">
+
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
                             ⚡
                         </div>
+
 
                         <h3>
                             Acesso rápido
                         </h3>
 
+
                         <p>
-                            Encontre seus produtos de forma simples
-                            e tenha uma experiência rápida.
+
+                            Encontre seu produto e tenha
+                            acesso de forma rápida e prática.
+
                         </p>
 
-                    </article>
+                    </div>
 
 
                     <!-- BENEFÍCIO 2 -->
-                    <article class="benefit-card">
 
-                        <div class="benefit-icon">
-                            ◈
+                    <div class="benefit-card">
+
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
+                            ◇
                         </div>
 
+
                         <h3>
-                            Produtos digitais
+                            Tudo digital
                         </h3>
 
+
                         <p>
-                            Soluções digitais selecionadas para
-                            diferentes necessidades.
+
+                            Produtos digitais sem
+                            necessidade de entrega física.
+
                         </p>
 
-                    </article>
+                    </div>
 
 
                     <!-- BENEFÍCIO 3 -->
-                    <article class="benefit-card">
 
-                        <div class="benefit-icon">
+                    <div class="benefit-card">
+
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
                             ✓
                         </div>
 
+
                         <h3>
-                            Experiência simples
+                            Simples de usar
                         </h3>
 
+
                         <p>
-                            Uma interface pensada para facilitar
-                            sua navegação.
+
+                            Uma experiência criada para
+                            ser simples, clara e intuitiva.
+
                         </p>
 
-                    </article>
+                    </div>
 
 
                     <!-- BENEFÍCIO 4 -->
-                    <article class="benefit-card">
 
-                        <div class="benefit-icon">
-                            ↗
+                    <div class="benefit-card">
+
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
+                            ♢
                         </div>
 
+
                         <h3>
-                            Sempre evoluindo
+                            Suporte
                         </h3>
 
+
                         <p>
-                            Novos produtos e soluções podem chegar
-                            constantemente à plataforma.
+
+                            Precisou de ajuda? Nossa equipe
+                            está disponível para auxiliar.
+
                         </p>
 
-                    </article>
+                    </div>
+
 
                 </div>
 
@@ -854,39 +1027,43 @@
         </section>
 
 
-        <!-- =====================================================
+        <!-- =================================================
              CTA FINAL
-             ===================================================== -->
+        ================================================== -->
 
         <section class="cta-section">
 
-            <div class="section-container">
+            <div class="container">
+
 
                 <div class="cta-card">
 
-                    <div class="cta-glow"></div>
+
+                    <div
+                        class="cta-glow"
+                        aria-hidden="true"
+                    ></div>
 
 
                     <div class="cta-content">
 
-                        <div class="section-label">
 
-                            <span></span>
-
+                        <span class="section-label">
                             AXEUS STORE
-
-                        </div>
+                        </span>
 
 
                         <h2>
-                            Pronto para encontrar
-                            seu próximo produto?
+                            Encontre seu próximo produto.
                         </h2>
 
 
                         <p>
-                            Explore nossa loja e descubra soluções
-                            digitais pensadas para você.
+
+                            Explore a loja, conheça nossas
+                            categorias e encontre uma solução
+                            digital para você.
+
                         </p>
 
 
@@ -894,9 +1071,15 @@
                             href="#produtos"
                             class="btn btn-primary"
                         >
+
                             Explorar produtos
-                            <span>→</span>
+
+                            <span aria-hidden="true">
+                                →
+                            </span>
+
                         </a>
+
 
                     </div>
 
@@ -906,77 +1089,71 @@
 
         </section>
 
+
     </main>
 
 
     <!-- =====================================================
          FOOTER
-         ===================================================== -->
+    ====================================================== -->
 
     <footer class="footer">
 
-        <div class="section-container">
+        <div class="container">
+
 
             <div class="footer-content">
 
+
                 <!-- MARCA -->
+
                 <div class="footer-brand">
+
 
                     <a
                         href="#inicio"
                         class="logo"
+                        aria-label="AXEUS STORE - Início"
                     >
 
-                        <div class="logo-icon">
+                        <span
+                            class="logo-icon"
+                            aria-hidden="true"
+                        >
                             A
-                        </div>
+                        </span>
 
-                        <div class="logo-text">
+
+                        <span>
+
+                            AXEUS
 
                             <span class="logo-store">
-                                AXEUS
-                            </span>
-
-                            <span class="logo-subtitle">
                                 STORE
                             </span>
 
-                        </div>
+                        </span>
 
                     </a>
 
 
                     <p>
-                        Produtos e soluções digitais
+
+                        Produtos digitais,
+                        ferramentas e soluções
                         para uma experiência melhor.
+
                     </p>
 
                 </div>
 
 
                 <!-- LINKS -->
+
                 <div class="footer-links">
 
-                    <div class="footer-column">
 
-                        <h4>
-                            Navegação
-                        </h4>
-
-                        <a href="#inicio">
-                            Início
-                        </a>
-
-                        <a href="#produtos">
-                            Produtos
-                        </a>
-
-                        <a href="#aplicativos">
-                            Aplicativos
-                        </a>
-
-                    </div>
-
+                    <!-- LOJA -->
 
                     <div class="footer-column">
 
@@ -984,29 +1161,51 @@
                             Loja
                         </h4>
 
-                        <a
-                            href="#produtos"
-                            data-footer-filter="TODOS"
-                        >
-                            Todos os produtos
+
+                        <a href="#produtos">
+                            Produtos
                         </a>
 
-                        <a
-                            href="#produtos"
-                            data-footer-filter="TIKTOK SHOP"
-                        >
-                            TikTok Shop
+
+                        <a href="#categorias">
+                            Categorias
                         </a>
 
-                        <a
-                            href="#produtos"
-                            data-footer-filter="PC"
-                        >
-                            PC
+
+                        <a href="#aplicativos">
+                            Aplicativos
                         </a>
 
                     </div>
 
+
+                    <!-- CATEGORIAS -->
+
+                    <div class="footer-column">
+
+                        <h4>
+                            Categorias
+                        </h4>
+
+
+                        <a href="#produtos">
+                            TikTok Shop
+                        </a>
+
+
+                        <a href="#produtos">
+                            PC
+                        </a>
+
+
+                        <a href="#produtos">
+                            Entretenimento
+                        </a>
+
+                    </div>
+
+
+                    <!-- AXEUS -->
 
                     <div class="footer-column">
 
@@ -1014,34 +1213,40 @@
                             AXEUS
                         </h4>
 
-                        <a href="#aplicativos">
-                            Aplicativos
-                        </a>
-
-                        <a href="adm.html">
-                            Administração
-                        </a>
 
                         <a href="#inicio">
-                            Voltar ao topo
+                            Início
+                        </a>
+
+
+                        <a href="#produtos">
+                            Loja
+                        </a>
+
+
+                        <a href="#aplicativos">
+                            Projeto AXEUS
                         </a>
 
                     </div>
+
 
                 </div>
 
             </div>
 
 
-            <!-- COPYRIGHT -->
+            <!-- RODAPÉ INFERIOR -->
+
             <div class="footer-bottom">
 
                 <span>
                     © 2026 AXEUS STORE. Todos os direitos reservados.
                 </span>
 
+
                 <span>
-                    Feito para experiências digitais.
+                    Desenvolvido por AXEUS
                 </span>
 
             </div>
@@ -1052,17 +1257,15 @@
 
 
     <!-- =====================================================
-         CONFIGURAÇÃO DO SISTEMA
-         NÃO ALTERAR
-         ===================================================== -->
+         CONFIGURAÇÃO DA LOJA
+
+         NÃO ALTERAR.
+
+         O ADMIN UTILIZA ESTA CHAVE PARA
+         COMPARTILHAR OS PRODUTOS.
+    ====================================================== -->
 
     <script>
-
-        /*
-         * Chave utilizada pelo sistema de produtos.
-         * Mantida para não quebrar a integração
-         * com o painel administrativo.
-         */
 
         window.AXEUS_STORAGE_KEY = "axeus_products";
 
@@ -1071,118 +1274,148 @@
 
     <!-- =====================================================
          SCRIPT PRINCIPAL
-         ===================================================== -->
+
+         NÃO REMOVER.
+    ====================================================== -->
 
     <script src="script.js"></script>
 
 
     <!-- =====================================================
-         FALLBACK / NAVEGAÇÃO
-         ===================================================== -->
+         NAVEGAÇÃO E CATEGORIAS
+    ====================================================== -->
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
-
-            /*
-             * Rolagem suave
-             */
-
-            document.querySelectorAll(
-                'a[href^="#"]'
-            ).forEach(function (link) {
-
-                link.addEventListener(
-                    "click",
-                    function (event) {
-
-                        const targetId =
-                            this.getAttribute("href");
-
-                        if (
-                            !targetId ||
-                            targetId === "#"
-                        ) {
-                            return;
-                        }
-
-                        const target =
-                            document.querySelector(
-                                targetId
-                            );
-
-                        if (!target) {
-                            return;
-                        }
-
-                        event.preventDefault();
-
-                        target.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
-
-                    }
-                );
-
-            });
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
 
-            /*
-             * Cards/links do footer que filtram produtos
-             */
+                /* ============================================
+                   ROLAGEM SUAVE
+                ============================================ */
 
-            document.querySelectorAll(
-                "[data-footer-filter]"
-            ).forEach(function (link) {
+                document
+                    .querySelectorAll('a[href^="#"]')
+                    .forEach(function (link) {
 
-                link.addEventListener(
-                    "click",
-                    function () {
+                        link.addEventListener(
+                            "click",
+                            function (event) {
 
-                        const filter =
-                            this.dataset.footerFilter;
-
-                        const filterButton =
-                            document.querySelector(
-                                `.filter-button[data-filter="${filter}"]`
-                            );
-
-                        if (filterButton) {
-
-                            setTimeout(function () {
-
-                                filterButton.click();
-
-                            }, 150);
-
-                        }
-
-                    }
-                );
-
-            });
+                                const targetId =
+                                    this.getAttribute("href");
 
 
-            /*
-             * Atualiza o menu conforme a seção visível.
-             * Não interfere no carregamento dos produtos.
-             */
-
-            const sections = document.querySelectorAll(
-                "main section[id]"
-            );
-
-            const navLinks = document.querySelectorAll(
-                ".nav-link"
-            );
+                                if (
+                                    !targetId ||
+                                    targetId === "#"
+                                ) {
+                                    return;
+                                }
 
 
-            if (
-                "IntersectionObserver" in window &&
-                sections.length &&
-                navLinks.length
-            ) {
+                                const target =
+                                    document.querySelector(
+                                        targetId
+                                    );
+
+
+                                if (!target) {
+                                    return;
+                                }
+
+
+                                event.preventDefault();
+
+
+                                target.scrollIntoView({
+
+                                    behavior: "smooth",
+
+                                    block: "start"
+
+                                });
+
+                            }
+                        );
+
+                    });
+
+
+                /* ============================================
+                   CATEGORIAS → FILTRO DE PRODUTOS
+                ============================================ */
+
+                document
+                    .querySelectorAll(".category-card")
+                    .forEach(function (button) {
+
+
+                        button.addEventListener(
+                            "click",
+                            function () {
+
+
+                                const category =
+                                    this.dataset.category;
+
+
+                                const filterButton =
+                                    document.querySelector(
+                                        '.filter-button[data-filter="' +
+                                        category +
+                                        '"]'
+                                    );
+
+
+                                if (filterButton) {
+
+                                    filterButton.click();
+
+                                }
+
+
+                                const productsSection =
+                                    document.querySelector(
+                                        "#produtos"
+                                    );
+
+
+                                if (productsSection) {
+
+                                    productsSection.scrollIntoView({
+
+                                        behavior: "smooth",
+
+                                        block: "start"
+
+                                    });
+
+                                }
+
+                            }
+                        );
+
+                    });
+
+
+                /* ============================================
+                   ATUALIZA LINK ATIVO DO MENU
+                ============================================ */
+
+                const sections =
+                    document.querySelectorAll(
+                        "main section[id]"
+                    );
+
+
+                const navLinks =
+                    document.querySelectorAll(
+                        ".nav-link"
+                    );
+
 
                 const observer =
                     new IntersectionObserver(
@@ -1195,24 +1428,33 @@
                                         return;
                                     }
 
-                                    const id =
-                                        entry.target.id;
 
                                     navLinks.forEach(
                                         function (link) {
 
-                                            const href =
-                                                link.getAttribute(
-                                                    "href"
-                                                );
-
-                                            link.classList.toggle(
-                                                "active",
-                                                href === "#" + id
+                                            link.classList.remove(
+                                                "active"
                                             );
 
                                         }
                                     );
+
+
+                                    const activeLink =
+                                        document.querySelector(
+                                            '.nav-link[href="#' +
+                                            entry.target.id +
+                                            '"]'
+                                        );
+
+
+                                    if (activeLink) {
+
+                                        activeLink.classList.add(
+                                            "active"
+                                        );
+
+                                    }
 
                                 }
                             );
@@ -1233,11 +1475,13 @@
                     }
                 );
 
-            }
 
-        });
+            }
+        );
 
     </script>
 
+
 </body>
+
 </html>
