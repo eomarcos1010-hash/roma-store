@@ -4034,3 +4034,613 @@ a:focus-visible {
     }
 }
 ```
+```css
+/* =========================================================
+   AJUSTE FINAL — MODAL DO PRODUTO
+   Corrige tamanho, botão comprar e rolagem
+========================================================= */
+
+.product-details-modal {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.product-details-container {
+    width: min(1000px, calc(100vw - 40px));
+
+    min-height: 560px;
+
+    max-height: calc(100vh - 40px);
+
+    grid-template-columns:
+        minmax(360px, 0.95fr)
+        minmax(400px, 1.05fr);
+
+    margin: auto;
+}
+
+/* Área da imagem */
+
+.product-details-image-wrapper {
+    min-height: 560px;
+    height: 100%;
+}
+
+.product-details-image {
+    min-height: 560px;
+    height: 100%;
+}
+
+/* Área de informações */
+
+.product-details-content {
+    min-height: 560px;
+
+    padding:
+        55px 45px 40px;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Título */
+
+.product-details-title {
+    max-width: 500px;
+
+    font-size:
+        clamp(30px, 4vw, 43px);
+
+    line-height: 1.08;
+}
+
+/* Informações de preço e vendidos */
+
+.product-details-meta {
+    width: 100%;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.product-details-price-box,
+.product-details-sold-box {
+    min-height: 82px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Descrição */
+
+.product-details-description-box {
+    flex: 1;
+
+    min-height: 100px;
+}
+
+.product-details-description-box p {
+    max-width: 520px;
+
+    font-size: 13px;
+
+    line-height: 1.75;
+}
+
+/* =========================================================
+   BOTÃO COMPRAR — SEMPRE VISÍVEL
+========================================================= */
+
+.product-details-buy {
+    position: relative;
+
+    flex-shrink: 0;
+
+    width: 100%;
+
+    min-height: 58px;
+
+    margin-top: 28px;
+
+    padding: 0 24px;
+
+    border-radius: 13px;
+
+    font-size: 14px;
+    font-weight: 900;
+
+    letter-spacing: 0.2px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #3ba4ff 0%,
+            #1683ff 45%,
+            #075fc1 100%
+        );
+
+    border:
+        1px solid
+        rgba(121, 201, 255, 0.25);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 15px 35px
+        rgba(22, 131, 255, 0.25),
+        inset 0 1px 0
+        rgba(255,255,255,0.18);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        filter 0.25s ease;
+}
+
+.product-details-buy:hover {
+    transform:
+        translateY(-3px);
+
+    filter:
+        brightness(1.08);
+
+    box-shadow:
+        0 20px 45px
+        rgba(22, 131, 255, 0.38),
+        inset 0 1px 0
+        rgba(255,255,255,0.22);
+}
+
+.product-details-buy:active {
+    transform:
+        translateY(-1px)
+        scale(0.99);
+}
+
+/* =========================================================
+   BOTÃO DESABILITADO
+========================================================= */
+
+.product-details-buy.disabled,
+.product-details-buy.coming-soon {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.04)
+        );
+
+    color:
+        #8193aa;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    box-shadow:
+        none;
+
+    cursor:
+        not-allowed;
+
+    transform:
+        none;
+}
+
+/* =========================================================
+   MELHORIA NO CARD DA LOJA
+========================================================= */
+
+/* Remove visualmente qualquer descrição que apareça no card,
+   mas NÃO remove a classe para não quebrar o JS. */
+
+.product-card .product-description {
+    display: none !important;
+}
+
+/* Conteúdo do card fica mais limpo */
+
+.product-card .product-content {
+    padding:
+        17px 18px 18px;
+}
+
+.product-card .product-title {
+    min-height: auto;
+
+    margin-bottom: 15px;
+
+    font-size: 16px;
+
+    line-height: 1.35;
+}
+
+/* Rodapé do card */
+
+.product-card .product-footer {
+    margin-top: 0;
+
+    padding-top: 14px;
+
+    align-items: center;
+}
+
+/* Número de vendidos */
+
+.product-card .product-sold {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color:
+        #71849b;
+
+    font-size: 10px;
+
+    font-weight: 650;
+}
+
+.product-card .sold-icon {
+    font-size: 11px;
+}
+
+/* =========================================================
+   VER PRODUTO
+========================================================= */
+
+.product-view {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 35px;
+
+    padding:
+        0 12px;
+
+    border-radius: 9px;
+
+    color:
+        #75bdff;
+
+    background:
+        rgba(22,131,255,0.08);
+
+    border:
+        1px solid
+        rgba(22,131,255,0.16);
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.product-view-arrow {
+    font-size: 14px;
+
+    line-height: 1;
+
+    transition:
+        transform 0.25s ease;
+}
+
+.product-card:hover .product-view {
+    color:
+        #ffffff;
+
+    background:
+        rgba(22,131,255,0.17);
+
+    border-color:
+        rgba(22,131,255,0.32);
+}
+
+.product-card:hover .product-view-arrow {
+    transform:
+        translateX(3px);
+}
+
+/* =========================================================
+   CARD — DEIXAR CLARO QUE É CLICÁVEL
+========================================================= */
+
+.product-card {
+    user-select: none;
+
+    -webkit-tap-highlight-color:
+        transparent;
+}
+
+.product-card:active {
+    transform:
+        translateY(-3px)
+        scale(0.995);
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .product-details-container {
+        width:
+            min(760px, calc(100vw - 30px));
+
+        grid-template-columns:
+            1fr 1fr;
+
+        min-height:
+            500px;
+    }
+
+    .product-details-image-wrapper,
+    .product-details-image {
+        min-height:
+            500px;
+    }
+
+    .product-details-content {
+        min-height:
+            500px;
+
+        padding:
+            45px 32px 32px;
+    }
+
+    .product-details-title {
+        font-size:
+            31px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .product-details-modal {
+        align-items:
+            flex-start;
+
+        padding:
+            10px;
+
+        overflow-y:
+            auto;
+    }
+
+    .product-details-container {
+        width:
+            100%;
+
+        max-height:
+            none;
+
+        min-height:
+            auto;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        margin:
+            auto 0;
+
+        border-radius:
+            20px;
+
+        overflow:
+            hidden;
+    }
+
+    .product-details-image-wrapper {
+        width:
+            100%;
+
+        height:
+            270px;
+
+        min-height:
+            270px;
+
+        flex-shrink:
+            0;
+    }
+
+    .product-details-image {
+        width:
+            100%;
+
+        height:
+            270px;
+
+        min-height:
+            270px;
+
+        object-fit:
+            cover;
+    }
+
+    .product-details-content {
+        width:
+            100%;
+
+        min-height:
+            auto;
+
+        padding:
+            30px 22px 25px;
+
+        overflow:
+            visible;
+    }
+
+    .product-details-category {
+        margin-bottom:
+            12px;
+    }
+
+    .product-details-title {
+        font-size:
+            29px;
+
+        line-height:
+            1.1;
+    }
+
+    .product-details-meta {
+        margin-top:
+            20px;
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .product-details-price-box,
+    .product-details-sold-box {
+        min-height:
+            75px;
+
+        padding:
+            12px;
+    }
+
+    .product-details-description-box {
+        margin-top:
+            20px;
+
+        padding-top:
+            18px;
+    }
+
+    .product-details-buy {
+        min-height:
+            56px;
+
+        margin-top:
+            23px;
+
+        font-size:
+            13px;
+    }
+}
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .product-details-modal {
+        padding:
+            6px;
+    }
+
+    .product-details-container {
+        border-radius:
+            17px;
+    }
+
+    .product-details-image-wrapper,
+    .product-details-image {
+        height:
+            220px;
+
+        min-height:
+            220px;
+    }
+
+    .product-details-content {
+        padding:
+            25px 17px 20px;
+    }
+
+    .product-details-title {
+        font-size:
+            25px;
+    }
+
+    .product-details-meta {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .product-details-price-box strong {
+        font-size:
+            17px;
+    }
+
+    .product-details-sold-box strong {
+        font-size:
+            16px;
+    }
+
+    .product-details-description-box p {
+        font-size:
+            12px;
+    }
+
+    .product-details-buy {
+        min-height:
+            54px;
+
+        font-size:
+            12px;
+    }
+}
+
+/* =========================================================
+   CORREÇÃO DE OVERFLOW DO MODAL
+========================================================= */
+
+body.product-details-open {
+    overflow:
+        hidden;
+}
+
+.product-details-modal.active
+.product-details-content {
+    scrollbar-width:
+        thin;
+}
+
+/* =========================================================
+   ACESSIBILIDADE DO CARD
+========================================================= */
+
+.product-card:focus-visible {
+    outline:
+        2px solid
+        #43a9ff;
+
+    outline-offset:
+        3px;
+}
+```
