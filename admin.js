@@ -24,8 +24,8 @@ const PRODUCTS_KEY = "axeus_products";
 const OLD_PRODUCTS_KEY = "axeus_store_products";
 const CATEGORIES_KEY = "axeus_categories";
 
-const ADMIN_USER = "SEU_USUARIO";
-const ADMIN_PASSWORD = "SUA_SENHA";
+const ADMIN_USER = "romazx310609";
+const ADMIN_PASSWORD = "jesus0601@";
 
 
 /* ============================================================
