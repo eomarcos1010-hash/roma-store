@@ -273,50 +273,74 @@ function iniciarLogout() {
 function parsePrice(value) {
 
     if (typeof value === "number") {
-
         return Number.isFinite(value)
-            ? value
+            ? Math.round(value * 100) / 100
             : 0;
-
     }
 
-    let text =
-        String(value ?? "").trim();
+    let text = String(value ?? "").trim();
 
     if (!text) {
         return 0;
     }
 
-    text =
-        text
-            .replace(/\s/g, "")
-            .replace(/R\$/gi, "");
+    text = text
+        .replace(/R\$/gi, "")
+        .replace(/\s/g, "")
+        .replace(/[^\d.,-]/g, "");
 
-    if (text.includes(",")) {
-
-        text =
-            text
-                .replace(/\./g, "")
-                .replace(",", ".");
-
-    } else {
-
-        text =
-            text.replace(
-                /[^\d.-]/g,
-                ""
-            );
-
+    if (!text) {
+        return 0;
     }
 
-    const number =
-        Number(text);
+    // Exemplo: 1.299,90
+    if (text.includes(",") && text.includes(".")) {
 
-    return Number.isFinite(number)
-        ? number
-        : 0;
+        const lastComma = text.lastIndexOf(",");
+        const lastDot = text.lastIndexOf(".");
+
+        if (lastComma > lastDot) {
+            text = text
+                .replace(/\./g, "")
+                .replace(",", ".");
+        } else {
+            text = text.replace(/,/g, "");
+        }
+
+    // Exemplo: 29,90
+    } else if (text.includes(",")) {
+
+        const parts = text.split(",");
+
+        if (parts.length === 2) {
+            text = parts[0] + "." + parts[1];
+        }
+
+    // Exemplo: 29.90
+    } else if (text.includes(".")) {
+
+        const parts = text.split(".");
+
+        if (
+            parts.length === 2 &&
+            parts[1].length <= 2
+        ) {
+            // Mantém 29.90 como 29.90
+            text = parts[0] + "." + parts[1];
+        } else {
+            // Exemplo: 1.299
+            text = text.replace(/\./g, "");
+        }
+    }
+
+    const number = Number.parseFloat(text);
+
+    if (!Number.isFinite(number)) {
+        return 0;
+    }
+
+    return Math.round(number * 100) / 100;
 }
-
 
 /* ============================================================
    NORMALIZAÇÃO DE PRODUTO
