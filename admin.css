@@ -2382,3 +2382,134 @@ a {
     }
 
 }
+
+/* =========================================================
+   CORREÇÃO — IMAGENS DOS PRODUTOS NO DASHBOARD
+   ========================================================= */
+
+/*
+   O admin.js utiliza a classe:
+   .product-table-image
+
+   Por isso adicionamos as regras abaixo sem remover
+   nenhuma das regras originais do arquivo.
+*/
+
+.product-table-image {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 48px !important;
+    height: 48px !important;
+
+    min-width: 48px !important;
+    min-height: 48px !important;
+
+    max-width: 48px !important;
+    max-height: 48px !important;
+
+    flex-shrink: 0 !important;
+
+    overflow: hidden !important;
+
+    color: var(--blue-light);
+
+    background: rgba(22,119,255,.08);
+
+    border: 1px solid rgba(255,255,255,.06);
+
+    border-radius: 10px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   IMAGEM DENTRO DO QUADRADO
+   ========================================================= */
+
+.product-table-image img {
+    display: block !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    max-width: 100% !important;
+    max-height: 100% !important;
+
+    object-fit: contain !important;
+
+    border-radius: 9px;
+}
+
+/* =========================================================
+   PROTEÇÃO EXTRA CONTRA IMAGENS GIGANTES
+   ========================================================= */
+
+.products-table img {
+    max-width: 48px !important;
+    max-height: 48px !important;
+}
+
+.products-table td:first-child {
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+
+    vertical-align: middle;
+}
+
+/* =========================================================
+   PROTEÇÃO DO CONTAINER DO PRODUTO
+   ========================================================= */
+
+.table-product {
+    min-width: 0;
+}
+
+.table-product > .product-table-image {
+    flex-shrink: 0;
+}
+
+.table-product-name {
+    min-width: 0;
+    max-width: 220px;
+}
+
+/* =========================================================
+   RESPONSIVO — IMAGEM DA TABELA
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .product-table-image {
+        width: 42px !important;
+        height: 42px !important;
+
+        min-width: 42px !important;
+        min-height: 42px !important;
+
+        max-width: 42px !important;
+        max-height: 42px !important;
+    }
+
+    .products-table img {
+        max-width: 42px !important;
+        max-height: 42px !important;
+    }
+
+    .products-table td:first-child {
+        width: 58px;
+        min-width: 58px;
+        max-width: 58px;
+    }
+
+    .table-product-name {
+        max-width: 160px;
+    }
+
+}
