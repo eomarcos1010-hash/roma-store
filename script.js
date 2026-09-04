@@ -1927,64 +1927,67 @@ function formatNumber(
    FORMATAR PREÇO
    ============================================================ */
 
-function formatPrice(
-    value
-) {
+function formatPrice(value) {
 
     if (
         value === null ||
         value === undefined ||
         value === ""
     ) {
-
         return "";
     }
 
-    const stringValue =
-        String(value).trim();
+    let stringValue = String(value).trim();
 
     if (
         stringValue
             .toUpperCase()
             .includes("R$")
     ) {
-
         return stringValue;
     }
 
-    const number =
-        Number(
+    // Remove espaços e símbolo de moeda
+    stringValue = stringValue
+        .replace(/R\$/gi, "")
+        .trim();
+
+    let number;
+
+    // Caso brasileiro:
+    // 22,90
+    // 1.299,90
+    if (stringValue.includes(",")) {
+
+        number = Number(
             stringValue
-                .replace(
-                    /[^\d,.-]/g,
-                    ""
-                )
-                .replace(
-                    /\./g,
-                    ""
-                )
-                .replace(
-                    ",",
-                    "."
-                )
+                .replace(/\./g, "")
+                .replace(",", ".")
         );
 
-    if (
-        Number.isFinite(
-            number
-        )
-    ) {
+    } else {
 
-        return number.toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        );
+        // Caso o banco retorne:
+        // 22.9
+        // 19.9
+        // 1299.9
+        //
+        // Aqui o ponto é decimal e NÃO deve ser removido.
+
+        number = Number(stringValue);
     }
 
-    return stringValue;
+    if (!Number.isFinite(number)) {
+        return stringValue;
+    }
+
+    return number.toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
 }
 
 /* ============================================================
