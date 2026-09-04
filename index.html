@@ -33,6 +33,47 @@
         href="style.css"
     >
 
+    <!-- CORREÇÃO DO ESPAÇO VAZIO -->
+    <style>
+
+        /* Remove altura excessiva do HERO */
+        .hero {
+            min-height: auto !important;
+            height: auto !important;
+            padding-top: 80px !important;
+            padding-bottom: 70px !important;
+        }
+
+        .hero-content {
+            min-height: auto !important;
+            height: auto !important;
+        }
+
+        .hero-card-wrapper {
+            min-height: auto !important;
+            height: auto !important;
+        }
+
+        .products-section {
+            margin-top: 0 !important;
+            padding-top: 80px !important;
+        }
+
+        @media (max-width: 900px) {
+
+            .hero {
+                padding-top: 60px !important;
+                padding-bottom: 60px !important;
+            }
+
+            .products-section {
+                padding-top: 60px !important;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -44,8 +85,6 @@
     <header class="header">
 
         <div class="container header-content">
-
-            <!-- LOGO -->
 
             <a
                 href="#inicio"
@@ -68,8 +107,6 @@
                 </span>
 
             </a>
-
-            <!-- NAVEGAÇÃO -->
 
             <nav
                 class="nav"
@@ -105,8 +142,6 @@
                 </a>
 
             </nav>
-
-            <!-- AÇÕES -->
 
             <div class="header-actions">
 
@@ -158,10 +193,6 @@
             <div class="container hero-content">
 
 
-                <!-- ================================
-                     TEXTO PRINCIPAL
-                ================================= -->
-
                 <div class="hero-text">
 
                     <div class="hero-badge">
@@ -197,8 +228,6 @@
                     </p>
 
 
-                    <!-- BOTÕES -->
-
                     <div class="hero-buttons">
 
                         <a
@@ -226,8 +255,6 @@
 
                     </div>
 
-
-                    <!-- ESTATÍSTICAS -->
 
                     <div class="hero-stats">
 
@@ -275,10 +302,6 @@
 
                 </div>
 
-
-                <!-- ================================
-                     CARD VISUAL
-                ================================= -->
 
                 <div class="hero-card-wrapper">
 
@@ -361,8 +384,6 @@
             <div class="container">
 
 
-                <!-- CABEÇALHO -->
-
                 <div class="section-header products-header">
 
                     <div>
@@ -388,8 +409,6 @@
 
                 </div>
 
-
-                <!-- FILTROS -->
 
                 <div
                     class="products-filters"
@@ -443,13 +462,6 @@
                 </div>
 
 
-                <!-- =================================================
-                     GRID DINÂMICO
-
-                     NÃO ALTERAR ESTE ID.
-                     O script.js utiliza #products-grid.
-                ================================================== -->
-
                 <div
                     id="products-grid"
                     class="products-grid"
@@ -470,8 +482,6 @@
 
                 </div>
 
-
-                <!-- NENHUM PRODUTO -->
 
                 <div
                     id="empty-products"
@@ -514,11 +524,8 @@
 
             <div class="container">
 
-
                 <div class="app-highlight">
 
-
-                    <!-- TEXTO -->
 
                     <div class="app-highlight-content">
 
@@ -560,14 +567,10 @@
                     </div>
 
 
-                    <!-- PREVIEW -->
-
                     <div class="app-visual">
 
                         <div class="app-window">
 
-
-                            <!-- BARRA DA JANELA -->
 
                             <div class="app-window-header">
 
@@ -590,12 +593,8 @@
                             </div>
 
 
-                            <!-- CORPO -->
-
                             <div class="app-window-body">
 
-
-                                <!-- SIDEBAR -->
 
                                 <div class="app-sidebar">
 
@@ -632,10 +631,7 @@
                                 </div>
 
 
-                                <!-- DASHBOARD -->
-
                                 <div class="app-dashboard">
-
 
                                     <div class="app-dashboard-title">
                                         AXEUS
@@ -704,8 +700,6 @@
                 <div class="benefits-grid">
 
 
-                    <!-- BENEFÍCIO 1 -->
-
                     <div class="benefit-card">
 
                         <div
@@ -730,8 +724,6 @@
 
                     </div>
 
-
-                    <!-- BENEFÍCIO 2 -->
 
                     <div class="benefit-card">
 
@@ -758,8 +750,6 @@
                     </div>
 
 
-                    <!-- BENEFÍCIO 3 -->
-
                     <div class="benefit-card">
 
                         <div
@@ -784,8 +774,6 @@
 
                     </div>
 
-
-                    <!-- BENEFÍCIO 4 -->
 
                     <div class="benefit-card">
 
@@ -897,8 +885,6 @@
             <div class="footer-content">
 
 
-                <!-- MARCA -->
-
                 <div class="footer-brand">
 
 
@@ -940,12 +926,8 @@
                 </div>
 
 
-                <!-- LINKS -->
-
                 <div class="footer-links">
 
-
-                    <!-- LOJA -->
 
                     <div class="footer-column">
 
@@ -965,8 +947,6 @@
 
                     </div>
 
-
-                    <!-- CATEGORIAS -->
 
                     <div class="footer-column">
 
@@ -991,8 +971,6 @@
 
                     </div>
 
-
-                    <!-- AXEUS -->
 
                     <div class="footer-column">
 
@@ -1023,8 +1001,6 @@
             </div>
 
 
-            <!-- RODAPÉ INFERIOR -->
-
             <div class="footer-bottom">
 
                 <span>
@@ -1045,11 +1021,6 @@
 
     <!-- =====================================================
          CONFIGURAÇÃO DA LOJA
-
-         NÃO ALTERAR.
-
-         O ADMIN UTILIZA ESTA CHAVE PARA
-         COMPARTILHAR OS PRODUTOS.
     ====================================================== -->
 
     <script>
@@ -1061,8 +1032,6 @@
 
     <!-- =====================================================
          SCRIPT PRINCIPAL
-
-         NÃO REMOVER.
     ====================================================== -->
 
     <script src="script.js"></script>
