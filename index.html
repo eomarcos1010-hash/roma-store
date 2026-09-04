@@ -216,11 +216,11 @@
 
 
                         <a
-                            href="#categorias"
+                            href="#produtos"
                             class="btn btn-secondary"
                         >
 
-                            Ver categorias
+                            Ver produtos
 
                         </a>
 
@@ -341,214 +341,6 @@
                         </div>
 
                     </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             CATEGORIAS
-        ================================================== -->
-
-        <section
-            id="categorias"
-            class="categories-section"
-        >
-
-            <div class="container">
-
-
-                <div class="section-header">
-
-                    <div>
-
-                        <span class="section-label">
-                            CATEGORIAS
-                        </span>
-
-                        <h2>
-                            Encontre o que procura
-                        </h2>
-
-                    </div>
-
-
-                    <p>
-
-                        Navegue pelas categorias
-                        e encontre produtos que
-                        combinam com você.
-
-                    </p>
-
-                </div>
-
-
-                <div class="categories-grid">
-
-
-                    <!-- TIKTOK SHOP -->
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="TIKTOK SHOP"
-                        aria-label="Ver produtos de TikTok Shop"
-                    >
-
-                        <div
-                            class="category-icon"
-                            aria-hidden="true"
-                        >
-                            ♪
-                        </div>
-
-
-                        <div class="category-info">
-
-                            <h3>
-                                TikTok Shop
-                            </h3>
-
-                            <span>
-                                Conteúdo e vendas
-                            </span>
-
-                        </div>
-
-
-                        <span
-                            class="category-arrow"
-                            aria-hidden="true"
-                        >
-                            →
-                        </span>
-
-                    </button>
-
-
-                    <!-- PC -->
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="PC"
-                        aria-label="Ver produtos para PC"
-                    >
-
-                        <div
-                            class="category-icon"
-                            aria-hidden="true"
-                        >
-                            ◈
-                        </div>
-
-
-                        <div class="category-info">
-
-                            <h3>
-                                PC
-                            </h3>
-
-                            <span>
-                                Ferramentas e otimização
-                            </span>
-
-                        </div>
-
-
-                        <span
-                            class="category-arrow"
-                            aria-hidden="true"
-                        >
-                            →
-                        </span>
-
-                    </button>
-
-
-                    <!-- ENTRETENIMENTO -->
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="ENTRETENIMENTO"
-                        aria-label="Ver produtos de entretenimento"
-                    >
-
-                        <div
-                            class="category-icon"
-                            aria-hidden="true"
-                        >
-                            ▶
-                        </div>
-
-
-                        <div class="category-info">
-
-                            <h3>
-                                Entretenimento
-                            </h3>
-
-                            <span>
-                                Filmes, séries e diversão
-                            </span>
-
-                        </div>
-
-
-                        <span
-                            class="category-arrow"
-                            aria-hidden="true"
-                        >
-                            →
-                        </span>
-
-                    </button>
-
-
-                    <!-- APLICATIVOS -->
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="APLICATIVOS"
-                        aria-label="Ver aplicativos"
-                    >
-
-                        <div
-                            class="category-icon"
-                            aria-hidden="true"
-                        >
-                            ▦
-                        </div>
-
-
-                        <div class="category-info">
-
-                            <h3>
-                                Aplicativos
-                            </h3>
-
-                            <span>
-                                Apps e soluções digitais
-                            </span>
-
-                        </div>
-
-
-                        <span
-                            class="category-arrow"
-                            aria-hidden="true"
-                        >
-                            →
-                        </span>
-
-                    </button>
-
 
                 </div>
 
@@ -1167,11 +959,6 @@
                         </a>
 
 
-                        <a href="#categorias">
-                            Categorias
-                        </a>
-
-
                         <a href="#aplicativos">
                             Aplicativos
                         </a>
@@ -1282,7 +1069,7 @@
 
 
     <!-- =====================================================
-         NAVEGAÇÃO E CATEGORIAS
+         NAVEGAÇÃO
     ====================================================== -->
 
     <script>
@@ -1337,63 +1124,6 @@
                                     block: "start"
 
                                 });
-
-                            }
-                        );
-
-                    });
-
-
-                /* ============================================
-                   CATEGORIAS → FILTRO DE PRODUTOS
-                ============================================ */
-
-                document
-                    .querySelectorAll(".category-card")
-                    .forEach(function (button) {
-
-
-                        button.addEventListener(
-                            "click",
-                            function () {
-
-
-                                const category =
-                                    this.dataset.category;
-
-
-                                const filterButton =
-                                    document.querySelector(
-                                        '.filter-button[data-filter="' +
-                                        category +
-                                        '"]'
-                                    );
-
-
-                                if (filterButton) {
-
-                                    filterButton.click();
-
-                                }
-
-
-                                const productsSection =
-                                    document.querySelector(
-                                        "#produtos"
-                                    );
-
-
-                                if (productsSection) {
-
-                                    productsSection.scrollIntoView({
-
-                                        behavior: "smooth",
-
-                                        block: "start"
-
-                                    });
-
-                                }
 
                             }
                         );
