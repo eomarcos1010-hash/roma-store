@@ -1,1186 +1,680 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08070f">
 
-    <meta charset="UTF-8">
+  <title>Roma Store</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>AXEUS STORE — Produtos Digitais</title>
-
-    <meta
-        name="description"
-        content="AXEUS STORE — Produtos digitais, aplicativos, ferramentas e soluções para sua experiência digital."
-    >
-
-    <meta
-        name="theme-color"
-        content="#05080f"
-    >
-
-    <link
-        rel="icon"
-        type="image/png"
-        href="favicon.png"
-    >
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
-    <!-- CORREÇÃO DO ESPAÇO VAZIO -->
-    <style>
-
-        /* Remove altura excessiva do HERO */
-        .hero {
-            min-height: auto !important;
-            height: auto !important;
-            padding-top: 80px !important;
-            padding-bottom: 70px !important;
-        }
-
-        .hero-content {
-            min-height: auto !important;
-            height: auto !important;
-        }
-
-        .hero-card-wrapper {
-            min-height: auto !important;
-            height: auto !important;
-        }
-
-        .products-section {
-            margin-top: 0 !important;
-            padding-top: 80px !important;
-        }
-
-        @media (max-width: 900px) {
-
-            .hero {
-                padding-top: 60px !important;
-                padding-bottom: 60px !important;
-            }
-
-            .products-section {
-                padding-top: 60px !important;
-            }
-
-        }
-
-    </style>
-
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+<header class="header">
+  <a
+    class="brand"
+    href="#"
+    id="homeLink"
+    aria-label="Voltar para a página inicial"
+  >
+    <span class="brand-icon">R</span>
+    <span id="brandName">roma store</span>
+    <i aria-hidden="true">✓</i>
+  </a>
 
-    <header class="header">
+  <div class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="m16 16 4 4"></path>
+    </svg>
 
-        <div class="container header-content">
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Buscar produto"
+      autocomplete="off"
+      aria-label="Buscar produto"
+    >
+  </div>
 
-            <a
-                href="#inicio"
-                class="logo"
-                aria-label="AXEUS STORE - Início"
-            >
+  <div class="header-actions">
+    <button
+      class="header-icon"
+      id="supportButton"
+      type="button"
+      title="Suporte"
+      aria-label="Abrir suporte"
+      aria-expanded="false"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
+        <path d="M4 13v-2a8 8 0 0 1 16 0v2"></path>
+        <rect x="3" y="12" width="5" height="7" rx="2"></rect>
+        <rect x="16" y="12" width="5" height="7" rx="2"></rect>
+        <path d="M21 17c0 3-3 4-6 4"></path>
+      </svg>
+    </button>
 
-                <span
-                    class="logo-icon"
-                    aria-hidden="true"
-                >
-                    A
-                </span>
+    <button
+      class="cart-button"
+      id="cartButton"
+      type="button"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
+        <circle cx="9" cy="20" r="1"></circle>
+        <circle cx="18" cy="20" r="1"></circle>
+        <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 8H6"></path>
+      </svg>
 
-                <span>
-                    AXEUS
-                    <span class="logo-store">
-                        STORE
-                    </span>
-                </span>
+      Carrinho
 
-            </a>
+      <span id="cartCount">0</span>
+    </button>
+  </div>
+</header>
 
-            <nav
-                class="nav"
-                aria-label="Navegação principal"
-            >
+<div class="support-panel" id="supportPanel" hidden>
+  <div class="support-title">
+    <div>
+      <small>ROMA STORE</small>
+      <h3>Fale conosco</h3>
+    </div>
 
-                <a
-                    href="#inicio"
-                    class="nav-link active"
-                >
-                    Início
-                </a>
+    <button
+      id="closeSupport"
+      type="button"
+      aria-label="Fechar suporte"
+    >
+      ×
+    </button>
+  </div>
 
-                <a
-                    href="#produtos"
-                    class="nav-link"
-                >
-                    Produtos
-                </a>
+  <p>
+    Entre em contato com nossa equipe através das nossas redes.
+  </p>
 
-                <a
-                    href="#categorias"
-                    class="nav-link"
-                >
-                    Categorias
-                </a>
+  <a
+    id="discordLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="support-name">
+      <img
+        src="https://cdn.simpleicons.org/discord/ffffff"
+        alt="Discord"
+      >
+      Discord
+    </span>
 
-                <a
-                    href="#aplicativos"
-                    class="nav-link"
-                >
-                    Aplicativos
-                </a>
+    <span aria-hidden="true">↗</span>
+  </a>
 
-            </nav>
+  <a
+    id="tiktokLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="support-name">
+      <img
+        src="https://cdn.simpleicons.org/tiktok/ffffff"
+        alt="TikTok"
+      >
+      TikTok
+    </span>
 
-            <div class="header-actions">
+    <span aria-hidden="true">↗</span>
+  </a>
 
-                <a
-                    href="adm.html"
-                    class="admin-home-button"
-                    aria-label="Abrir painel administrativo"
-                    title="Painel administrativo"
-                >
-                    🏠
-                </a>
+  <a
+    id="instagramLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="support-name">
+      <img
+        src="https://cdn.simpleicons.org/instagram/ffffff"
+        alt="Instagram"
+      >
+      Instagram
+    </span>
 
-                <a
-                    href="#produtos"
-                    class="header-button"
-                >
-                    Ver produtos
-                </a>
+    <span aria-hidden="true">↗</span>
+  </a>
 
-            </div>
+  <a
+    id="whatsappLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="support-name">
+      <img
+        src="https://cdn.simpleicons.org/whatsapp/ffffff"
+        alt="WhatsApp"
+      >
+      WhatsApp
+    </span>
+
+    <span aria-hidden="true">↗</span>
+  </a>
+</div>
+
+<main id="homePage">
+
+  <section class="hero">
+    <img
+      id="heroImage"
+      src="Identidade Visual Roma Store.png"
+      alt="Roma Store"
+    >
+  </section>
+
+  <section class="store-content">
+
+    <div class="categories-section">
+
+      <div class="section-heading categories-heading">
+
+        <div>
+
+          <small>ROMA STORE</small>
+
+          <h1 id="categoriesTitle">
+            Explore nossas categorias
+          </h1>
+
+          <p id="categoriesDescription">
+            Encontre produtos para melhorar seu setup.
+          </p>
 
         </div>
 
-    </header>
+      </div>
 
+      <div
+        class="categories-list"
+        id="categoriesList"
+      ></div>
 
-    <!-- =====================================================
-         CONTEÚDO PRINCIPAL
-    ====================================================== -->
+    </div>
 
-    <main>
+    <div class="section-heading products-heading">
 
+      <div>
 
-        <!-- =================================================
-             HERO
-        ================================================== -->
+        <small>ROMA STORE</small>
 
-        <section
-            id="inicio"
-            class="hero"
-        >
+        <h1>Explore nossos produtos</h1>
+
+        <p>
+          Escolha um produto para ver todos os detalhes.
+        </p>
+
+      </div>
+
+      <span id="productCount">0 produtos</span>
+
+    </div>
+
+    <div
+      class="products-grid"
+      id="productsGrid"
+    ></div>
+
+    <div
+      class="empty"
+      id="emptyState"
+      hidden
+    >
+      Nenhum produto encontrado.
+    </div>
+
+  </section>
+</main>
+
+<main
+  class="product-page"
+  id="productPage"
+  hidden
+>
+
+  <button
+    class="back-button"
+    id="backButton"
+    type="button"
+  >
+    ← Voltar para a loja
+  </button>
+
+  <div class="detail-layout">
+
+    <section class="detail-main">
+
+      <div class="product-top">
+
+        <div class="gallery">
+
+          <div class="main-image">
+
+            <img
+              id="detailImage"
+              src=""
+              alt=""
+            >
+
+          </div>
+
+          <div class="carousel">
+
+            <button
+              class="carousel-arrow"
+              id="prevImage"
+              type="button"
+              aria-label="Imagem anterior"
+            >
+              ‹
+            </button>
 
             <div
-                class="hero-background"
-                aria-hidden="true"
+              class="thumbnails"
+              id="thumbnails"
             ></div>
 
-
-            <div class="container hero-content">
-
-
-                <div class="hero-text">
-
-                    <div class="hero-badge">
-
-                        <span
-                            class="badge-dot"
-                            aria-hidden="true"
-                        ></span>
-
-                        PRODUTOS DIGITAIS
-
-                    </div>
-
-
-                    <h1>
-
-                        Sua experiência
-
-                        <span>
-                            começa aqui.
-                        </span>
-
-                    </h1>
-
-
-                    <p>
-
-                        Descubra produtos digitais,
-                        aplicativos e ferramentas pensados
-                        para tornar sua experiência mais
-                        simples, prática e completa.
-
-                    </p>
-
-
-                    <div class="hero-buttons">
-
-                        <a
-                            href="#produtos"
-                            class="btn btn-primary"
-                        >
-
-                            Explorar produtos
-
-                            <span aria-hidden="true">
-                                →
-                            </span>
-
-                        </a>
-
-
-                        <a
-                            href="#produtos"
-                            class="btn btn-secondary"
-                        >
-
-                            Ver produtos
-
-                        </a>
-
-                    </div>
-
-
-                    <div class="hero-stats">
-
-
-                        <div class="stat">
-
-                            <strong id="hero-products-count">
-                                0
-                            </strong>
-
-                            <span>
-                                Produtos
-                            </span>
-
-                        </div>
-
-
-                        <div class="stat">
-
-                            <strong id="hero-clicks-count">
-                                0
-                            </strong>
-
-                            <span>
-                                Interações
-                            </span>
-
-                        </div>
-
-
-                        <div class="stat">
-
-                            <strong>
-                                100%
-                            </strong>
-
-                            <span>
-                                Digital
-                            </span>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-                <div class="hero-card-wrapper">
-
-                    <div class="hero-card">
-
-                        <div
-                            class="hero-card-glow"
-                            aria-hidden="true"
-                        ></div>
-
-
-                        <div class="hero-card-top">
-
-                            <span class="hero-card-label">
-                                AXEUS STORE
-                            </span>
-
-                            <span class="hero-card-status">
-                                ● ONLINE
-                            </span>
-
-                        </div>
-
-
-                        <div
-                            class="hero-card-logo"
-                            aria-hidden="true"
-                        >
-                            A
-                        </div>
-
-
-                        <h3>
-                            Tudo em um só lugar.
-                        </h3>
-
-
-                        <p>
-                            Produtos digitais selecionados
-                            para você.
-                        </p>
-
-
-                        <div
-                            class="hero-card-line"
-                            aria-hidden="true"
-                        ></div>
-
-
-                        <div class="hero-card-bottom">
-
-                            <span>
-                                EXPLORE A LOJA
-                            </span>
-
-                            <span aria-hidden="true">
-                                →
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             PRODUTOS
-        ================================================== -->
-
-        <section
-            id="produtos"
-            class="products-section"
-        >
-
-            <div class="container">
-
-
-                <div class="section-header products-header">
-
-                    <div>
-
-                        <span class="section-label">
-                            AXEUS STORE
-                        </span>
-
-                        <h2>
-                            Produtos em destaque
-                        </h2>
-
-                    </div>
-
-
-                    <p>
-
-                        Escolha um produto para
-                        visualizar informações,
-                        detalhes e opções de acesso.
-
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="products-filters"
-                    aria-label="Filtrar produtos por categoria"
-                >
-
-                    <button
-                        type="button"
-                        class="filter-button active"
-                        data-filter="TODOS"
-                    >
-                        Todos
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="filter-button"
-                        data-filter="TIKTOK SHOP"
-                    >
-                        TikTok Shop
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="filter-button"
-                        data-filter="PC"
-                    >
-                        PC
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="filter-button"
-                        data-filter="ENTRETENIMENTO"
-                    >
-                        Entretenimento
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="filter-button"
-                        data-filter="APLICATIVOS"
-                    >
-                        Aplicativos
-                    </button>
-
-                </div>
-
-
-                <div
-                    id="products-grid"
-                    class="products-grid"
-                >
-
-                    <div class="products-loading">
-
-                        <div
-                            class="loading-spinner"
-                            aria-hidden="true"
-                        ></div>
-
-                        <span>
-                            Carregando produtos...
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="empty-products"
-                    class="empty-products"
-                    style="display: none;"
-                >
-
-                    <div
-                        class="empty-icon"
-                        aria-hidden="true"
-                    >
-                        ◌
-                    </div>
-
-
-                    <h3>
-                        Nenhum produto encontrado
-                    </h3>
-
-
-                    <p>
-                        Não existem produtos nesta categoria no momento.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             APLICATIVO AXEUS
-        ================================================== -->
-
-        <section
-            id="aplicativos"
-            class="apps-section"
-        >
-
-            <div class="container">
-
-                <div class="app-highlight">
-
-
-                    <div class="app-highlight-content">
-
-                        <span class="section-label">
-                            PROJETO AXEUS
-                        </span>
-
-
-                        <h2>
-
-                            Conheça o
-
-                            <span>
-                                AXEUS
-                            </span>
-
-                        </h2>
-
-
-                        <p>
-
-                            Uma nova experiência criada para
-                            personalizar, otimizar e transformar
-                            a utilização do Windows.
-
-                        </p>
-
-
-                        <div class="app-status">
-
-                            <span
-                                aria-hidden="true"
-                            ></span>
-
-                            Desenvolvimento em andamento
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="app-visual">
-
-                        <div class="app-window">
-
-
-                            <div class="app-window-header">
-
-                                <div
-                                    class="window-dots"
-                                    aria-hidden="true"
-                                >
-
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
-
-                                </div>
-
-
-                                <span>
-                                    AXEUS
-                                </span>
-
-                            </div>
-
-
-                            <div class="app-window-body">
-
-
-                                <div class="app-sidebar">
-
-
-                                    <div class="app-sidebar-logo">
-                                        A
-                                    </div>
-
-
-                                    <div
-                                        class="app-sidebar-item active"
-                                        aria-hidden="true"
-                                    >
-                                        ◈
-                                    </div>
-
-
-                                    <div
-                                        class="app-sidebar-item"
-                                        aria-hidden="true"
-                                    >
-                                        ▦
-                                    </div>
-
-
-                                    <div
-                                        class="app-sidebar-item"
-                                        aria-hidden="true"
-                                    >
-                                        ⚙
-                                    </div>
-
-
-                                </div>
-
-
-                                <div class="app-dashboard">
-
-                                    <div class="app-dashboard-title">
-                                        AXEUS
-                                    </div>
-
-
-                                    <div class="app-dashboard-cards">
-
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-
-                                    </div>
-
-
-                                    <div class="app-dashboard-large"></div>
-
-                                </div>
-
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             BENEFÍCIOS
-        ================================================== -->
-
-        <section class="benefits-section">
-
-            <div class="container">
-
-
-                <div class="section-header center">
-
-                    <span class="section-label">
-                        POR QUE AXEUS?
-                    </span>
-
-
-                    <h2>
-                        Uma loja pensada para você
-                    </h2>
-
-
-                    <p>
-
-                        Experiência simples, produtos digitais
-                        e uma plataforma criada para facilitar
-                        sua jornada.
-
-                    </p>
-
-                </div>
-
-
-                <div class="benefits-grid">
-
-
-                    <div class="benefit-card">
-
-                        <div
-                            class="benefit-icon"
-                            aria-hidden="true"
-                        >
-                            ⚡
-                        </div>
-
-
-                        <h3>
-                            Acesso rápido
-                        </h3>
-
-
-                        <p>
-
-                            Encontre seu produto e tenha
-                            acesso de forma rápida e prática.
-
-                        </p>
-
-                    </div>
-
-
-                    <div class="benefit-card">
-
-                        <div
-                            class="benefit-icon"
-                            aria-hidden="true"
-                        >
-                            ◇
-                        </div>
-
-
-                        <h3>
-                            Tudo digital
-                        </h3>
-
-
-                        <p>
-
-                            Produtos digitais sem
-                            necessidade de entrega física.
-
-                        </p>
-
-                    </div>
-
-
-                    <div class="benefit-card">
-
-                        <div
-                            class="benefit-icon"
-                            aria-hidden="true"
-                        >
-                            ✓
-                        </div>
-
-
-                        <h3>
-                            Simples de usar
-                        </h3>
-
-
-                        <p>
-
-                            Uma experiência criada para
-                            ser simples, clara e intuitiva.
-
-                        </p>
-
-                    </div>
-
-
-                    <div class="benefit-card">
-
-                        <div
-                            class="benefit-icon"
-                            aria-hidden="true"
-                        >
-                            ♢
-                        </div>
-
-
-                        <h3>
-                            Suporte
-                        </h3>
-
-
-                        <p>
-
-                            Precisou de ajuda? Nossa equipe
-                            está disponível para auxiliar.
-
-                        </p>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             CTA FINAL
-        ================================================== -->
-
-        <section class="cta-section">
-
-            <div class="container">
-
-
-                <div class="cta-card">
-
-
-                    <div
-                        class="cta-glow"
-                        aria-hidden="true"
-                    ></div>
-
-
-                    <div class="cta-content">
-
-
-                        <span class="section-label">
-                            AXEUS STORE
-                        </span>
-
-
-                        <h2>
-                            Encontre seu próximo produto.
-                        </h2>
-
-
-                        <p>
-
-                            Explore a loja, conheça nossas
-                            categorias e encontre uma solução
-                            digital para você.
-
-                        </p>
-
-
-                        <a
-                            href="#produtos"
-                            class="btn btn-primary"
-                        >
-
-                            Explorar produtos
-
-                            <span aria-hidden="true">
-                                →
-                            </span>
-
-                        </a>
-
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-    </main>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer class="footer">
-
-        <div class="container">
-
-
-            <div class="footer-content">
-
-
-                <div class="footer-brand">
-
-
-                    <a
-                        href="#inicio"
-                        class="logo"
-                        aria-label="AXEUS STORE - Início"
-                    >
-
-                        <span
-                            class="logo-icon"
-                            aria-hidden="true"
-                        >
-                            A
-                        </span>
-
-
-                        <span>
-
-                            AXEUS
-
-                            <span class="logo-store">
-                                STORE
-                            </span>
-
-                        </span>
-
-                    </a>
-
-
-                    <p>
-
-                        Produtos digitais,
-                        ferramentas e soluções
-                        para uma experiência melhor.
-
-                    </p>
-
-                </div>
-
-
-                <div class="footer-links">
-
-
-                    <div class="footer-column">
-
-                        <h4>
-                            Loja
-                        </h4>
-
-
-                        <a href="#produtos">
-                            Produtos
-                        </a>
-
-
-                        <a href="#aplicativos">
-                            Aplicativos
-                        </a>
-
-                    </div>
-
-
-                    <div class="footer-column">
-
-                        <h4>
-                            Categorias
-                        </h4>
-
-
-                        <a href="#produtos">
-                            TikTok Shop
-                        </a>
-
-
-                        <a href="#produtos">
-                            PC
-                        </a>
-
-
-                        <a href="#produtos">
-                            Entretenimento
-                        </a>
-
-                    </div>
-
-
-                    <div class="footer-column">
-
-                        <h4>
-                            AXEUS
-                        </h4>
-
-
-                        <a href="#inicio">
-                            Início
-                        </a>
-
-
-                        <a href="#produtos">
-                            Loja
-                        </a>
-
-
-                        <a href="#aplicativos">
-                            Projeto AXEUS
-                        </a>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <div class="footer-bottom">
-
-                <span>
-                    © 2026 AXEUS STORE. Todos os direitos reservados.
-                </span>
-
-
-                <span>
-                    Desenvolvido por AXEUS
-                </span>
-
-            </div>
+            <button
+              class="carousel-arrow"
+              id="nextImage"
+              type="button"
+              aria-label="Próxima imagem"
+            >
+              ›
+            </button>
+
+          </div>
+
+          <div
+            class="image-counter"
+            id="imageCounter"
+          ></div>
 
         </div>
 
-    </footer>
+        <div class="purchase-info">
 
+          <span
+            class="category"
+            id="detailCategory"
+          ></span>
 
-    <!-- =====================================================
-         CONFIGURAÇÃO DA LOJA
-    ====================================================== -->
+          <h1 id="detailName"></h1>
 
-    <script>
+          <div class="rating">
 
-        window.AXEUS_STORAGE_KEY = "axeus_products";
+            <span aria-label="Avaliação em estrelas">
+              ★★★★★
+            </span>
 
-    </script>
+            <b id="detailRating">5.0</b>
 
+            <small id="ratingStoreName">
+              Roma Store
+            </small>
 
-    <!-- =====================================================
-         SCRIPT PRINCIPAL
-    ====================================================== -->
+          </div>
 
-    <script src="script.js"></script>
+          <div class="price-area">
 
+            <div
+              class="old-price"
+              id="detailOldPrice"
+            ></div>
 
-    <!-- =====================================================
-         NAVEGAÇÃO
-    ====================================================== -->
+            <span
+              class="discount"
+              id="detailDiscount"
+            ></span>
 
-    <script>
+            <strong id="detailPrice">
+              R$ 0,00
+            </strong>
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
+            <small>
+              À vista no Pix
+            </small>
 
+          </div>
 
-                /* ============================================
-                   ROLAGEM SUAVE
-                ============================================ */
+          <div class="purchase-box">
 
-                document
-                    .querySelectorAll('a[href^="#"]')
-                    .forEach(function (link) {
+            <div class="stock">
+              ✓ Produto disponível
+            </div>
 
-                        link.addEventListener(
-                            "click",
-                            function (event) {
+            <button
+              class="buy-button"
+              id="buyButton"
+              type="button"
+            >
 
-                                const targetId =
-                                    this.getAttribute("href");
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <circle cx="9" cy="20" r="1"></circle>
+                <circle cx="18" cy="20" r="1"></circle>
+                <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 8H6"></path>
+              </svg>
 
+              Comprar agora
 
-                                if (
-                                    !targetId ||
-                                    targetId === "#"
-                                ) {
-                                    return;
-                                }
+            </button>
 
+            <button
+              class="add-button"
+              id="addButton"
+              type="button"
+            >
 
-                                const target =
-                                    document.querySelector(
-                                        targetId
-                                    );
+              <span>＋</span>
 
+              Adicionar ao carrinho
 
-                                if (!target) {
-                                    return;
-                                }
+            </button>
 
+          </div>
 
-                                event.preventDefault();
+        </div>
 
+      </div>
 
-                                target.scrollIntoView({
+      <section class="description-card">
 
-                                    behavior: "smooth",
+        <h2>
 
-                                    block: "start"
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <path d="M14 2v6h6"></path>
+            <path d="M8 13h8M8 17h6"></path>
+          </svg>
 
-                                });
+          Descrição
 
-                            }
-                        );
+        </h2>
 
-                    });
+        <h3 id="descriptionTitle"></h3>
 
+        <p id="longDescription"></p>
 
-                /* ============================================
-                   ATUALIZA LINK ATIVO DO MENU
-                ============================================ */
+      </section>
 
-                const sections =
-                    document.querySelectorAll(
-                        "main section[id]"
-                    );
+    </section>
 
+    <aside class="side-information">
 
-                const navLinks =
-                    document.querySelectorAll(
-                        ".nav-link"
-                    );
+      <div class="info-card">
 
+        <div class="info-icon">
+          ✓
+        </div>
 
-                const observer =
-                    new IntersectionObserver(
-                        function (entries) {
+        <div>
 
-                            entries.forEach(
-                                function (entry) {
+          <h3>Entrega imediata</h3>
 
-                                    if (!entry.isIntersecting) {
-                                        return;
-                                    }
+          <p>
+            Receba o seu pacote imediatamente após o pagamento.
+          </p>
 
+        </div>
 
-                                    navLinks.forEach(
-                                        function (link) {
+      </div>
 
-                                            link.classList.remove(
-                                                "active"
-                                            );
+      <div class="info-card">
 
-                                        }
-                                    );
+        <div class="info-icon">
+          ✓
+        </div>
 
+        <div>
 
-                                    const activeLink =
-                                        document.querySelector(
-                                            '.nav-link[href="#' +
-                                            entry.target.id +
-                                            '"]'
-                                        );
+          <h3>Segurança total</h3>
 
+          <p>
+            Seus dados são protegidos durante todo o processo.
+          </p>
 
-                                    if (activeLink) {
+        </div>
 
-                                        activeLink.classList.add(
-                                            "active"
-                                        );
+      </div>
 
-                                    }
+      <div class="info-card payment-card">
 
-                                }
-                            );
+        <div class="info-icon">
+          $
+        </div>
 
-                        },
-                        {
-                            rootMargin:
-                                "-35% 0px -55% 0px"
-                        }
-                    );
+        <div>
 
+          <h3>Forma de pagamento</h3>
 
-                sections.forEach(
-                    function (section) {
+          <p>
+            Pagamento rápido e seguro via Pix.
+          </p>
 
-                        observer.observe(section);
+          <div class="payment-methods">
 
-                    }
-                );
+            <div class="pix-logo">
+              PIX
+            </div>
 
+          </div>
 
-            }
-        );
+        </div>
 
-    </script>
+      </div>
 
+      <div class="reviews-card">
+
+        <h3>
+          ★ Avaliações
+        </h3>
+
+        <div class="review-summary">
+
+          <div>
+
+            <strong id="reviewScore">
+              5.00
+            </strong>
+
+            <div class="stars">
+              ★★★★★
+            </div>
+
+            <small id="reviewCount">
+              2 avaliações
+            </small>
+
+          </div>
+
+          <div class="rating-bars">
+
+            <div>
+              <span>5 ★</span>
+
+              <i>
+                <b style="width:100%"></b>
+              </i>
+            </div>
+
+            <div>
+              <span>4 ★</span>
+
+              <i>
+                <b style="width:0%"></b>
+              </i>
+            </div>
+
+            <div>
+              <span>3 ★</span>
+
+              <i>
+                <b style="width:0%"></b>
+              </i>
+            </div>
+
+            <div>
+              <span>2 ★</span>
+
+              <i>
+                <b style="width:0%"></b>
+              </i>
+            </div>
+
+            <div>
+              <span>1 ★</span>
+
+              <i>
+                <b style="width:0%"></b>
+              </i>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</main>
+
+<aside
+  class="cart-panel"
+  id="cartPanel"
+  aria-label="Carrinho de compras"
+>
+
+  <div class="cart-heading">
+
+    <h2>Seu carrinho</h2>
+
+    <button
+      id="closeCart"
+      type="button"
+      aria-label="Fechar carrinho"
+    >
+      ×
+    </button>
+
+  </div>
+
+  <div id="cartItems"></div>
+
+  <div class="cart-footer">
+
+    <strong>
+
+      Total
+
+      <span id="cartTotal">
+        R$ 0,00
+      </span>
+
+    </strong>
+
+    <button
+      class="buy-button"
+      id="checkoutButton"
+      type="button"
+    >
+      Finalizar pedido
+    </button>
+
+  </div>
+
+</aside>
+
+<div
+  class="overlay"
+  id="overlay"
+  hidden
+></div>
+
+<footer>
+
+  <div class="brand">
+
+    <span class="brand-icon">R</span>
+
+    <span id="footerBrandName">
+      roma store
+    </span>
+
+  </div>
+
+  <p id="footerDescription">
+    Sua loja de tecnologia.
+  </p>
+
+  <p>
+    © 2026 Roma Store.
+  </p>
+
+</footer>
+
+<!-- Ícone discreto para acessar o painel administrativo -->
+<a
+  href="login.html"
+  class="admin-link"
+  title="Admin"
+  aria-label="Área administrativa"
+>
+  🔒
+</a>
+
+<style>
+  .admin-link {
+    position: fixed;
+    right: 10px;
+    bottom: 8px;
+    font-size: 11px;
+    line-height: 1;
+    text-decoration: none;
+    opacity: 0.25;
+    z-index: 9999;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .admin-link:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+</style>
+
+<script src="script.js"></script>
 
 </body>
-
 </html>
